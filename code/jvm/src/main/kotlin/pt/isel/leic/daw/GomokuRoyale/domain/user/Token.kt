@@ -15,6 +15,7 @@ data class Token(
         private val userID: Int
 ) {
     companion object {
+
         /**
          * Checks occurs finish date occurs after initial date
          *
@@ -26,6 +27,6 @@ data class Token(
         fun validDates(createDate: Date, lastUsedDate: Date) = lastUsedDate > createDate
     }
     init {
-        require(validDates(createdAt, lastUsedAt))
+        require(validDates(createdAt, lastUsedAt)) {"The token last used date must be more recent than the creation date"}
     }
 }

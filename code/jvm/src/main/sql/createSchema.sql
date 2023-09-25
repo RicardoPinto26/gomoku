@@ -1,42 +1,66 @@
-drop table if EXISTS Users cascade;
-drop table if EXISTS Tokens cascade;
-drop table if EXISTS Games cascade;
-drop table if EXISTS Lobby cascade;
+drop table if EXISTS users cascade;
+drop table if EXISTS tokens cascade;
+drop table if EXISTS games cascade;
+drop table if EXISTS lobbys cascade;
+drop table if EXISTS game_State cascade;
+drop table if EXISTS moves cascade;
 
-create table Users
+create table users
 (
-    id       SERIAL PRIMARY KEY,
-    username VARCHAR(50) NOT NULL,
-    email    varchar(60) NOT NULL CHECK (email SIMILAR TO '_%@_%') UNIQUE,
-    password CHAR(64)    NOT NULL CHECK ( char_length(password) = 64 ),
-    points   INT NOT NULL CHECK (points >= 0) DEFAULT 0,
-    nr_games_played   INT NOT NULL CHECK (nrGamesPlayed >= 0) DEFAULT 0
-    );
-
-create table Tokens
-(
-    token_validation VARCHAR(256) primary key,
-    user_id          INT REFERENCES Users (id),
-    created_at       DATE NOT NULL,
-    last_used_at     DATE NOT NULL
+    id              SERIAL PRIMARY KEY,
+    username        VARCHAR(50)  NOT NULL UNIQUE,
+    email           varchar(255) NOT NULL CHECK (email SIMILAR TO '_%@_%') UNIQUE,
+    password        CHAR(64)     NOT NULL CHECK ( char_length(password) = 64 ),
+    points          INT          NOT NULL CHECK (points >= 0)          DEFAULT 0,
+    nr_games_played INT          NOT NULL CHECK (nr_games_played >= 0) DEFAULT 0
 );
 
-
-create table Games
+create table tokens
 (
-    id        SERIAL PRIMARY KEY,
-    name      VARCHAR(50) NOT NULL,
-    user_id   INT REFERENCES Users (id),
-    grid_size INT         NOT NULL,
-    variant   VARCHAR(50) NOT NULL
+    token        VARCHAR(256) primary key,
+    user_id      INT REFERENCES users (id),
+    created_at   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_used_at TIMESTAMP NOT NULL
 );
 
-create table Lobby
+create table lobbys
 (
-    id         SERIAL PRIMARY KEY,
-    player_black_id    INT REFERENCES Users (id),
-    player_white_id    INT REFERENCES Users (id),
-    game_id    INT REFERENCES Game (id),
-    created_at DATE NOT NULL
+    id              SERIAL PRIMARY KEY,
+    creator_user_id INT         NOT NULL REFERENCES users (id),
+    grid_size       INT         NOT NULL,
+    opening         VARCHAR(50) NOT NULL,
+    variant         VARCHAR(50) NOT NULL,
+    points_margin   INT         NOT NULL DEFAULT 200,
+    created_at      TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+create table games
+(
+    id              SERIAL PRIMARY KEY,
+    name            VARCHAR(50)               NOT NULL,
+    lobby_id        INT REFERENCES lobbys (id),
+    player_black_id INT REFERENCES users (id) NOT NULL,
+    player_white_id INT REFERENCES users (id) NOT NULL,
+    created_at      TIMESTAMP                 NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+create table game_State
+(
+    id      SERIAL PRIMARY KEY,
+    game_id INT REFERENCES games (id) NOT NULL,
+    turn    INT REFERENCES users (id) NOT NULL,
+    winner  INT REFERENCES users (id),
+    state   VARCHAR(30) CHECK ( state IN ('AWAITING FIRST MOVE', 'IN_PROGRESS', 'FINISHED') )
+
+);
+
+create table moves
+(
+    id      SERIAL PRIMARY KEY,
+    game_id INT REFERENCES games (id) NOT NULL,
+    user_id INT REFERENCES users (id) NOT NULL,
+    move_x  INT                       NOT NULL,
+    move_y  INT                       NOT NULL
+    --move_time  TIMESTAMP                 NOT NULL
+)
 

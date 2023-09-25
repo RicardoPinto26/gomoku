@@ -4,17 +4,17 @@ import kotlin.math.min
 import kotlin.math.max
 
 data class Board(
-        private val boardSize: Int,
-        private val winningLength: Int,
-        private val overflowAllowed: Boolean,
-        private val opening: Opening
+    private val boardSize: Int,
+    private val winningLength: Int,
+    private val overflowAllowed: Boolean,
+    private val opening: Opening
 ) {
     private val board = MutableList(boardSize) { MutableList<Piece?>(boardSize) { null } }
 
     private var openingFinished =
-            when (opening) {
-                Opening.FREESTYLE -> true
-            }
+        when (opening) {
+            Opening.FREESTYLE -> true
+        }
 
     fun makeMove(piece: Piece, position: Position): Boolean {
         require(board[position.line][position.column] == null)
@@ -23,37 +23,34 @@ data class Board(
         return checkWin(piece, position)
     }
 
-    private fun checkWin(piece: Piece, position: Position): Boolean =
-            checkVerticalWin(piece, position) ||
-                    checkHorizontalWin(piece, position) ||
-                    checkBackSlashWin(piece, position) ||
-                    checkSlashWin(piece, position)
+    private fun checkWin(piece: Piece, position: Position): Boolean {
+        val directions =
+            arrayOf(
+                Pair(-1, -1), // Down Left
+                Pair(-1, 1),  // Ttop Left
+                Pair(1, -1),  // Down Right
+                Pair(1, 1),   // Top Right
+                Pair(1, 0),   // Left Horizontal
+                Pair(-1, 0),  // Right Horizontal
+                Pair(0, -1),  // Down Vertical
+                Pair(0, 1)    // Top Vertocal
+            )
 
-    private fun checkVerticalWin(piece: Piece, position: Position): Boolean {
-        var winningPieces = 0
-        val minVertical = max(0, (position.line - winningLength + 1)) //3
-        val maxVertical = min(boardSize - 1, position.line + winningLength - 1) //11
+        for (direction in directions) {
+            var winningPieces = 0
+            var row = position.line
+            var column = position.column
 
-        for (i in minVertical..maxVertical) {
-            winningPieces = if (board[i][position.column] == piece) winningPieces + 1
-            else 0
+            while (row in 0 until boardSize && column in 0 until boardSize) {
+                winningPieces = if (board[row][column] == piece) winningPieces + 1 else 0
+
+                if (winningPieces == winningLength) return true
+
+                row += direction.first
+                column += direction.second
+            }
         }
 
-        return if (overflowAllowed) winningPieces >= winningLength else winningPieces == winningLength
-    }
-
-    private fun checkHorizontalWin(piece: Piece, position: Position): Boolean {
-
-        return true
-    }
-
-    private fun checkBackSlashWin(piece: Piece, position: Position): Boolean {
-
-        return true
-    }
-
-    private fun checkSlashWin(piece: Piece, position: Position): Boolean {
-
-        return true
+        return false
     }
 }

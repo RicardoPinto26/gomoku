@@ -14,12 +14,12 @@ import java.security.MessageDigest
  * @property hashPassword the users password (encoded to sha265)
  */
 data class User(
-        private val id: Int,
-        private val username: String,
-        private val email: String,
-        private val gamesPlayed : Int,
-        private val points: Int,
-        private val hashPassword : String
+    private val id: Int,
+    private val username: String,
+    private val email: String,
+    private val hashPassword: String,
+    private val gamesPlayed: Int = 0,
+    private val points: Int = 0
 ) {
     companion object {
         private const val EMAIL_REGEX = "^(.+)@(.+)$"
@@ -52,6 +52,18 @@ data class User(
          * @return true if valid, false if not
          */
         fun validId(id: Int): Boolean = id >= 0
+
+        /**
+         * Checks whether a password is safe or not
+         *
+         * @param password String with the password
+         *
+         * @return true if the password includes a digit, lowercase and uppercase
+         */
+
+        fun isSafePassword(password: String) =
+            password.length >= 8 && password.any { it.isDigit() } && password.any { it.isUpperCase() } && password.any { it.isLowerCase() }
+
     }
 
     init {
@@ -77,9 +89,10 @@ data class User(
         return bytesToHex(hashedBytes)
     }
 
-    fun checkUserCredentials(name: String, email: String) {
+    fun checkUserCredentials(name: String, email: String, password: String) {
         require(validName(name)) { "Invalid username: $name" }
         require(validEmail(email)) { "Invalid email: $email" }
+        require(isSafePassword(password)) { "Insecure password" }
     }
 
 }
