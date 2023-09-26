@@ -1,56 +1,90 @@
 package pt.isel.leic.daw.GomokuRoyale.domain
 
-import kotlin.math.min
 import kotlin.math.max
+import kotlin.math.min
 
 data class Board(
     private val boardSize: Int,
     private val winningLength: Int,
-    private val overflowAllowed: Boolean,
-    private val opening: Opening
+    private val overflowAllowed: Boolean
 ) {
     private val board = MutableList(boardSize) { MutableList<Piece?>(boardSize) { null } }
 
-    private var openingFinished =
-        when (opening) {
-            Opening.FREESTYLE -> true
-        }
+    fun placePiece(piece: Piece, position: Position): Boolean {
+        require(board[position.row][position.column] == null)
 
-    fun makeMove(piece: Piece, position: Position): Boolean {
-        require(board[position.line][position.column] == null)
-
-        board[position.line][position.column] = piece
+        board[position.row][position.column] = piece
         return checkWin(piece, position)
     }
 
-    private fun checkWin(piece: Piece, position: Position): Boolean {
-        val directions =
-            arrayOf(
-                Pair(-1, -1), // Down Left
-                Pair(-1, 1),  // Ttop Left
-                Pair(1, -1),  // Down Right
-                Pair(1, 1),   // Top Right
-                Pair(1, 0),   // Left Horizontal
-                Pair(-1, 0),  // Right Horizontal
-                Pair(0, -1),  // Down Vertical
-                Pair(0, 1)    // Top Vertocal
-            )
+    private fun checkWin(piece: Piece, position: Position): Boolean =
+        checkVerticalWin(piece, position) ||
+                checkHorizontalWin(piece, position) ||
+                checkBackslashWin(piece, position) ||
+                checkSlashWin(piece, position)
 
-        for (direction in directions) {
-            var winningPieces = 0
-            var row = position.line
-            var column = position.column
+    private fun checkVerticalWin(piece: Piece, position: Position): Boolean {
+        var winningPieces = 0
+        val minVertical = max(0, (position.row - winningLength + 1))
+        val maxVertical = min(boardSize - 1, position.row + winningLength - 1)
 
-            while (row in 0 until boardSize && column in 0 until boardSize) {
-                winningPieces = if (board[row][column] == piece) winningPieces + 1 else 0
-
-                if (winningPieces == winningLength) return true
-
-                row += direction.first
-                column += direction.second
+        for (i in minVertical..maxVertical) {
+            if (board[i][position.column] == piece) winningPieces++
+            else {
+                if (overflowAllowed && winningPieces >= winningLength || winningPieces == winningLength) return true
             }
         }
+        println(winningPieces)
+        return overflowAllowed && winningPieces >= winningLength || winningPieces == winningLength
+    }
 
-        return false
+    private fun checkHorizontalWin(piece: Piece, position: Position): Boolean {
+        var winningPieces = 0
+        val minHorizontal = max(0, (position.column - winningLength + 1))
+        val maxHorizontal = min(boardSize - 1, position.column + winningLength - 1)
+
+        for (i in minHorizontal..maxHorizontal) {
+            if (board[position.row][i] == piece) winningPieces++
+            else {
+                if (overflowAllowed && winningPieces >= winningLength || winningPieces == winningLength) return true
+            }
+        }
+        println(winningPieces)
+        return overflowAllowed && winningPieces >= winningLength || winningPieces == winningLength
+    }
+
+    // Backslash = \
+    private fun checkBackslashWin(piece: Piece, position: Position): Boolean {
+        var winningPieces = 0
+        val min = max(0, max(position.column - winningLength + 1, position.row - winningLength + 1))
+        val max = min(boardSize - 1, min(position.column + winningLength - 1, position.row + winningLength - 1))
+
+        for (i in min..max) {
+            if (board[i][i] == piece) winningPieces++
+            else {
+                if (overflowAllowed && winningPieces >= winningLength || winningPieces == winningLength) return true
+            }
+        }
+        println(winningPieces)
+        return overflowAllowed && winningPieces >= winningLength || winningPieces == winningLength
+    }
+
+    // Slash = /
+    private fun checkSlashWin(piece: Piece, position: Position): Boolean {
+        var winningPieces = 0
+        val min = max(0, max(position.column - winningLength + 1, position.row - winningLength + 1))
+        val max = min(boardSize - 1, min(position.column + winningLength - 1, position.row + winningLength - 1))
+
+        var column = max
+        for (row in min..max) {
+            if (board[row][column] == piece) winningPieces++
+            else {
+                if (overflowAllowed && winningPieces >= winningLength || winningPieces == winningLength) return true
+            }
+
+            column--
+        }
+        println(winningPieces)
+        return overflowAllowed && winningPieces >= winningLength || winningPieces == winningLength
     }
 }

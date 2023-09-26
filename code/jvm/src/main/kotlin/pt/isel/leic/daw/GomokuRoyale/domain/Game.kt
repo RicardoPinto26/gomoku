@@ -9,5 +9,5 @@ data class Game(
         private val blackPlayer: User,
         private val settings: GameSettings
 ) {
-    private val board: Board = Board(settings.boardSize, settings.winningLength, settings.overflowAllowed,Opening.FREESTYLE)
+    private val board: Board = Board(settings.boardSize, settings.winningLength, settings.overflowAllowed)
 }
