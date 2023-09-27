@@ -36,6 +36,9 @@ dependencies {
 	// To get password encode
 	implementation("org.springframework.security:spring-security-core:6.0.2")
 
+	// Use the Kotlin test library.
+	testImplementation("org.jetbrains.kotlin:kotlin-test")
+
 }
 
 tasks.withType<KotlinCompile> {
