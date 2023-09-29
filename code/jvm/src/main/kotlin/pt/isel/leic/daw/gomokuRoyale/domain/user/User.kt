@@ -63,7 +63,6 @@ data class User(
 
         fun isSafePassword(password: String) =
             password.length >= 8 && password.any { it.isDigit() } && password.any { it.isUpperCase() } && password.any { it.isLowerCase() }
-
     }
 
     init {
@@ -94,5 +93,4 @@ data class User(
         require(validEmail(email)) { "Invalid email: $email" }
         require(isSafePassword(password)) { "Insecure password" }
     }
-
 }

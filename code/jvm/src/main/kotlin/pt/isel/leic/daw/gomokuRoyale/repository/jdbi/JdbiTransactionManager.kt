@@ -4,7 +4,6 @@ import org.jdbi.v3.core.Jdbi
 import pt.isel.leic.daw.gomokuRoyale.repository.Transaction
 import pt.isel.leic.daw.gomokuRoyale.repository.TransactionManager
 
-
 class JdbiTransactionManager(
     private val jdbi: Jdbi
 ) : TransactionManager {

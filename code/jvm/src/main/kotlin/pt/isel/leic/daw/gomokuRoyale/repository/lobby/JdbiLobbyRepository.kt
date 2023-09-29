@@ -24,20 +24,17 @@ class JdbiLobbyRepository(private val handle: Handle) : JdbiLobbyInterface {
             .mapTo<Int>()
             .one()
 
-
     override fun getUserLobbys(userId: Int): List<User> =
         handle.createQuery("select * from lobbys where user_id = :user_id")
             .bind("user_id", userId)
             .mapTo<User>()
             .toList()
 
-
     override fun getLobbyByOpening(opening: String): Lobby? =
         handle.createQuery("select * from lobbys where opening = :opening")
             .bind("opening", opening)
             .mapTo<Lobby>()
             .firstOrNull()
-
 
     override fun getLobbyByVariant(variant: String): Lobby? =
         handle.createQuery("select * from lobbys where variant = :variant")

@@ -25,42 +25,57 @@ class BoardDraw internal constructor(
     }
 }
 
-class BoardRun internal constructor(
+data class BoardRun internal constructor(
     private val winningLength: Int,
     private val overflowAllowed: Boolean,
+    private val threeAndThree: Boolean,
+    private val fourAndFour: Boolean,
     override val internalBoard: List<List<Piece?>>
 ) : Board {
 
     constructor(
         boardSize: Int,
         winningLength: Int,
-        overflowAllowed: Boolean
-    ) : this(winningLength, overflowAllowed, List(boardSize) { List(boardSize) { null } })
+        overflowAllowed: Boolean,
+        threeAndThree: Boolean,
+        fourAndFour: Boolean,
+    ) : this(winningLength, overflowAllowed, threeAndThree, fourAndFour, List(boardSize) { List(boardSize) { null } })
 
     override fun placePiece(piece: Piece, position: Position): Board {
         require(internalBoard[position.row][position.column] == null)
 
+        if(threeAndThree || fourAndFour) {
+            // CHECK THREE AND THREE
+            if(fourAndFour) {
+                // CHECK FOUR AND FOUR
+                TODO()
+            }
+        }
+
         val newBoard = internalBoard.mapIndexed { row, list ->
-            if(row == position.row)
+            if (row == position.row) {
                 list.mapIndexed { column, elem ->
-                    if(column == position.column)
+                    if (column == position.column) {
                         piece
-                    else elem
+                    } else {
+                        elem
+                    }
                 }
-            else list
+            } else {
+                list
+            }
         }
         return when {
             checkWin(newBoard, piece, position) -> BoardWin(newBoard)
             newBoard.all { it.all { piece -> piece != null } } -> BoardDraw(newBoard)
-            else -> BoardRun(winningLength, overflowAllowed, newBoard)
+            else -> this.copy(internalBoard = newBoard)
         }
-
     }
 
     private fun checkWin(board: List<List<Piece?>>, piece: Piece, position: Position): Boolean =
         checkVerticalWin(board, piece, position) ||
-                checkHorizontalWin(board, piece, position) ||
-                checkSlashAndBackslashWin(board, piece, position)
+            checkHorizontalWin(board, piece, position) ||
+            checkSlashAndBackslashWin(board, piece, position)
 
     private fun checkVerticalWin(board: List<List<Piece?>>, piece: Piece, position: Position): Boolean {
         var winningPieces = 0
@@ -68,8 +83,9 @@ class BoardRun internal constructor(
         val maxVertical = min(board.size - 1, position.row + winningLength - 1)
 
         for (i in minVertical..maxVertical) {
-            if (board[i][position.column] == piece) winningPieces++
-            else {
+            if (board[i][position.column] == piece) {
+                winningPieces++
+            } else {
                 if (overflowAllowed && winningPieces >= winningLength || winningPieces == winningLength) return true
             }
         }
@@ -82,8 +98,9 @@ class BoardRun internal constructor(
         val maxHorizontal = min(board.size - 1, position.column + winningLength - 1)
 
         for (i in minHorizontal..maxHorizontal) {
-            if (board[position.row][i] == piece) winningPieces++
-            else {
+            if (board[position.row][i] == piece) {
+                winningPieces++
+            } else {
                 if (overflowAllowed && winningPieces >= winningLength || winningPieces == winningLength) return true
             }
         }
@@ -94,16 +111,17 @@ class BoardRun internal constructor(
         var winningPieces = 0
         val min = max(0, max(position.column - winningLength + 1, position.row - winningLength + 1))
         val max = min(board.size - 1, min(position.column + winningLength - 1, position.row + winningLength - 1))
-        for(direction in -1..1 step 2) {
+        for (direction in -1..1 step 2) {
             var column = if (direction == 1) min else max
             for (row in min..max) {
-                if (board[row][column] == piece) winningPieces++
-                else {
+                if (board[row][column] == piece) {
+                    winningPieces++
+                } else {
                     if (overflowAllowed && winningPieces >= winningLength || winningPieces == winningLength) return true
                 }
                 column += direction
             }
-            if(overflowAllowed && winningPieces >= winningLength || winningPieces == winningLength) return true
+            if (overflowAllowed && winningPieces >= winningLength || winningPieces == winningLength) return true
         }
         return false
     }

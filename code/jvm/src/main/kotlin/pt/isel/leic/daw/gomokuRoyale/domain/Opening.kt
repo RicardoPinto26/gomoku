@@ -5,19 +5,18 @@ package pt.isel.leic.daw.gomokuRoyale.domain
  */
 enum class Opening(val movesList: List<OpeningMove>) {
 
-    FREESTYLE(listOf(OpeningMove.FINISH)),
+    FREESTYLE(emptyList()),
     SWAP(
         listOf(
             OpeningMove.PLACE_BLACK,
             OpeningMove.PLACE_BLACK,
             OpeningMove.PLACE_WHITE,
             OpeningMove.CHANGE_PLAYER,
-            OpeningMove.CHOOSE_COLOR,
-            OpeningMove.FINISH
+            OpeningMove.CHOOSE_COLOR
         )
     );
 
     enum class OpeningMove {
-        PLACE_WHITE, PLACE_BLACK, CHOOSE_COLOR, CHANGE_PLAYER, FINISH
+        PLACE_WHITE, PLACE_BLACK, CHOOSE_COLOR, CHANGE_PLAYER
     }
 }

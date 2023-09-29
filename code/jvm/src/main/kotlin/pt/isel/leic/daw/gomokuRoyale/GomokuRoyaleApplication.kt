@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class GomokuRoyaleApplication
 
 fun main(args: Array<String>) {
-	runApplication<GomokuRoyaleApplication>(*args)
+    runApplication<GomokuRoyaleApplication>(*args)
 }

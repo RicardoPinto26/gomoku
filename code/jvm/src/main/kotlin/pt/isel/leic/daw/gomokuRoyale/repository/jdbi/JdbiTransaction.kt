@@ -9,7 +9,7 @@ class JdbiTransaction(
 ) : Transaction {
 
     override val usersRepository: JdbiUsersRepository = JdbiUsersRepository(handle)
-    //override val tokenRepository: JdbiTokensRepository = JdbiTokensRepository(handle)
+    // override val tokenRepository: JdbiTokensRepository = JdbiTokensRepository(handle)
 
     override fun rollback() {
         handle.rollback()

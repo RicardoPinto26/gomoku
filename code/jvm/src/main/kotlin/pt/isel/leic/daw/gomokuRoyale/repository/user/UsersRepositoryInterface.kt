@@ -20,5 +20,4 @@ interface UsersRepositoryInterface {
 
           fun loginUserByEmail(email: String, password: String): User
      */
-
 }

@@ -19,7 +19,6 @@ class JdbiUsersRepository(private val handle: Handle) : UsersRepositoryInterface
             .mapTo<Int>()
             .one()
 
-
     override fun getUserByEmail(email: String): User? =
         handle.createQuery("select * from users where email = :email")
             .bind("email", email)
@@ -30,7 +29,6 @@ class JdbiUsersRepository(private val handle: Handle) : UsersRepositoryInterface
         handle.createQuery("select * from users")
             .mapTo<User>()
             .toList()
-
 
     override fun getUserByUsername(username: String): User? =
         handle.createQuery("select * from users where username = :username")
@@ -43,7 +41,6 @@ class JdbiUsersRepository(private val handle: Handle) : UsersRepositoryInterface
             .bind("username", username)
             .mapTo(Boolean::class.java)
             .first()
-
 
     override fun isUserStoredByEmail(email: String): Boolean =
         handle.createQuery("select exists (select 1 from users where email = :email")
