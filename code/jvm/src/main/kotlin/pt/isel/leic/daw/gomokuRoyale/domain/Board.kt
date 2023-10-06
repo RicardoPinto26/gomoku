@@ -1,18 +1,20 @@
 package pt.isel.leic.daw.gomokuRoyale.domain
 
+import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 import kotlin.math.max
 import kotlin.math.min
 
 sealed interface Board {
     val internalBoard: List<List<Piece?>>
 
-    fun placePiece(piece: Piece, position: Position): Board
+    fun placePiece(piece: Piece, position: Position, user: User): Board
 }
 
 class BoardWin internal constructor(
-    override val internalBoard: List<List<Piece?>>
+    override val internalBoard: List<List<Piece?>>,
+    val winner: Player
 ) : Board {
-    override fun placePiece(piece: Piece, position: Position): Board {
+    override fun placePiece(piece: Piece, position: Position, user: User): Board {
         throw IllegalStateException("This game has already finished with a win.")
     }
 }
@@ -20,7 +22,7 @@ class BoardWin internal constructor(
 class BoardDraw internal constructor(
     override val internalBoard: List<List<Piece?>>
 ) : Board {
-    override fun placePiece(piece: Piece, position: Position): Board {
+    override fun placePiece(piece: Piece, position: Position, user: User): Board {
         throw IllegalStateException("This game has already finished with a draw.")
     }
 }
@@ -28,29 +30,24 @@ class BoardDraw internal constructor(
 data class BoardRun internal constructor(
     private val winningLength: Int,
     private val overflowAllowed: Boolean,
-    private val threeAndThree: Boolean,
-    private val fourAndFour: Boolean,
-    override val internalBoard: List<List<Piece?>>
+    private val player1 : Player,
+    private val player2 : Player,
+    val turn: Player,
+    override val internalBoard: List<List<Piece?>>,
 ) : Board {
 
     constructor(
         boardSize: Int,
         winningLength: Int,
         overflowAllowed: Boolean,
-        threeAndThree: Boolean,
-        fourAndFour: Boolean,
-    ) : this(winningLength, overflowAllowed, threeAndThree, fourAndFour, List(boardSize) { List(boardSize) { null } })
+        turn: Player,
+        player1 : Player,
+        player2 : Player,
+    ) : this(winningLength, overflowAllowed, turn, player1, player2, List(boardSize) { List(boardSize) { null } })
 
-    override fun placePiece(piece: Piece, position: Position): Board {
+    override fun placePiece(piece: Piece, position: Position, user: User): Board {
+        require(user == turn.user)
         require(internalBoard[position.row][position.column] == null)
-
-        if(threeAndThree || fourAndFour) {
-            // CHECK THREE AND THREE
-            if(fourAndFour) {
-                // CHECK FOUR AND FOUR
-                TODO()
-            }
-        }
 
         val newBoard = internalBoard.mapIndexed { row, list ->
             if (row == position.row) {
@@ -66,9 +63,9 @@ data class BoardRun internal constructor(
             }
         }
         return when {
-            checkWin(newBoard, piece, position) -> BoardWin(newBoard)
+            checkWin(newBoard, piece, position) -> BoardWin(newBoard, turn)
             newBoard.all { it.all { piece -> piece != null } } -> BoardDraw(newBoard)
-            else -> this.copy(internalBoard = newBoard)
+            else -> this.copy(internalBoard = newBoard, turn = if(turn == player1) player2 else player1)
         }
     }
 

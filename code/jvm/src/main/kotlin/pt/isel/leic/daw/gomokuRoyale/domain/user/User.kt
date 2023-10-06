@@ -2,6 +2,10 @@ package pt.isel.leic.daw.gomokuRoyale.domain.user
 
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
+import kotlin.math.pow
+
+const val RATING_FACTOR = 32
+const val C = 400
 
 /**
  * User entity
@@ -10,7 +14,7 @@ import java.security.MessageDigest
  * @property username name of the user
  * @property email email of the user
  * @property gamesPlayed number os games the user as played
- * @property points points gained by the user
+ * @property rating the user's rating
  * @property hashPassword the users password (encoded to sha265)
  */
 data class User(
@@ -19,7 +23,7 @@ data class User(
     private val email: String,
     private val hashPassword: String,
     private val gamesPlayed: Int = 0,
-    private val points: Int = 0
+    val rating: Double = 800.0
 ) {
     companion object {
         private const val EMAIL_REGEX = "^(.+)@(.+)$"
@@ -92,5 +96,12 @@ data class User(
         require(validName(name)) { "Invalid username: $name" }
         require(validEmail(email)) { "Invalid email: $email" }
         require(isSafePassword(password)) { "Insecure password" }
+    }
+
+    fun calculateNewRating(result: Double, opponentRating: Double): Double {
+        val qa = 10.0.pow(rating/C)
+        val qb = 10.0.pow(opponentRating/C)
+        val expectedScore = qa / (qa + qb)
+        return rating + RATING_FACTOR * (result - expectedScore)
     }
 }
