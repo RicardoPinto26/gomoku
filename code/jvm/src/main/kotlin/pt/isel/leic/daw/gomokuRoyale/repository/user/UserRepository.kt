@@ -1,10 +1,12 @@
 package pt.isel.leic.daw.gomokuRoyale.repository.user
 
+import kotlinx.datetime.Instant
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.kotlin.mapTo
+import pt.isel.leic.daw.gomokuRoyale.domain.user.Token
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 
-class JdbiUsersRepository(private val handle: Handle) : UsersRepositoryInterface {
+class UserRepository(private val handle: Handle) : UsersRepositoryInterface {
 
     override fun createUser(username: String, email: String, password: String): Int =
         handle.createUpdate(
@@ -47,4 +49,41 @@ class JdbiUsersRepository(private val handle: Handle) : UsersRepositoryInterface
             .bind("email", email)
             .mapTo(Boolean::class.java)
             .first()
+
+    override fun createToken(userId: Int, token: Token): Int {
+        /*val deletions = handle.createUpdate(
+            """
+            delete from tokens where user_id = :user_id
+            """
+        )
+            .bind("user_id", userId)
+            .execute()
+         */
+
+        return handle.createUpdate(
+            """
+            insert into tokens (user_id, token, last_used_at) values (:user_id, :token, :last_used_at)
+            """
+        )
+            .bind("user_id", userId)
+            .bind("token", token.token)
+            .bind("last_used_at", token.lastUsedAt)
+            .executeAndReturnGeneratedKeys()
+            .mapTo<Int>()
+            .one()
+    }
+
+
+    override fun updateTokenLastUsedAt(token: Token, now: Instant) {
+        handle.createUpdate(
+            """
+                update tokens
+                set last_used_at = :last_used_at
+                where token = :token
+            """.trimIndent()
+        )
+            .bind("last_used_at", now.epochSeconds)
+            .bind("token", token.token)
+            .execute()
+    }
 }

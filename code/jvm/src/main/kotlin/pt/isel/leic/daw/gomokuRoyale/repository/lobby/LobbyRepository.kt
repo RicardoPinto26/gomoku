@@ -6,7 +6,7 @@ import org.jdbi.v3.core.kotlin.mapTo
 import pt.isel.leic.daw.gomokuRoyale.domain.Lobby
 import pt.isel.leic.daw.gomokuRoyale.domain.Opening
 
-class JdbiLobbyRepository(private val handle: Handle) : JdbiLobbyInterface {
+class LobbyRepository(private val handle: Handle) : LobbyRepositoryInterface {
 
     override fun createLobby(userId: Int, gridSize: Int, opening: Opening, variant: String, pointsMargin: Int): Int =
         handle.createUpdate(
@@ -23,6 +23,18 @@ class JdbiLobbyRepository(private val handle: Handle) : JdbiLobbyInterface {
             .executeAndReturnGeneratedKeys()
             .mapTo<Int>()
             .one()
+
+    override  fun joinLobby(userId: Int, lobbyId: Int): Int =
+        handle.createUpdate(
+            """
+                update lobbys
+                set join_user_id = :userId
+                where id = :lobbyId
+                """
+        )
+            .bind("userId", userId)
+            .bind("lobbyId", lobbyId)
+            .execute()
 
     override fun getUserLobbys(userId: Int): List<User> =
         handle.createQuery("select * from lobbys where user_id = :user_id")

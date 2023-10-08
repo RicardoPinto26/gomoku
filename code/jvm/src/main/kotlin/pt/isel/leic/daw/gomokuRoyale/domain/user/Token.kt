@@ -1,17 +1,19 @@
 package pt.isel.leic.daw.gomokuRoyale.domain.user
 
-import java.util.Date
+import java.util.*
 
 /**
  * Token entity
  * @property createdAt date of the token creation
  * @property lastUsedAt date of the token last usage
  * @property userID user's unique identifier
+ * @property token the token
  */
 data class Token(
-    private val createdAt: Date,
-    private val lastUsedAt: Date,
-    private val userID: Int
+    val createdAt: Date,
+    val lastUsedAt: Date,
+    val userID: Int,
+    val token: String
 ) {
     companion object {
 
@@ -26,6 +28,11 @@ data class Token(
         fun validDates(createDate: Date, lastUsedDate: Date) = lastUsedDate > createDate
     }
     init {
-        require(validDates(createdAt, lastUsedAt)) { "The token last used date must be more recent than the creation date" }
+        require(
+            validDates(
+                createdAt,
+                lastUsedAt
+            )
+        ) { "The token last used date must be more recent than the creation date" }
     }
 }

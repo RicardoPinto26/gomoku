@@ -4,8 +4,10 @@ import org.apache.catalina.User
 import pt.isel.leic.daw.gomokuRoyale.domain.Lobby
 import pt.isel.leic.daw.gomokuRoyale.domain.Opening
 
-interface JdbiLobbyInterface {
+interface LobbyRepositoryInterface {
     fun createLobby(userId: Int, gridSize: Int, opening: Opening, variant: String, pointsMargin: Int): Int
+
+    fun joinLobby(userId: Int, lobbyId: Int): Int
 
     fun getUserLobbys(userId: Int): List<User>
 

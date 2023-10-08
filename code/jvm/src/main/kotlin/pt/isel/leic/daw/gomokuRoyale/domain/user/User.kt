@@ -18,10 +18,10 @@ const val C = 400
  * @property hashPassword the users password (encoded to sha265)
  */
 data class User(
-    private val id: Int,
-    private val username: String,
+    val id: Int,
+    val username: String,
     private val email: String,
-    private val hashPassword: String,
+    val hashPassword: String,
     private val gamesPlayed: Int = 0,
     val rating: Double = 800.0
 ) {
@@ -75,7 +75,7 @@ data class User(
         require(validId(id)) { "Invalid user id: $id" }
     }
 
-    fun bytesToHex(bytes: ByteArray): String {
+    private fun bytesToHex(bytes: ByteArray): String {
         val hexChars = "0123456789ABCDEF"
         val hex = StringBuilder(2 * bytes.size)
         for (i in bytes.indices) {
@@ -92,10 +92,19 @@ data class User(
         return bytesToHex(hashedBytes)
     }
 
-    fun checkUserCredentials(name: String, email: String, password: String) {
+    fun checkPassword(password: String, hashedPassword: String): Boolean {
+        return hashPassword(password) == hashedPassword
+    }
+
+    fun checkUserCredentialsRegister(name: String, email: String, password: String) {
         require(validName(name)) { "Invalid username: $name" }
         require(validEmail(email)) { "Invalid email: $email" }
         require(isSafePassword(password)) { "Insecure password" }
+    }
+
+    fun checkUserCredentialsLogin(name: String?, email: String?, password: String) {
+        require(name != null && email != null) { "Invalid credentials" }
+        require(password.isNotEmpty()) { "Invalid credentials" }
     }
 
     fun calculateNewRating(result: Double, opponentRating: Double): Double {

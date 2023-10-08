@@ -20,13 +20,14 @@ create table tokens
     token        VARCHAR(256) primary key,
     user_id      INT REFERENCES users (id),
     created_at   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    last_used_at TIMESTAMP NOT NULL
+    last_used_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 create table lobbys
 (
     id              SERIAL PRIMARY KEY,
     creator_user_id INT         NOT NULL REFERENCES users (id),
+    join_user_id    INT         REFERENCES users (id) DEFAULT NULL,
     grid_size       INT         NOT NULL,
     opening         VARCHAR(50) NOT NULL,
     variant         VARCHAR(50) NOT NULL,
@@ -44,14 +45,14 @@ create table games
     created_at      TIMESTAMP                 NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
-create table game_State
+create table game_state
 (
     id      SERIAL PRIMARY KEY,
     game_id INT REFERENCES games (id) NOT NULL,
     turn    INT REFERENCES users (id) NOT NULL,
-    winner  INT REFERENCES users (id),
-    state   VARCHAR(30) CHECK ( state IN ('AWAITING FIRST MOVE', 'IN_PROGRESS', 'FINISHED') )
-
+    winner  INT REFERENCES users (id) DEFAULT NULL,
+    board jsonb NOT NULL,
+    state   VARCHAR(30) CHECK ( state IN ('AWAITING FIRST MOVE', 'IN_PROGRESS', 'FINISHED')) DEFAULT 'AWAITING FIRST MOVE'
 );
 
 create table moves

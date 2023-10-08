@@ -1,5 +1,7 @@
 package pt.isel.leic.daw.gomokuRoyale.repository.user
 
+import kotlinx.datetime.Instant
+import pt.isel.leic.daw.gomokuRoyale.domain.user.Token
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 
 interface UsersRepositoryInterface {
@@ -14,6 +16,10 @@ interface UsersRepositoryInterface {
     fun getUserByEmail(email: String): User?
 
     fun getAllUsers(): List<User>
+
+    fun createToken(userId: Int, token: Token): Int
+
+    fun updateTokenLastUsedAt(token: Token, now: Instant): Unit
 
     /*
           fun loginUserByUsername(username: String, password: String): User
