@@ -1,5 +1,6 @@
 package pt.isel.leic.daw.gomokuRoyale.services.user
 
+import org.springframework.stereotype.Component
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 import pt.isel.leic.daw.gomokuRoyale.repository.jdbi.JdbiTransactionManager
 import pt.isel.leic.daw.gomokuRoyale.services.dtos.user.RegisterInputDTO
@@ -7,6 +8,7 @@ import pt.isel.leic.daw.gomokuRoyale.services.dtos.user.RegisterOutputDTO
 import pt.isel.leic.daw.gomokuRoyale.services.exceptions.UserAlreadyExistsException
 import pt.isel.leic.daw.gomokuRoyale.services.exceptions.UserInvalidCredentialsException
 
+@Component
 class UsersService(
     private val transactionManager: JdbiTransactionManager,
     private val userDomain: User
