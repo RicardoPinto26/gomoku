@@ -12,7 +12,7 @@ interface UserServiceInterface {
     @return RegisterOutputDTO
      */
 
-    fun registerUser(user: RegisterInputDTO): RegisterOutputDTO
+    fun registerUser(username: String, email: String, password: String): UserCreationResult
 
     /**
      *  Logs in a user

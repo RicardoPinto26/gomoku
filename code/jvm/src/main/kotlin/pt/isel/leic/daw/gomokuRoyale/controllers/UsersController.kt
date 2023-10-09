@@ -11,19 +11,36 @@ class UsersController(
     private val userService: UsersService
 ) {
 
-    @PostMapping("/create")
-    fun createUser() {
-        TODO()
+    @PostMapping(Uris.Users.CREATE)
+    fun createUser(@RequestBody input: UserCreateInputModel): ResponseEntity<*> {
+        return when (val res = userService.registerUser(input.username, input.email, input.password)) {
+            is Success -> ResponseEntity.status(201)
+                .header(
+                    "Location",
+                    Uris.Users.byId(res.value).toASCIIString()
+                ).build<Unit>()
+
+            is Failure -> when (res.value) {
+                UserCreationError.InsecurePassword -> Problem.response(400, Problem.insecurePassword)
+                UserCreationError.UserAlreadyExists -> Problem.response(409, Problem.userAlreadyExists)
+            }
+        }
     }
 
-    @GetMapping("/tokens")
-    fun getTokens() {
-        TODO()
-    }
+    @PostMapping(Uris.Users.TOKEN)
+    fun createToken(
+        @RequestBody input: UserCreateTokenInputModel
+    ): ResponseEntity<*> {
+        return when (val res = userService.createToken(input.username, input.password)) {
+            is Success ->
+                ResponseEntity.status(201)
+                    .body(UserCreateTokenOutputModel(res.value.tokenValue))
 
-    @PostMapping("/tokens")
-    fun createToken() {
-        TODO()
+            is Failure -> when (res.value) {
+                TokenCreationError.UserOrPasswordAreInvalid ->
+                    Problem.response(400, Problem.userOrPasswordAreInvalid)
+            }
+        }
     }
 
     @PostMapping(Uris.Users.LOGOUT)

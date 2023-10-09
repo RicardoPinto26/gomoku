@@ -37,22 +37,22 @@ class UsersService(
     private val clock: Clock
 ) : UserServiceInterface {
 
-    override fun registerUser(user : RegisterInputDTO): RegisterOutputDTO {
-        userDomain.checkUserCredentialsRegister(user.username, user.email, user.password)
-        val hashedPassword = userDomain.hashPassword(user.password)
+    override fun registerUser(username: String, email: String, password: String): UserCreationResult {
+        userDomain.checkUserCredentialsRegister(username, email, password)
+        val hashedPassword = userDomain.hashPassword(password)
 
         return transactionManager.run {
             val userRepo = it.usersRepository
-            if (userRepo.isUserStoredByUsername(user.username)) {
-                throw UserAlreadyExistsException("User with username ${user.username} already exists")
+            if (userRepo.isUserStoredByUsername(username)) {
+                failure(UserCreationError.UserAlreadyExists)
             }
-            if(userRepo.isUserStoredByEmail(user.email)) {
-                throw UserAlreadyExistsException("User with email ${user.email} already exists")
+            if (userRepo.isUserStoredByEmail(email)) {
+                failure(UserCreationError.UserAlreadyExists)
             } else {
-                userRepo.createUser(user.username, user.email, hashedPassword)
+                val id = userRepo.createUser(username, email, hashedPassword)
+                success(id)
             }
         }
-        return RegisterOutputDTO(id, user.username)
     }
 
     override fun loginUser(username: String?, email: String?, password: String): User {
