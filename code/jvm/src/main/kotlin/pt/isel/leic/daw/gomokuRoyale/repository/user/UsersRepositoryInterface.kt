@@ -1,7 +1,8 @@
 package pt.isel.leic.daw.gomokuRoyale.repository.user
 
 import kotlinx.datetime.Instant
-import pt.isel.leic.daw.gomokuRoyale.domain.user.Token
+import pt.isel.leic.daw.gomokuRoyale.domain.token.Token
+import pt.isel.leic.daw.gomokuRoyale.domain.token.TokenValidationInfo
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 
 interface UsersRepositoryInterface {
@@ -17,9 +18,13 @@ interface UsersRepositoryInterface {
 
     fun getAllUsers(): List<User>
 
-    fun createToken(userId: Int, token: Token): Int
+    fun createToken(userId: Int, token: Token, maxTokens: Int): Int
 
     fun updateTokenLastUsedAt(token: Token, now: Instant): Unit
+
+    fun getTokenByTokenValidationInfo(tokenValidationInfo: TokenValidationInfo): Pair<User, Token>?
+
+    fun removeTokenByValidationInfo(tokenValidationInfo: TokenValidationInfo): Int
 
     /*
           fun loginUserByUsername(username: String, password: String): User

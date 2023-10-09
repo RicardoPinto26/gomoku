@@ -10,13 +10,25 @@ data class Game internal constructor(
 ) {
 
     constructor(user1: User, user2: User, settings: GameSettings) :
-            this(user1, user2, settings, BoardRun(settings.boardSize, settings.winningLength, settings.overflowAllowed, BlackPlayer(user1), BlackPlayer(user1), BlackPlayer(user2)))
+            this(
+                user1,
+                user2,
+                settings,
+                BoardRun(
+                    settings.boardSize,
+                    settings.winningLength,
+                    settings.overflowAllowed,
+                    BlackPlayer(user1),
+                    BlackPlayer(user1),
+                    BlackPlayer(user2)
+                )
+            )
 
     private fun calculateUser(user: User, board: Board, otherUser: User): User =
-        when(board) {
+        when (board) {
             is BoardRun -> user
             is BoardWin -> {
-                val outcome = if(user == board.winner.user) 1.0 else 0.0
+                val outcome = if (user == board.winner.user) 1.0 else 0.0
                 user.copy(rating = user.calculateNewRating(outcome, otherUser.rating))
             }
 

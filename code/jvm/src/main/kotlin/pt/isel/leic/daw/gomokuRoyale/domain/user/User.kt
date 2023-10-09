@@ -1,7 +1,5 @@
 package pt.isel.leic.daw.gomokuRoyale.domain.user
 
-import java.nio.charset.StandardCharsets
-import java.security.MessageDigest
 import kotlin.math.pow
 
 const val RATING_FACTOR = 32
@@ -20,9 +18,9 @@ const val C = 400
 data class User(
     val id: Int,
     val username: String,
-    private val email: String,
+    val email: String,
     val hashPassword: String,
-    private val gamesPlayed: Int = 0,
+    val gamesPlayed: Int = 0,
     val rating: Double = 800.0
 ) {
     companion object {
@@ -75,41 +73,10 @@ data class User(
         require(validId(id)) { "Invalid user id: $id" }
     }
 
-    private fun bytesToHex(bytes: ByteArray): String {
-        val hexChars = "0123456789ABCDEF"
-        val hex = StringBuilder(2 * bytes.size)
-        for (i in bytes.indices) {
-            val b = bytes[i].toInt() and 0xFF
-            hex.append(hexChars[b.ushr(4)])
-            hex.append(hexChars[b and 0x0F])
-        }
-        return hex.toString()
-    }
-
-    fun hashPassword(password: String): String {
-        val messageDigest = MessageDigest.getInstance("SHA-256")
-        val hashedBytes = messageDigest.digest(password.toByteArray(StandardCharsets.UTF_8))
-        return bytesToHex(hashedBytes)
-    }
-
-    fun checkPassword(password: String, hashedPassword: String): Boolean {
-        return hashPassword(password) == hashedPassword
-    }
-
-    fun checkUserCredentialsRegister(name: String, email: String, password: String) {
-        require(validName(name)) { "Invalid username: $name" }
-        require(validEmail(email)) { "Invalid email: $email" }
-        require(isSafePassword(password)) { "Insecure password" }
-    }
-
-    fun checkUserCredentialsLogin(name: String?, email: String?, password: String) {
-        require(name != null && email != null) { "Invalid credentials" }
-        require(password.isNotEmpty()) { "Invalid credentials" }
-    }
 
     fun calculateNewRating(result: Double, opponentRating: Double): Double {
-        val qa = 10.0.pow(rating/C)
-        val qb = 10.0.pow(opponentRating/C)
+        val qa = 10.0.pow(rating / C)
+        val qb = 10.0.pow(opponentRating / C)
         val expectedScore = qa / (qa + qb)
         return rating + RATING_FACTOR * (result - expectedScore)
     }

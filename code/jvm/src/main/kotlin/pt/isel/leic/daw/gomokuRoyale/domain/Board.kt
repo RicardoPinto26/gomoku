@@ -30,8 +30,8 @@ class BoardDraw internal constructor(
 data class BoardRun internal constructor(
     private val winningLength: Int,
     private val overflowAllowed: Boolean,
-    private val player1 : Player,
-    private val player2 : Player,
+    private val player1: Player,
+    private val player2: Player,
     val turn: Player,
     override val internalBoard: List<List<Piece?>>,
 ) : Board {
@@ -41,8 +41,8 @@ data class BoardRun internal constructor(
         winningLength: Int,
         overflowAllowed: Boolean,
         turn: Player,
-        player1 : Player,
-        player2 : Player,
+        player1: Player,
+        player2: Player,
     ) : this(winningLength, overflowAllowed, turn, player1, player2, List(boardSize) { List(boardSize) { null } })
 
     override fun placePiece(piece: Piece, position: Position, user: User): Board {
@@ -65,14 +65,14 @@ data class BoardRun internal constructor(
         return when {
             checkWin(newBoard, piece, position) -> BoardWin(newBoard, turn)
             newBoard.all { it.all { piece -> piece != null } } -> BoardDraw(newBoard)
-            else -> this.copy(internalBoard = newBoard, turn = if(turn == player1) player2 else player1)
+            else -> this.copy(internalBoard = newBoard, turn = if (turn == player1) player2 else player1)
         }
     }
 
     private fun checkWin(board: List<List<Piece?>>, piece: Piece, position: Position): Boolean =
         checkVerticalWin(board, piece, position) ||
-            checkHorizontalWin(board, piece, position) ||
-            checkSlashAndBackslashWin(board, piece, position)
+                checkHorizontalWin(board, piece, position) ||
+                checkSlashAndBackslashWin(board, piece, position)
 
     private fun checkVerticalWin(board: List<List<Piece?>>, piece: Piece, position: Position): Boolean {
         var winningPieces = 0

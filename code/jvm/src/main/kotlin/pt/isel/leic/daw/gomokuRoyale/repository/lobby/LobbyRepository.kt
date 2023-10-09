@@ -24,7 +24,7 @@ class LobbyRepository(private val handle: Handle) : LobbyRepositoryInterface {
             .mapTo<Int>()
             .one()
 
-    override  fun joinLobby(userId: Int, lobbyId: Int): Int =
+    override fun joinLobby(userId: Int, lobbyId: Int): Int =
         handle.createUpdate(
             """
                 update lobbys

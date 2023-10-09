@@ -3,7 +3,8 @@ package pt.isel.leic.daw.gomokuRoyale.repository.user
 import kotlinx.datetime.Instant
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.kotlin.mapTo
-import pt.isel.leic.daw.gomokuRoyale.domain.user.Token
+import pt.isel.leic.daw.gomokuRoyale.domain.token.Token
+import pt.isel.leic.daw.gomokuRoyale.domain.token.TokenValidationInfo
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 
 class UserRepository(private val handle: Handle) : UsersRepositoryInterface {
@@ -50,15 +51,15 @@ class UserRepository(private val handle: Handle) : UsersRepositoryInterface {
             .mapTo(Boolean::class.java)
             .first()
 
-    override fun createToken(userId: Int, token: Token): Int {
-        /*val deletions = handle.createUpdate(
+    override fun createToken(userId: Int, token: Token, maxTokens: Int): Int {
+        val deletions = handle.createUpdate(
             """
             delete from tokens where user_id = :user_id
             """
         )
             .bind("user_id", userId)
             .execute()
-         */
+
 
         return handle.createUpdate(
             """
@@ -68,9 +69,7 @@ class UserRepository(private val handle: Handle) : UsersRepositoryInterface {
             .bind("user_id", userId)
             .bind("token", token.token)
             .bind("last_used_at", token.lastUsedAt)
-            .executeAndReturnGeneratedKeys()
-            .mapTo<Int>()
-            .one()
+            .execute()
     }
 
 
@@ -85,5 +84,54 @@ class UserRepository(private val handle: Handle) : UsersRepositoryInterface {
             .bind("last_used_at", now.epochSeconds)
             .bind("token", token.token)
             .execute()
+    }
+
+
+    override fun getTokenByTokenValidationInfo(tokenValidationInfo: TokenValidationInfo): Pair<User, Token>? =
+        handle.createQuery(
+            """
+                select u.id, username, email,  password, token, created_at, last_used_at
+                from users as u
+                inner join tokens as t
+                on u.id = t.user_id
+                where token = :validation_information
+            """
+        )
+            .bind("validation_information", tokenValidationInfo.validationInfo)
+            .mapTo<UserAndTokenModel>()
+            .singleOrNull()
+            ?.userAndToken
+
+
+    override fun removeTokenByValidationInfo(tokenValidationInfo: TokenValidationInfo): Int {
+        return handle.createUpdate(
+            """
+                delete from tokens
+                where token = :validation_information
+            """
+        )
+            .bind("validation_information", tokenValidationInfo.validationInfo)
+            .execute()
+    }
+
+    private data class UserAndTokenModel(
+        val id: Int,
+        val username: String,
+        val email: String,
+        val passwordValidation: String,
+        val tokenValidation: TokenValidationInfo,
+        val createdAt: Long,
+        val lastUsedAt: Long
+    ) {
+        val userAndToken: Pair<User, Token>
+            get() = Pair(
+                User(id, username, email, passwordValidation),
+                Token(
+                    Instant.fromEpochSeconds(createdAt),
+                    Instant.fromEpochSeconds(lastUsedAt),
+                    id,
+                    tokenValidation.validationInfo
+                )
+            )
     }
 }

@@ -1,6 +1,6 @@
-package pt.isel.leic.daw.gomokuRoyale.domain.user
+package pt.isel.leic.daw.gomokuRoyale.domain.token
 
-import java.util.*
+import kotlinx.datetime.Instant
 
 /**
  * Token entity
@@ -10,8 +10,8 @@ import java.util.*
  * @property token the token
  */
 data class Token(
-    val createdAt: Date,
-    val lastUsedAt: Date,
+    val createdAt: Instant,
+    val lastUsedAt: Instant,
     val userID: Int,
     val token: String
 ) {
@@ -25,8 +25,9 @@ data class Token(
          *
          * @return true if the name is valid, false if not
          */
-        fun validDates(createDate: Date, lastUsedDate: Date) = lastUsedDate > createDate
+        fun validDates(createDate: Instant, lastUsedDate: Instant) = lastUsedDate > createDate
     }
+
     init {
         require(
             validDates(

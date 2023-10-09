@@ -8,7 +8,13 @@ class LobbyService(
     private val lobbyDomain: Lobby
 ) : LobbyServiceInterface {
 
-    override fun createLobby(username: String, gridSize: Int, opening: String, variant: String, pointsMargin: Int): Int {
+    override fun createLobby(
+        username: String,
+        gridSize: Int,
+        opening: String,
+        variant: String,
+        pointsMargin: Int
+    ): Int {
         TODO()
     }
 

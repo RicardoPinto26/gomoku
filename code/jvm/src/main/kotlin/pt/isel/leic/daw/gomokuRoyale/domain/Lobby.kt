@@ -1,7 +1,7 @@
 package pt.isel.leic.daw.gomokuRoyale.domain
 
-import java.util.Date
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
+import java.util.*
 
 data class Lobby(
     private val game: Game? = null,
@@ -17,7 +17,7 @@ data class Lobby(
 
         return copy(user2 = user, game = Game(user1, user, settings))
     }
-    
+
     fun placePiece(piece: Piece, position: Position, user: User): Lobby {
         require(user == user1 || user == user2)
         require(game != null)

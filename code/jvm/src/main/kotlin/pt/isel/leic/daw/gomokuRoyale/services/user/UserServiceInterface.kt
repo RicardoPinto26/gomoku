@@ -1,8 +1,6 @@
 package pt.isel.leic.daw.gomokuRoyale.services.user
 
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
-import pt.isel.leic.daw.gomokuRoyale.services.dtos.user.RegisterInputDTO
-import pt.isel.leic.daw.gomokuRoyale.services.dtos.user.RegisterOutputDTO
 
 interface UserServiceInterface {
 
@@ -28,7 +26,36 @@ interface UserServiceInterface {
     fun loginUser(username: String?, email: String?, password: String): User
 
 
-    fun createToken()
+    /**
+     *  Creates a token for a user
+     *  @param userId user unique identifier
+     *
+     *  @return the token
+     */
+    fun createToken(username: String, password: String): TokenCreationResult
 
-    // ...
+
+    /**
+     *  Gets user's statistics
+     *  @param username name of the user whose stats are being requested
+     *  @return Player statistics or error
+     */
+    fun getStats(username: String): GetUserStatsResult
+
+    /**
+     * Gets user by token
+     * @param token token of the user
+     *
+     * @return User if the token is valid, null if not
+     */
+    fun getUserByToken(token: String): User?
+
+
+    /**
+     * Revokes a token
+     * @param token of the user
+     *
+     * @return true if the token was revoked, false if not
+     */
+    fun revokeToken(token: String): Boolean
 }
