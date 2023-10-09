@@ -31,11 +31,6 @@ sealed class GetUserStatsError {
     object NoSuchUser : GetUserStatsError()
 }
 
-typealias TokenCreationResult = Either<TokenCreationError, TokenExternalInfo>
-
-typealias GetUserStatsResult = Either<GetUserStatsError, UserStats>
-
-@Component
 class UsersService(
     private val transactionManager: JdbiTransactionManager,
     private val userDomain: UserDomain,
