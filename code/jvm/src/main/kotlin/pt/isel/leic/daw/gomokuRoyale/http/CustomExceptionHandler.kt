@@ -1,4 +1,4 @@
-package pt.isel.leic.daw.gomokuRoyale.controllers
+package pt.isel.leic.daw.gomokuRoyale.http
 
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
-import pt.isel.leic.daw.gomokuRoyale.controllers.model.Problem
+import pt.isel.leic.daw.gomokuRoyale.http.model.Problem
 
 @ControllerAdvice
 class CustomExceptionHandler : ResponseEntityExceptionHandler() {

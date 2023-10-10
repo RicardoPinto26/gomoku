@@ -1,8 +1,8 @@
-package pt.isel.leic.daw.gomokuRoyale.services.user
+package pt.isel.leic.daw.gomokuRoyale.services.users
 
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 
-interface UserServiceInterface {
+interface UsersService {
 
     /**
     Creates a new user
@@ -13,18 +13,6 @@ interface UserServiceInterface {
      */
 
     fun registerUser(username: String, email: String, password: String): UserCreationResult
-
-    /**
-     *  Logs in a user
-     *  @param username, user username
-     *  @param email, user email
-     *  @param password, user password
-     *  @throws Exception
-     *  @return User
-     */
-
-    fun loginUser(username: String?, email: String?, password: String): User
-
 
     /**
      *  Creates a token for a user

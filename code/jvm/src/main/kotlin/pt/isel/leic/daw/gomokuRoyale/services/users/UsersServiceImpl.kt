@@ -1,41 +1,22 @@
-package pt.isel.leic.daw.gomokuRoyale.services.user
+package pt.isel.leic.daw.gomokuRoyale.services.users
 
 import kotlinx.datetime.Clock
 import org.springframework.stereotype.Component
 import pt.isel.leic.daw.gomokuRoyale.domain.token.Token
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 import pt.isel.leic.daw.gomokuRoyale.domain.user.UserDomain
-import pt.isel.leic.daw.gomokuRoyale.repository.jdbi.JdbiTransactionManager
-import pt.isel.leic.daw.gomokuRoyale.services.dtos.user.UserStats
-import pt.isel.leic.daw.gomokuRoyale.services.exceptions.UserInvalidCredentialsException
+import pt.isel.leic.daw.gomokuRoyale.repository.TransactionManager
 import pt.isel.leic.daw.gomokuRoyale.utils.Either
 import pt.isel.leic.daw.gomokuRoyale.utils.failure
 import pt.isel.leic.daw.gomokuRoyale.utils.success
 
-data class TokenExternalInfo(
-    val tokenValue: String,
-    val tokenExpiration: kotlinx.datetime.Instant
-)
 
-sealed class UserCreationError {
-    object UserAlreadyExists : UserCreationError()
-    object InsecurePassword : UserCreationError()
-}
-typealias UserCreationResult = Either<UserCreationError, Int>
-
-sealed class TokenCreationError {
-    object UserOrPasswordAreInvalid : TokenCreationError()
-}
-
-sealed class GetUserStatsError {
-    object NoSuchUser : GetUserStatsError()
-}
-
-class UsersService(
-    private val transactionManager: JdbiTransactionManager,
+@Component
+class UsersServiceImpl(
+    private val transactionManager: TransactionManager,
     private val userDomain: UserDomain,
     private val clock: Clock
-) : UserServiceInterface {
+) : UsersService {
 
     override fun registerUser(username: String, email: String, password: String): UserCreationResult {
         userDomain.checkUserCredentialsRegister(username, email, password)
@@ -53,23 +34,6 @@ class UsersService(
                 success(id)
             }
         }
-    }
-
-    override fun loginUser(username: String?, email: String?, password: String): User {
-        userDomain.checkUserCredentialsLogin(username, email, password)
-
-        val user = transactionManager.run {
-            val userRepo = it.usersRepository
-            if (username != null) {
-                userRepo.getUserByUsername(username)
-            } else {
-                userRepo.getUserByEmail(email!!)
-            }
-        }
-        if (user == null || !userDomain.checkPassword(password, user.hashPassword)) {
-            throw UserInvalidCredentialsException("Invalid credentials")
-        }
-        return user //create dto
     }
 
     override fun createToken(username: String, password: String): TokenCreationResult {
@@ -111,7 +75,7 @@ class UsersService(
             userRepo.getUserByUsername(username)
         } ?: return failure(GetUserStatsError.NoSuchUser)
 
-        return success(UserStats(user.gamesPlayed, user.rating.toInt()))
+        return success(UserExternalInfo(user.username, user.gamesPlayed, user.rating.toInt()))
     }
 
     override fun getUserByToken(token: String): User? {

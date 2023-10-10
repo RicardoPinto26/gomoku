@@ -1,7 +1,7 @@
-package pt.isel.leic.daw.gomokuRoyale.controllers.model
+package pt.isel.leic.daw.gomokuRoyale.http.model
 
-import org.springframework.http.ResponseEntity
 import java.net.URI
+import org.springframework.http.ResponseEntity
 
 class Problem(
     typeUri: URI

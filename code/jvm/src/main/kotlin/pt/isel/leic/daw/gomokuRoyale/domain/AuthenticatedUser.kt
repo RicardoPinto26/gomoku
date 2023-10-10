@@ -1,4 +1,4 @@
-package pt.isel.leic.daw.gomokuRoyale.controllers.model
+package pt.isel.leic.daw.gomokuRoyale.domain
 
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 

@@ -1,10 +1,7 @@
-package pt.isel.leic.daw.gomokuRoyale.controllers
+package pt.isel.leic.daw.gomokuRoyale.http
 
-import org.springframework.web.util.UriTemplate
 import java.net.URI
-
-// TODO: MUDA AI O NOME DO FICHEIRO PARA Uris.kt
-// TODO: MUDA AI A PASTA DE controllers PARA http
+import org.springframework.web.util.UriTemplate
 
 object Uris {
 

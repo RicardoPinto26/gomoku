@@ -1,7 +1,7 @@
 package pt.isel.leic.daw.gomokuRoyale.domain
 
+import java.util.Date
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
-import java.util.*
 
 data class Lobby(
     private val game: Game? = null,

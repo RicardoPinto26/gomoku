@@ -1,8 +1,8 @@
 package pt.isel.leic.daw.gomokuRoyale.domain
 
-import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 import kotlin.math.max
 import kotlin.math.min
+import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 
 sealed interface Board {
     val internalBoard: List<List<Piece?>>

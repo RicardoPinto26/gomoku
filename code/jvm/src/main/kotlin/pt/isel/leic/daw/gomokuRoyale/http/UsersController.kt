@@ -1,19 +1,34 @@
-package pt.isel.leic.daw.gomokuRoyale.controllers
+package pt.isel.leic.daw.gomokuRoyale.http
 
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import pt.isel.leic.daw.gomokuRoyale.domain.AuthenticatedUser
+import pt.isel.leic.daw.gomokuRoyale.http.model.Problem
+import pt.isel.leic.daw.gomokuRoyale.http.model.UserCreateInputModel
+import pt.isel.leic.daw.gomokuRoyale.http.model.UserCreateTokenInputModel
+import pt.isel.leic.daw.gomokuRoyale.http.model.UserCreateTokenOutputModel
+import pt.isel.leic.daw.gomokuRoyale.http.model.UserGetStatisticsOutputModel
+import pt.isel.leic.daw.gomokuRoyale.services.users.GetUserStatsError
+import pt.isel.leic.daw.gomokuRoyale.services.users.TokenCreationError
+import pt.isel.leic.daw.gomokuRoyale.services.users.UserCreationError
+import pt.isel.leic.daw.gomokuRoyale.services.users.UsersService
+import pt.isel.leic.daw.gomokuRoyale.utils.Failure
+import pt.isel.leic.daw.gomokuRoyale.utils.Success
 
 @RestController
 @RequestMapping("/users")
 class UsersController(
-    private val userService: UsersService
+    private val usersService: UsersService
 ) {
 
     @PostMapping(Uris.Users.CREATE)
     fun createUser(@RequestBody input: UserCreateInputModel): ResponseEntity<*> {
-        return when (val res = userService.registerUser(input.username, input.email, input.password)) {
+        return when (val res = usersService.registerUser(input.username, input.email, input.password)) {
             is Success -> ResponseEntity.status(201)
                 .header(
                     "Location",
@@ -31,7 +46,7 @@ class UsersController(
     fun createToken(
         @RequestBody input: UserCreateTokenInputModel
     ): ResponseEntity<*> {
-        return when (val res = userService.createToken(input.username, input.password)) {
+        return when (val res = usersService.createToken(input.username, input.password)) {
             is Success ->
                 ResponseEntity.status(201)
                     .body(UserCreateTokenOutputModel(res.value.tokenValue))
@@ -47,12 +62,12 @@ class UsersController(
     fun logout(
         user: AuthenticatedUser
     ) {
-        TODO()
+        usersService.revokeToken(user.token)
     }
 
     @GetMapping("/user")
     fun getStatistics(@RequestParam username: String): ResponseEntity<*> {
-        return when (val res = userService.getStats(username)) {
+        return when (val res = usersService.getStats(username)) {
             is Success ->
                 ResponseEntity.status(200)
                     .body(UserGetStatisticsOutputModel(res.value))
