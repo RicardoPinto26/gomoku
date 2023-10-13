@@ -5,8 +5,8 @@ import pt.isel.leic.daw.gomokuRoyale.domain.token.Token
 import pt.isel.leic.daw.gomokuRoyale.domain.token.TokenValidationInfo
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 
-interface UsersRepositoryInterface {
-    fun createUser(username: String, email: String, password: String): Int
+interface UsersRepository {
+    fun createUser(username: String, email: String, password: String, rating: Double): Int
 
     fun isUserStoredByUsername(username: String): Boolean
 
@@ -20,7 +20,7 @@ interface UsersRepositoryInterface {
 
     fun createToken(userId: Int, token: Token, maxTokens: Int): Int
 
-    fun updateTokenLastUsedAt(token: Token, now: Instant): Unit
+    fun updateTokenLastUsedAt(token: Token, now: Instant)
 
     fun getTokenByTokenValidationInfo(tokenValidationInfo: TokenValidationInfo): Pair<User, Token>?
 

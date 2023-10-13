@@ -7,7 +7,14 @@ sealed class UserCreationError {
     object InsecurePassword : UserCreationError()
 }
 
-typealias UserCreationResult = Either<UserCreationError, Int>
+data class UserExternalInfo(
+    val username: String,
+    val email: String,
+    val gamesPlayed: Int,
+    val rating: Int
+)
+
+typealias UserCreationResult = Either<UserCreationError, UserExternalInfo>
 
 data class TokenExternalInfo(
     val tokenValue: String,
@@ -20,7 +27,7 @@ sealed class TokenCreationError {
 
 typealias TokenCreationResult = Either<TokenCreationError, TokenExternalInfo>
 
-data class UserExternalInfo(
+data class PublicUserExternalInfo(
     val username: String,
     val gamesPlayed: Int,
     val rating: Int
@@ -30,4 +37,4 @@ sealed class GetUserStatsError {
     object NoSuchUser : GetUserStatsError()
 }
 
-typealias GetUserStatsResult = Either<GetUserStatsError, UserExternalInfo>
+typealias GetUserStatsResult = Either<GetUserStatsError, PublicUserExternalInfo>

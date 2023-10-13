@@ -2,6 +2,7 @@ package pt.isel.leic.daw.gomokuRoyale.domain.user
 
 import kotlin.math.pow
 
+const val STARTING_RATING = 800.0
 const val RATING_FACTOR = 32
 const val C = 400
 
@@ -21,7 +22,7 @@ data class User(
     val email: String,
     val hashPassword: String,
     val gamesPlayed: Int = 0,
-    val rating: Double = 800.0
+    val rating: Double = STARTING_RATING
 ) {
     companion object {
         private const val EMAIL_REGEX = "^(.+)@(.+)$"

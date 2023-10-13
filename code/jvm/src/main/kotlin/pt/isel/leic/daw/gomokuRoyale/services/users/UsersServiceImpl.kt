@@ -1,8 +1,10 @@
 package pt.isel.leic.daw.gomokuRoyale.services.users
 
 import kotlinx.datetime.Clock
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import pt.isel.leic.daw.gomokuRoyale.domain.token.Token
+import pt.isel.leic.daw.gomokuRoyale.domain.user.STARTING_RATING
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 import pt.isel.leic.daw.gomokuRoyale.domain.user.UserDomain
 import pt.isel.leic.daw.gomokuRoyale.repository.TransactionManager
@@ -13,25 +15,51 @@ import pt.isel.leic.daw.gomokuRoyale.utils.success
 
 @Component
 class UsersServiceImpl(
+    //TODO: CHANGE FROM TransactionManager TO SOMETHING THAT ENABLES MOCKING (UsersRepository)
     private val transactionManager: TransactionManager,
     private val userDomain: UserDomain,
     private val clock: Clock
 ) : UsersService {
 
     override fun registerUser(username: String, email: String, password: String): UserCreationResult {
-        userDomain.checkUserCredentialsRegister(username, email, password)
-        val hashedPassword = userDomain.hashPassword(password)
+        logger.info("Starting registration of user {}", username)
 
+        logger.info("Checking user credentials")
+        try {
+            userDomain.checkUserCredentialsRegister(username, email, password)
+        } catch (e: Exception) {
+            return failure(UserCreationError.InsecurePassword)
+        }
+        logger.info("Checked user credentials")
+
+        logger.info("Hashing password")
+        val hashedPassword = userDomain.hashPassword(password)
+        logger.info("Hashed password")
+
+        logger.info("Starting Transaction")
         return transactionManager.run {
             val userRepo = it.usersRepository
+            logger.info("Checking if user exists via username")
             if (userRepo.isUserStoredByUsername(username)) {
-                failure(UserCreationError.UserAlreadyExists)
+                return@run failure(UserCreationError.UserAlreadyExists)
             }
+            logger.info("Checking if user exists via email")
             if (userRepo.isUserStoredByEmail(email)) {
+                return@run failure(UserCreationError.UserAlreadyExists)
+            }
+            logger.info("creating user")
+            return@run try {
+                userRepo.createUser(username, email, hashedPassword, STARTING_RATING)
+                success(
+                    UserExternalInfo(
+                        username = username,
+                        email = email,
+                        rating = STARTING_RATING.toInt(),
+                        gamesPlayed = 0
+                    )
+                )
+            } catch(e:Exception) {
                 failure(UserCreationError.UserAlreadyExists)
-            } else {
-                val id = userRepo.createUser(username, email, hashedPassword)
-                success(id)
             }
         }
     }
@@ -75,7 +103,7 @@ class UsersServiceImpl(
             userRepo.getUserByUsername(username)
         } ?: return failure(GetUserStatsError.NoSuchUser)
 
-        return success(UserExternalInfo(user.username, user.gamesPlayed, user.rating.toInt()))
+        return success(PublicUserExternalInfo(user.username, user.gamesPlayed, user.rating.toInt()))
     }
 
     override fun getUserByToken(token: String): User? {
@@ -102,5 +130,9 @@ class UsersServiceImpl(
             it.usersRepository.removeTokenByValidationInfo(tokenValidationInfo)
             true
         }
+    }
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(UsersServiceImpl::class.java)
     }
 }

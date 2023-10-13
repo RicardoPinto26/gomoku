@@ -5,14 +5,14 @@ import pt.isel.leic.daw.gomokuRoyale.repository.Transaction
 import pt.isel.leic.daw.gomokuRoyale.repository.game.GameRepository
 import pt.isel.leic.daw.gomokuRoyale.repository.game.GameStateRepository
 import pt.isel.leic.daw.gomokuRoyale.repository.lobby.LobbyRepository
-import pt.isel.leic.daw.gomokuRoyale.repository.user.UserRepository
+import pt.isel.leic.daw.gomokuRoyale.repository.user.UserRepositoryJDBI
 
 class JdbiTransaction(
     private val handle: Handle
 ) : Transaction {
 
-    override val usersRepository: UserRepository
-        get() = UserRepository(handle)
+    override val usersRepository: UserRepositoryJDBI
+        get() = UserRepositoryJDBI(handle)
 
     override val gameRepository: GameRepository
         get() = GameRepository(handle)

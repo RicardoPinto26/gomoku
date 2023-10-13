@@ -7,9 +7,9 @@ import pt.isel.leic.daw.gomokuRoyale.domain.token.Token
 import pt.isel.leic.daw.gomokuRoyale.domain.token.TokenValidationInfo
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 
-class UserRepository(private val handle: Handle) : UsersRepositoryInterface {
+class UserRepositoryJDBI(private val handle: Handle) : UsersRepository {
 
-    override fun createUser(username: String, email: String, password: String): Int =
+    override fun createUser(username: String, email: String, password: String, rating: Double): Int =
         handle.createUpdate(
             """
             insert into users (username, email, password) values (:username, :email, :password)
@@ -17,7 +17,7 @@ class UserRepository(private val handle: Handle) : UsersRepositoryInterface {
         )
             .bind("username", username)
             .bind("email", email)
-            .bind("password_validation", password)
+            .bind("password", password)
             .executeAndReturnGeneratedKeys()
             .mapTo<Int>()
             .one()
@@ -40,19 +40,19 @@ class UserRepository(private val handle: Handle) : UsersRepositoryInterface {
             .singleOrNull()
 
     override fun isUserStoredByUsername(username: String): Boolean =
-        handle.createQuery(" select exists (select 1 from users where username = :username")
+        handle.createQuery("select exists (select 1 from users where username = :username)")
             .bind("username", username)
             .mapTo(Boolean::class.java)
             .first()
 
     override fun isUserStoredByEmail(email: String): Boolean =
-        handle.createQuery("select exists (select 1 from users where email = :email")
+        handle.createQuery("select exists (select 1 from users where email = :email)")
             .bind("email", email)
             .mapTo(Boolean::class.java)
             .first()
 
     override fun createToken(userId: Int, token: Token, maxTokens: Int): Int {
-        val deletions = handle.createUpdate(
+        handle.createUpdate(
             """
             delete from tokens where user_id = :user_id
             """

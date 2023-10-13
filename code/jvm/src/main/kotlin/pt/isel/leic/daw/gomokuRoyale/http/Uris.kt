@@ -12,13 +12,14 @@ object Uris {
 
     object Users {
         const val CREATE = "$PREFIX/users"
+        const val DETAILS = "$PREFIX/users/{username}"
         const val TOKEN = "$PREFIX/users/token"
         const val LOGOUT = "$PREFIX/logout"
-        const val GET_BY_ID = "$PREFIX/users/{id}"
-        const val HOME = "$PREFIX/me"
+        const val STATS = "$PREFIX/users/stats"
+        //const val HOME = "$PREFIX/me"
 
-        fun byId(id: Int) = UriTemplate(GET_BY_ID).expand(id)
-        fun home(): URI = URI(HOME)
+        fun byUsername(username: String) = UriTemplate(DETAILS).expand(username)
+        //fun home(): URI = URI(HOME)
         fun login(): URI = URI(TOKEN)
         fun register(): URI = URI(CREATE)
     }
