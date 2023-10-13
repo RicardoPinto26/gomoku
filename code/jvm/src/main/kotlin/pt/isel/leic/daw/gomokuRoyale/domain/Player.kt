@@ -9,3 +9,5 @@ sealed interface Player {
 data class UnassignedPlayer(override val user: User) : Player
 data class BlackPlayer(override val user: User) : Player
 data class WhitePlayer(override val user: User) : Player
+
+fun User.toPlayer(): Player = UnassignedPlayer(this)

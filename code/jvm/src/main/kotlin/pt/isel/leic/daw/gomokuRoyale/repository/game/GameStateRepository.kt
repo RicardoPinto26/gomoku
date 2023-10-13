@@ -34,6 +34,17 @@ class GameStateRepository(private val handle: Handle) : GameStateRepositoryInter
             .bind("board", board.internalBoard.toString()) // TODO: change this to something better
             .execute()
 
+    override fun updateGameStateWinner(gameId: Int, winner: Int): Int =
+        handle.createUpdate("""
+            update game_state set winner =:winner where game_id = :game_id
+        """.trimIndent())
+            .bind("winner", winner)
+            .execute()
+
+    override fun forfeitGame(gameId: Int, user: Int): Int {
+        TODO("Not yet implemented")
+    }
+
     override fun deleteGameState(gameId: Int): Int =
         handle.createUpdate("delete from game_state where game_id = :game_id")
             .bind("game_id", gameId)

@@ -2,11 +2,12 @@ package pt.isel.leic.daw.gomokuRoyale.domain
 
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 
+
 data class Game internal constructor(
     val user1: User,
     val user2: User,
     private val settings: GameSettings,
-    private val board: Board,
+    val board: Board,
 ) {
 
     constructor(user1: User, user2: User, settings: GameSettings) :
@@ -45,5 +46,20 @@ data class Game internal constructor(
         val newUser2 = calculateUser(user1, newBoard, user1)
 
         return copy(board = newBoard, user1 = newUser1, user2 = newUser2)
+    }
+
+    fun forfeitGame(): Game {
+        require(board is BoardRun)
+        val winner = if (board.turn.user == user1) user2 else user1
+        val newBoard = BoardWin(board.internalBoard, winner.toPlayer())
+        return copy(board = newBoard)
+    }
+
+    fun checkGameEnd(): Boolean {
+        return board is BoardWin || board is BoardDraw
+    }
+
+    fun checkGameCreation(user1: User, user2: User, settings: GameSettings): Boolean {
+        return user1 != user2 && settings.boardSize >= 5 && settings.boardSize <= 19 && settings.winningLength >= 3 && settings.winningLength <= settings.boardSize
     }
 }

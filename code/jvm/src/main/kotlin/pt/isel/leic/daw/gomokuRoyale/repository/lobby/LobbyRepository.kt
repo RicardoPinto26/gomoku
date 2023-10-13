@@ -8,7 +8,7 @@ import pt.isel.leic.daw.gomokuRoyale.domain.Opening
 
 class LobbyRepository(private val handle: Handle) : LobbyRepositoryInterface {
 
-    override fun createLobby(userId: Int, gridSize: Int, opening: Opening, variant: String, pointsMargin: Int): Int =
+    override fun createLobby(userId: Int, gridSize: Int, opening: String, variant: String, pointsMargin: Int): Int =
         handle.createUpdate(
             """
                 insert into lobbys(creator_user_id, grid_size, opening, variant, points_margin)
@@ -17,7 +17,7 @@ class LobbyRepository(private val handle: Handle) : LobbyRepositoryInterface {
         )
             .bind("creatorId", userId)
             .bind("gridSize", userId)
-            .bind("opening", opening.name)
+            .bind("opening", opening)
             .bind("variant", variant)
             .bind("pointsMargin", pointsMargin)
             .executeAndReturnGeneratedKeys()
@@ -35,6 +35,13 @@ class LobbyRepository(private val handle: Handle) : LobbyRepositoryInterface {
             .bind("userId", userId)
             .bind("lobbyId", lobbyId)
             .execute()
+
+    override fun getLobbyById(lobbyId: Int): Lobby? =
+        handle.createQuery("select * from lobbys where id = :id")
+            .bind("id", lobbyId)
+            .mapTo<Lobby>()
+            .firstOrNull()
+
 
     override fun getUserLobbys(userId: Int): List<User> =
         handle.createQuery("select * from lobbys where user_id = :user_id")

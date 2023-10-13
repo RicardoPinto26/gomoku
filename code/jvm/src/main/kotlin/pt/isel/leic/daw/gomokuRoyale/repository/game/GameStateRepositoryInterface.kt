@@ -11,6 +11,10 @@ interface GameStateRepositoryInterface {
 
     fun updateGameState(gameId: Int, board: Board): Int
 
+    fun updateGameStateWinner(gameId: Int, winner: Int): Int
+
+    fun forfeitGame(gameId: Int, user: Int): Int
+
     fun deleteGameState(gameId: Int): Int
 
 }

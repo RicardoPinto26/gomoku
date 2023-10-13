@@ -25,4 +25,12 @@ data class Lobby(
         val newGame = game.placePiece(piece, position, user)
         return copy(game = newGame)
     }
+
+    fun compareUsers(userId: Int): Boolean {
+        return userId == user1.id || userId == user2?.id
+    }
+
+    fun isLobbyFull(): Boolean {
+        return user2 != null
+    }
 }

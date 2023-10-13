@@ -2,12 +2,13 @@ package pt.isel.leic.daw.gomokuRoyale.repository.lobby
 
 import org.apache.catalina.User
 import pt.isel.leic.daw.gomokuRoyale.domain.Lobby
-import pt.isel.leic.daw.gomokuRoyale.domain.Opening
 
 interface LobbyRepositoryInterface {
-    fun createLobby(userId: Int, gridSize: Int, opening: Opening, variant: String, pointsMargin: Int): Int
+    fun createLobby(userId: Int, gridSize: Int, opening: String, variant: String, pointsMargin: Int): Int
 
     fun joinLobby(userId: Int, lobbyId: Int): Int
+
+    fun getLobbyById(lobbyId: Int): Lobby?
 
     fun getUserLobbys(userId: Int): List<User>
 
