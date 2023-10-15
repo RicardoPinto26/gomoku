@@ -14,13 +14,9 @@ class GameServiceImpl(
     override fun createGame(name: String, user1: Int, user2: Int, lobbyId: Int): GameCreationResult {
         return transactionManager.run {
             val lobbyRepo = it.lobbyRepository
-            val lobby = lobbyRepo.getLobbyById(lobbyId)
-            if (lobby != null) {
-                if (lobby.compareUsers(user1) && lobby.compareUsers(user2)) {
-                    return@run failure(GameCreationError.UserNotInLobby)
-                }
-            } else {
-                return@run failure(GameCreationError.LobbyDoesNotExist)
+            val lobby = lobbyRepo.getLobbyById(lobbyId) ?: return@run failure(GameCreationError.LobbyDoesNotExist)
+            if (lobby.compareUsers(user1) && lobby.compareUsers(user2)) {
+                return@run failure(GameCreationError.UserNotInLobby)
             }
 
             val gameRepo = it.gameRepository
@@ -36,16 +32,12 @@ class GameServiceImpl(
     override fun forfeitGame(gameId: Int, user: Int): GameForfeitResult {
         return transactionManager.run {
             val gameRepo = it.gameRepository
-            val game = gameRepo.getGameById(gameId)
+            val game = gameRepo.getGameById(gameId)?: return@run failure(GameForfeitError.GameDoesNotExist)
 
-            if (game != null) {
-                if (game.user1.id != user && game.user2.id != user) {
-                    return@run failure(GameForfeitError.UserNotInGame)
-                } else if (game.checkGameEnd()) {
-                    return@run failure(GameForfeitError.GameAlreadyEnded)
-                }
-            } else {
-                return@run failure(GameForfeitError.GameDoesNotExist)
+            if (game.user1.id != user && game.user2.id != user) {
+                return@run failure(GameForfeitError.UserNotInGame)
+            } else if (game.checkGameEnd()) {
+                return@run failure(GameForfeitError.GameAlreadyEnded)
             }
 
             val gameStateRepo = it.gameStateRepository
