@@ -4,7 +4,6 @@ import org.apache.catalina.User
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.kotlin.mapTo
 import pt.isel.leic.daw.gomokuRoyale.domain.Lobby
-import pt.isel.leic.daw.gomokuRoyale.domain.Opening
 
 class LobbyRepository(private val handle: Handle) : LobbyRepositoryInterface {
 

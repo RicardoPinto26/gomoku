@@ -114,6 +114,21 @@ class UserRepositoryJDBI(private val handle: Handle) : UsersRepository {
             .execute()
     }
 
+    override fun getUserByTokenValidationInfo(tokenValidationInfo: TokenValidationInfo): User? {
+        return handle.createQuery(
+            """
+                select u.id, username, email,  password
+                from users as u
+                inner join tokens as t
+                on u.id = t.user_id
+                where token = :validation_information
+            """
+        )
+            .bind("validation_information", tokenValidationInfo.validationInfo)
+            .mapTo<User>()
+            .singleOrNull()
+    }
+
     private data class UserAndTokenModel(
         val id: Int,
         val username: String,

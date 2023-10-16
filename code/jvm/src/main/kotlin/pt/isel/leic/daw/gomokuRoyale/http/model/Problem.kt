@@ -43,5 +43,29 @@ class Problem(
                 "example.com"
             )
         )
+
+        val lobbyNotFound = Problem(
+            URI(
+                "example.com"
+            )
+        )
+
+        val lobbyFull = Problem(
+            URI(
+                "example.com"
+            )
+        )
+
+        val userAlreadyInLobby = Problem(
+            URI(
+                "example.com"
+            )
+        )
+
+        val unknowError = Problem(
+            URI(
+                "example.com"
+            )
+        )
     }
 }

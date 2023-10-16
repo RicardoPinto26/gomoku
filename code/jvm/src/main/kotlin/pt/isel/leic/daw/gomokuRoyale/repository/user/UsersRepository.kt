@@ -26,6 +26,8 @@ interface UsersRepository {
 
     fun removeTokenByValidationInfo(tokenValidationInfo: TokenValidationInfo): Int
 
+    fun getUserByTokenValidationInfo(tokenValidationInfo: TokenValidationInfo): User?
+
     /*
           fun loginUserByUsername(username: String, password: String): User
 

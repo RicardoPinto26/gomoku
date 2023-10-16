@@ -23,4 +23,10 @@ object Uris {
         fun login(): URI = URI(TOKEN)
         fun register(): URI = URI(CREATE)
     }
+
+    object Lobby {
+        const val CREATE_LOBBY = "$PREFIX/lobby"
+        const val JOIN_LOBBY = "$PREFIX/lobby/{lobbyId}"
+        const val GET_LOBBY_DETAILS = "$PREFIX/lobby/{lobbyId}"
+    }
 }

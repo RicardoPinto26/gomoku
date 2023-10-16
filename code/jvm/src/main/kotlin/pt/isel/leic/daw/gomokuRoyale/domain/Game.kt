@@ -4,6 +4,8 @@ import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 
 
 data class Game internal constructor(
+    //val id: Int,
+    //val name: String,
     val user1: User,
     val user2: User,
     private val settings: GameSettings,

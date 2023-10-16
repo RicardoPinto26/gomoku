@@ -2,34 +2,46 @@ package pt.isel.leic.daw.gomokuRoyale.services.lobby
 
 import pt.isel.leic.daw.gomokuRoyale.domain.Lobby
 import pt.isel.leic.daw.gomokuRoyale.repository.jdbi.JdbiTransactionManager
+import pt.isel.leic.daw.gomokuRoyale.services.users.UsersServiceImpl
 import pt.isel.leic.daw.gomokuRoyale.utils.failure
 import pt.isel.leic.daw.gomokuRoyale.utils.success
 
 class LobbyServiceImpl(
-    private val transactionManager: JdbiTransactionManager, private val lobbyDomain: Lobby
+    private val transactionManager: JdbiTransactionManager,
+    private val usersService: UsersServiceImpl
 ) : LobbyServiceInterface {
-    //TODO("use tokens instead of ids")
+
     override fun createLobby(
-        username: String, gridSize: Int, opening: String, variant: String, pointsMargin: Int
+        token: String, gridSize: Int, opening: String, variant: String, pointsMargin: Int
     ): LobbyCreationResult {
+        val userService = usersService
+        val user = userService.getUserByToken(token) ?: return failure(LobbyCreationError.UserNotFound)
+
         return transactionManager.run {
             val lobbyRepo = it.lobbyRepository
-            val userRepo = it.usersRepository
-            val user = userRepo.getUserByUsername(username) ?: return@run failure(LobbyCreationError.UserNotFound)
-
             try {
                 val id = lobbyRepo.createLobby(user.id, gridSize, opening, variant, pointsMargin)
-                return@run success(id)
+                return@run  success(
+                    LobbyExternalInfo(
+                        id = id,
+                        user1 = user,
+                        gridSize = gridSize,
+                        opening = opening,
+                        variant = variant,
+                        pointsMargin = pointsMargin
+                    )
+                )
             } catch (e: Exception) {
                 return@run failure(LobbyCreationError.UnknownError)
             }
         }
     }
 
-    override fun joinLobby(username: String, lobbyId: Int): LobbyJoinResult {
+    override fun joinLobby(token: String, lobbyId: Int): LobbyJoinResult {
+        val userService = usersService
+        val user = userService.getUserByToken(token) ?: return failure(LobbyJoinError.UserNotFound)
+
         return transactionManager.run {
-            val userRepo = it.usersRepository
-            val user = userRepo.getUserByUsername(username) ?: return@run failure(LobbyJoinError.UserNotFound)
             val lobbyRepo = it.lobbyRepository
             val lobby = lobbyRepo.getLobbyById(lobbyId) ?: return@run failure(LobbyJoinError.LobbyNotFound)
             if (lobby.compareUsers(user.id)) return@run failure(LobbyJoinError.UserAlreadyInLobby)
@@ -37,15 +49,20 @@ class LobbyServiceImpl(
 
             try {
                 val id = lobbyRepo.joinLobby(user.id, lobbyId)
-                return@run success(id)
+                return@run success(
+                    LobbyJoinExternalInfo(
+                        usernameCreator = lobby.user1.username,
+                        usernameJoin = user.username,
+                        lobbyId = id
+                    )
+                )
             } catch (e: Exception) {
                 return@run failure(LobbyJoinError.UnknownError)
             }
-
         }
     }
 
-    override fun getLobbyByUserId(userId: Int): Lobby? {
+    override fun getLobbyByUserToken(token: String): Lobby? {
         TODO("Not yet implemented")
     }
 

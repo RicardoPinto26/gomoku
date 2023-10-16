@@ -4,8 +4,9 @@ import java.util.Date
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 
 data class Lobby(
+    val id: Int,
     private val game: Game? = null,
-    private val user1: User,
+    val user1: User,
     private val user2: User?,
     private val pointsMargin: Int, // a 1400 point player creates a lobby with 400 point margin, he can match with a 1000 to 1800 point player
     private val startedAt: Date,
