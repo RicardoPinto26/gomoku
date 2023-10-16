@@ -1,11 +1,13 @@
 package pt.isel.leic.daw.gomokuRoyale.services.lobby
 
+import org.springframework.stereotype.Component
 import pt.isel.leic.daw.gomokuRoyale.domain.Lobby
 import pt.isel.leic.daw.gomokuRoyale.repository.jdbi.JdbiTransactionManager
 import pt.isel.leic.daw.gomokuRoyale.services.users.UsersServiceImpl
 import pt.isel.leic.daw.gomokuRoyale.utils.failure
 import pt.isel.leic.daw.gomokuRoyale.utils.success
 
+@Component
 class LobbyServiceImpl(
     private val transactionManager: JdbiTransactionManager,
     private val usersService: UsersServiceImpl

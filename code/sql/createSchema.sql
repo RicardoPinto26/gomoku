@@ -11,7 +11,7 @@ create table users
     username        VARCHAR(50)  NOT NULL UNIQUE,
     email           varchar(255) NOT NULL CHECK (email SIMILAR TO '_%@_%') UNIQUE,
     password        CHAR(64)     NOT NULL CHECK ( char_length(password) = 64 ),
-    points          INT          NOT NULL CHECK (points >= 0)          DEFAULT 0,
+    rating          DOUBLE PRECISION  NOT NULL CHECK (rating >= 0)  DEFAULT 800.0,
     nr_games_played INT          NOT NULL CHECK (nr_games_played >= 0) DEFAULT 0
 );
 
@@ -19,8 +19,8 @@ create table tokens
 (
     token        VARCHAR(256) primary key,
     user_id      INT REFERENCES users (id),
-    created_at   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    last_used_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at   BIGINT NOT NULL ,
+    last_used_at BIGINT NOT NULL
 );
 
 create table lobbys

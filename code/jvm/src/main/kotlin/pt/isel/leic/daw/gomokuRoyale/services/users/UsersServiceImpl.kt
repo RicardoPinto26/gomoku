@@ -4,6 +4,7 @@ import kotlinx.datetime.Clock
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import pt.isel.leic.daw.gomokuRoyale.domain.token.Token
+import pt.isel.leic.daw.gomokuRoyale.domain.token.TokenValidationInfo
 import pt.isel.leic.daw.gomokuRoyale.domain.user.STARTING_RATING
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 import pt.isel.leic.daw.gomokuRoyale.domain.user.UserDomain
@@ -71,7 +72,7 @@ class UsersServiceImpl(
             val userRepo = it.usersRepository
             val user: User = userRepo.getUserByUsername(username)
                 ?: return@run failure(TokenCreationError.UserOrPasswordAreInvalid)
-            if (!userDomain.checkPassword(password, user.hashPassword)) {
+            if (!userDomain.checkPassword(password, user.password)) {
                 return@run failure(TokenCreationError.UserOrPasswordAreInvalid)
             }
 
@@ -103,22 +104,28 @@ class UsersServiceImpl(
             userRepo.getUserByUsername(username)
         } ?: return failure(GetUserStatsError.NoSuchUser)
 
-        return success(PublicUserExternalInfo(user.username, user.gamesPlayed, user.rating.toInt()))
+        return success(PublicUserExternalInfo(user.username, user.nr_games_played, user.rating.toInt()))
     }
 
     override fun getUserByToken(token: String): User? {
+        logger.info("Trying to get user by token")
         if (!userDomain.canBeToken(token)) {
+            logger.info("returning null when trying to ger user by token")
             return null
         }
 
         return transactionManager.run {
             val usersRepository = it.usersRepository
-            val tokenValidationInfo = userDomain.createTokenValidationInformation(token)
+            logger.info("userRepo : $usersRepository")
+            val tokenValidationInfo = TokenValidationInfo(token)
+            logger.info("tokenValidInfo : $tokenValidationInfo")
             val userAndToken = usersRepository.getTokenByTokenValidationInfo(tokenValidationInfo)
+            logger.info("userAndToken : $userAndToken")
             if (userAndToken != null && userDomain.isTokenTimeValid(clock, userAndToken.second)) {
                 usersRepository.updateTokenLastUsedAt(userAndToken.second, clock.now())
                 userAndToken.first
             } else {
+                logger.info("returning null when trying to ger user by token with transaction manager")
                 null
             }
         }

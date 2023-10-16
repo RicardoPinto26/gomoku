@@ -90,7 +90,7 @@ class UserRepositoryJDBI(private val handle: Handle) : UsersRepository {
     override fun getTokenByTokenValidationInfo(tokenValidationInfo: TokenValidationInfo): Pair<User, Token>? =
         handle.createQuery(
             """
-                select u.id, username, email,  password, token, created_at, last_used_at
+                select u.id as id, username, email, password, token, created_at as createdAt, last_used_at as lastUsedAt
                 from users as u
                 inner join tokens as t
                 on u.id = t.user_id
@@ -133,19 +133,19 @@ class UserRepositoryJDBI(private val handle: Handle) : UsersRepository {
         val id: Int,
         val username: String,
         val email: String,
-        val passwordValidation: String,
-        val tokenValidation: TokenValidationInfo,
+        val password: String,
+        val token: TokenValidationInfo,
         val createdAt: Long,
         val lastUsedAt: Long
     ) {
         val userAndToken: Pair<User, Token>
             get() = Pair(
-                User(id, username, email, passwordValidation),
+                User(id, username, email, password),
                 Token(
                     Instant.fromEpochSeconds(createdAt),
                     Instant.fromEpochSeconds(lastUsedAt),
                     id,
-                    tokenValidation.validationInfo
+                    token.validationInfo
                 )
             )
     }

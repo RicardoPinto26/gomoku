@@ -12,17 +12,17 @@ const val C = 400
  * @property id user's unique identifier
  * @property username name of the user
  * @property email email of the user
- * @property gamesPlayed number os games the user as played
+ * @property nr_games_played number os games the user as played
  * @property rating the user's rating
- * @property hashPassword the users password (encoded to sha265)
+ * @property password the users password (encoded to sha265)
  */
 data class User(
     val id: Int,
     val username: String,
     val email: String,
-    val hashPassword: String,
-    val gamesPlayed: Int = 0,
-    val rating: Double = STARTING_RATING
+    val password: String,
+    val rating: Double = STARTING_RATING,
+    val nr_games_played: Int = 0
 ) {
     companion object {
         private const val EMAIL_REGEX = "^(.+)@(.+)$"

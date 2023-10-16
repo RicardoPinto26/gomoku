@@ -9,11 +9,13 @@ class RequestTokenProcessor(
     val usersService: UsersService
 ) {
 
+
     fun processAuthorizationHeaderValue(authorizationValue: String?): AuthenticatedUser? {
         if (authorizationValue == null) {
             return null
         }
         val parts = authorizationValue.trim().split(" ")
+
         if (parts.size != 2) {
             return null
         }

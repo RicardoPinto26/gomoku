@@ -25,7 +25,7 @@ data class Token(
          *
          * @return true if the name is valid, false if not
          */
-        fun validDates(createDate: Instant, lastUsedDate: Instant) = lastUsedDate > createDate
+        fun validDates(createDate: Instant, lastUsedDate: Instant) = lastUsedDate >= createDate
     }
 
     init {

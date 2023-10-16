@@ -17,7 +17,7 @@ import pt.isel.leic.daw.gomokuRoyale.http.pipeline.AuthenticatedUserArgumentReso
 import pt.isel.leic.daw.gomokuRoyale.http.pipeline.AuthenticationInterceptor
 import pt.isel.leic.daw.gomokuRoyale.repository.jdbi.configureWithAppRequirements
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = ["pt.isel.leic.daw.gomokuRoyale"])
 class GomokuRoyaleApplication {
     @Bean
     fun jdbi() = Jdbi.create(

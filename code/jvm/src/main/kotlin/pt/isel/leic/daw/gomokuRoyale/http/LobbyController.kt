@@ -3,25 +3,31 @@ package pt.isel.leic.daw.gomokuRoyale.http
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
+import pt.isel.leic.daw.gomokuRoyale.domain.AuthenticatedUser
 import pt.isel.leic.daw.gomokuRoyale.http.model.Problem
+import pt.isel.leic.daw.gomokuRoyale.http.model.lobby.CreateLobbyInputModel
 import pt.isel.leic.daw.gomokuRoyale.http.model.lobby.LobbyCreateOutputModel
-import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbyCreationError
-import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbyJoinError
-import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbyJoinExternalInfo
-import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbyServiceImpl
+import pt.isel.leic.daw.gomokuRoyale.services.lobby.*
 import pt.isel.leic.daw.gomokuRoyale.utils.Failure
 import pt.isel.leic.daw.gomokuRoyale.utils.Success
 
 @RestController
 class LobbyController(
-    private val lobbyService: LobbyServiceImpl
+    private val lobbyService: LobbyServiceInterface
 ){
     @PostMapping(Uris.Lobby.CREATE_LOBBY)
     fun createLobby(
-        token: String, gridSize: Int, opening: String, variant: String, pointsMargin: Int
+        user: AuthenticatedUser,
+         @RequestBody body : CreateLobbyInputModel
     ): ResponseEntity<*> {
-        return when (val res = lobbyService.createLobby(token, gridSize, opening, variant, pointsMargin)) {
+        return when (val res = lobbyService.createLobby(
+            user.token,
+            body.gridSize,
+            body.opening,
+            body.variant,
+            body.pointsMargin)) {
             is Success ->
                 ResponseEntity.status(201)
                     .body(LobbyCreateOutputModel(res.value))
