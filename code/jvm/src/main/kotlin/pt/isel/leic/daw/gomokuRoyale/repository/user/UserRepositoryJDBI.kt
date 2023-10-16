@@ -3,6 +3,7 @@ package pt.isel.leic.daw.gomokuRoyale.repository.user
 import kotlinx.datetime.Instant
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.kotlin.mapTo
+import org.slf4j.LoggerFactory
 import pt.isel.leic.daw.gomokuRoyale.domain.token.Token
 import pt.isel.leic.daw.gomokuRoyale.domain.token.TokenValidationInfo
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
@@ -52,7 +53,7 @@ class UserRepositoryJDBI(private val handle: Handle) : UsersRepository {
             .first()
 
     override fun createToken(userId: Int, token: Token, maxTokens: Int): Int {
-        handle.createUpdate(
+        val deletions = handle.createUpdate(
             """
             delete from tokens where user_id = :user_id
             """
@@ -60,15 +61,17 @@ class UserRepositoryJDBI(private val handle: Handle) : UsersRepository {
             .bind("user_id", userId)
             .execute()
 
+        logger.info("{} tokens deleted when creating new token",deletions)
 
         return handle.createUpdate(
             """
-            insert into tokens (user_id, token, last_used_at) values (:user_id, :token, :last_used_at)
+            insert into tokens (token, user_id, created_at, last_used_at) values (:token, :user_id, :created_at, :last_used_at)
             """
         )
-            .bind("user_id", userId)
             .bind("token", token.token)
-            .bind("last_used_at", token.lastUsedAt)
+            .bind("user_id", userId)
+            .bind("created_at", token.createdAt.epochSeconds)
+            .bind("last_used_at", token.lastUsedAt.epochSeconds)
             .execute()
     }
 
@@ -148,5 +151,9 @@ class UserRepositoryJDBI(private val handle: Handle) : UsersRepository {
                     token.validationInfo
                 )
             )
+    }
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(UserRepositoryJDBI::class.java)
     }
 }
