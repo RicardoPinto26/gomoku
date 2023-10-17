@@ -3,7 +3,6 @@ package pt.isel.leic.daw.gomokuRoyale.repository.game
 import pt.isel.leic.daw.gomokuRoyale.domain.Board
 import pt.isel.leic.daw.gomokuRoyale.domain.Game
 
-
 interface GameStateRepositoryInterface {
     fun createGameState(gameId: Int, turn: Int): Int
 
@@ -16,5 +15,4 @@ interface GameStateRepositoryInterface {
     fun forfeitGame(gameId: Int, user: Int): Int
 
     fun deleteGameState(gameId: Int): Int
-
 }

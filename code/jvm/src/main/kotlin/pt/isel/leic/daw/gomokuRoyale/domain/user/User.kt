@@ -74,7 +74,6 @@ data class User(
         require(validId(id)) { "Invalid user id: $id" }
     }
 
-
     fun calculateNewRating(result: Double, opponentRating: Double): Double {
         val qa = 10.0.pow(rating / C)
         val qb = 10.0.pow(opponentRating / C)

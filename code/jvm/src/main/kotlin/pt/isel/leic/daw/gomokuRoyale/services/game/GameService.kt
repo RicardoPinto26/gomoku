@@ -7,7 +7,7 @@ interface GameService {
 
     fun forfeitGame(gameId: Int, token: String): GameForfeitResult
 
-    //fun playGame(gameId: Int, user: Int, position: Position): GamePlayResult
+    // fun playGame(gameId: Int, user: Int, position: Position): GamePlayResult
 
     fun getGameByLobbyId(lobbyId: Int): Game?
 }

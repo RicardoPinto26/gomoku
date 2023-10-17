@@ -2,14 +2,14 @@ package pt.isel.leic.daw.gomokuRoyale.services.users
 
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 
-interface UsersService {
+interface UserService {
 
     /**
-    Creates a new user
-    @param user: RegisterInputDTO
-    @throws UserAlreadyExistsException
-    @throws InvalidArgumentsException
-    @return RegisterOutputDTO
+     Creates a new user
+     @param user: RegisterInputDTO
+     @throws UserAlreadyExistsException
+     @throws InvalidArgumentsException
+     @return RegisterOutputDTO
      */
 
     fun registerUser(username: String, email: String, password: String): UserCreationResult
@@ -21,7 +21,6 @@ interface UsersService {
      *  @return the token
      */
     fun createToken(username: String, password: String): TokenCreationResult
-
 
     /**
      *  Gets user's statistics
@@ -37,7 +36,6 @@ interface UsersService {
      * @return User if the token is valid, null if not
      */
     fun getUserByToken(token: String): User?
-
 
     /**
      * Revokes a token

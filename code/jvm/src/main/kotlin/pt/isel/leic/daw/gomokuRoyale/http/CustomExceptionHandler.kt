@@ -38,8 +38,8 @@ class CustomExceptionHandler : ResponseEntityExceptionHandler() {
     @ExceptionHandler(
         Exception::class
     )
-    fun handleAll(): ResponseEntity<Unit> {
-        return ResponseEntity.status(500).build()
+    fun handleAll(): ResponseEntity<Any> {
+        return Problem.response(500, Problem.unknownInternalException)
     }
 
     companion object {

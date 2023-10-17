@@ -8,7 +8,6 @@ import org.springframework.web.method.HandlerMethod
 import org.springframework.web.servlet.HandlerInterceptor
 import pt.isel.leic.daw.gomokuRoyale.domain.AuthenticatedUser
 
-
 @Component
 class AuthenticationInterceptor(
     private val authorizationHeaderProcessor: RequestTokenProcessor
@@ -16,8 +15,8 @@ class AuthenticationInterceptor(
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
         if (handler is HandlerMethod && handler.methodParameters.any {
-                it.parameterType == AuthenticatedUser::class.java
-            }
+            it.parameterType == AuthenticatedUser::class.java
+        }
         ) {
             // enforce authentication
             val user = authorizationHeaderProcessor

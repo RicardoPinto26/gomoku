@@ -1,17 +1,18 @@
 package pt.isel.leic.daw.gomokuRoyale.services.game
 
+import org.springframework.stereotype.Component
 import pt.isel.leic.daw.gomokuRoyale.domain.BoardWin
 import pt.isel.leic.daw.gomokuRoyale.domain.Game
 import pt.isel.leic.daw.gomokuRoyale.repository.TransactionManager
-import pt.isel.leic.daw.gomokuRoyale.services.users.UsersServiceImpl
+import pt.isel.leic.daw.gomokuRoyale.services.users.UserServiceImpl
 import pt.isel.leic.daw.gomokuRoyale.utils.failure
 import pt.isel.leic.daw.gomokuRoyale.utils.success
 
 //@Component
 class GameServiceImpl(
     private val transactionManager: TransactionManager,
-    private val usersService: UsersServiceImpl,
-    private val gameDomain: Game
+    private val usersService: UserServiceImpl,
+    private val gameDomain: Game // ??
 ) : GameService {
     override fun createGame(name: String, tokenUser1: String, tokenUser2: String, lobbyId: Int): GameCreationResult {
         val userService = usersService

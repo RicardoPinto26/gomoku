@@ -1,20 +1,20 @@
 package pt.isel.leic.daw.gomokuRoyale.domain.user
 
-import java.nio.charset.StandardCharsets
-import java.security.MessageDigest
-import java.security.SecureRandom
-import java.util.Base64
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import org.springframework.stereotype.Component
 import pt.isel.leic.daw.gomokuRoyale.domain.token.Token
 import pt.isel.leic.daw.gomokuRoyale.domain.token.TokenEncoder
 import pt.isel.leic.daw.gomokuRoyale.domain.token.TokenValidationInfo
+import java.nio.charset.StandardCharsets
+import java.security.MessageDigest
+import java.security.SecureRandom
+import java.util.Base64
 
 @Component
 class UserDomain(
     val tokenEncoder: TokenEncoder,
-    val config: UsersDomainConfig
+    val config: UserDomainConfig
 ) {
 
     private fun bytesToHex(bytes: ByteArray): String {
@@ -78,11 +78,10 @@ class UserDomain(
     ): Boolean {
         val now = clock.now()
         return token.createdAt <= now &&
-                (now - token.createdAt) <= config.tokenTtl &&
-                (now - token.lastUsedAt) <= config.tokenRollingTtl
+            (now - token.createdAt) <= config.tokenTtl &&
+            (now - token.lastUsedAt) <= config.tokenRollingTtl
     }
 
     fun createTokenValidationInformation(token: String): TokenValidationInfo =
         tokenEncoder.createValidationInformation(token)
-
 }

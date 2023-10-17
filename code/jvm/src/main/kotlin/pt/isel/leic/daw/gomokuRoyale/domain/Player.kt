@@ -6,8 +6,9 @@ sealed interface Player {
     val user: User
 }
 
-data class UnassignedPlayer(override val user: User) : Player
+/*
+ * Only makes sense when dealing with Openings that require players to choose a color
+ */
+// data class UnassignedPlayer(override val user: User) : Player
 data class BlackPlayer(override val user: User) : Player
 data class WhitePlayer(override val user: User) : Player
-
-fun User.toPlayer(): Player = UnassignedPlayer(this)

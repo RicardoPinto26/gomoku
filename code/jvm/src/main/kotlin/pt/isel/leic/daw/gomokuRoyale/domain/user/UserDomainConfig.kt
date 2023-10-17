@@ -2,8 +2,7 @@ package pt.isel.leic.daw.gomokuRoyale.domain.user
 
 import kotlin.time.Duration
 
-
-data class UsersDomainConfig(
+data class UserDomainConfig(
     val tokenSizeInBytes: Int,
     val tokenTtl: Duration,
     val tokenRollingTtl: Duration,

@@ -8,7 +8,7 @@ import pt.isel.leic.daw.gomokuRoyale.domain.token.Token
 import pt.isel.leic.daw.gomokuRoyale.domain.token.TokenValidationInfo
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 
-class UserRepositoryJDBI(private val handle: Handle) : UsersRepository {
+class UserRepositoryJDBI(private val handle: Handle) : UserRepository {
 
     override fun createUser(username: String, email: String, password: String, rating: Double): Int =
         handle.createUpdate(
@@ -61,7 +61,7 @@ class UserRepositoryJDBI(private val handle: Handle) : UsersRepository {
             .bind("user_id", userId)
             .execute()
 
-        logger.info("{} tokens deleted when creating new token",deletions)
+        logger.info("{} tokens deleted when creating new token", deletions)
 
         return handle.createUpdate(
             """
@@ -75,7 +75,6 @@ class UserRepositoryJDBI(private val handle: Handle) : UsersRepository {
             .execute()
     }
 
-
     override fun updateTokenLastUsedAt(token: Token, now: Instant) {
         handle.createUpdate(
             """
@@ -88,7 +87,6 @@ class UserRepositoryJDBI(private val handle: Handle) : UsersRepository {
             .bind("token", token.token)
             .execute()
     }
-
 
     override fun getTokenByTokenValidationInfo(tokenValidationInfo: TokenValidationInfo): Pair<User, Token>? =
         handle.createQuery(
@@ -104,7 +102,6 @@ class UserRepositoryJDBI(private val handle: Handle) : UsersRepository {
             .mapTo<UserAndTokenModel>()
             .singleOrNull()
             ?.userAndToken
-
 
     override fun removeTokenByValidationInfo(tokenValidationInfo: TokenValidationInfo): Int {
         return handle.createUpdate(

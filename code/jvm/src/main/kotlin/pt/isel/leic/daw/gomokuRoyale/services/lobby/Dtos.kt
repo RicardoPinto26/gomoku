@@ -6,7 +6,6 @@ import pt.isel.leic.daw.gomokuRoyale.utils.Either
 
 sealed class LobbyCreationError {
     object UserNotFound : LobbyCreationError()
-    object UnknownError : LobbyCreationError()
 }
 
 data class LobbyExternalInfo(
@@ -27,7 +26,6 @@ sealed class LobbyJoinError {
     object UserAlreadyInLobby : LobbyJoinError()
     object UserNotFound : LobbyJoinError()
     object LobbyFull : LobbyJoinError()
-    object UnknownError : LobbyJoinError()
 }
 
 data class LobbyJoinExternalInfo(

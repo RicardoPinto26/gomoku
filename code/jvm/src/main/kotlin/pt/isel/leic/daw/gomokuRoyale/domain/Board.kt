@@ -1,8 +1,8 @@
 package pt.isel.leic.daw.gomokuRoyale.domain
 
+import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 import kotlin.math.max
 import kotlin.math.min
-import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 
 sealed interface Board {
     val internalBoard: List<List<Piece?>>
@@ -33,7 +33,7 @@ data class BoardRun internal constructor(
     private val player1: Player,
     private val player2: Player,
     val turn: Player,
-    override val internalBoard: List<List<Piece?>>,
+    override val internalBoard: List<List<Piece?>>
 ) : Board {
 
     constructor(
@@ -42,7 +42,7 @@ data class BoardRun internal constructor(
         overflowAllowed: Boolean,
         turn: Player,
         player1: Player,
-        player2: Player,
+        player2: Player
     ) : this(winningLength, overflowAllowed, turn, player1, player2, List(boardSize) { List(boardSize) { null } })
 
     override fun placePiece(piece: Piece, position: Position, user: User): Board {
@@ -71,8 +71,8 @@ data class BoardRun internal constructor(
 
     private fun checkWin(board: List<List<Piece?>>, piece: Piece, position: Position): Boolean =
         checkVerticalWin(board, piece, position) ||
-                checkHorizontalWin(board, piece, position) ||
-                checkSlashAndBackslashWin(board, piece, position)
+            checkHorizontalWin(board, piece, position) ||
+            checkSlashAndBackslashWin(board, piece, position)
 
     private fun checkVerticalWin(board: List<List<Piece?>>, piece: Piece, position: Position): Boolean {
         var winningPieces = 0
@@ -122,4 +122,11 @@ data class BoardRun internal constructor(
         }
         return false
     }
+
+    fun userToPlayer(user: User): Player =
+        when (user) {
+            player1.user -> player1
+            player2.user -> player2
+            else -> throw IllegalArgumentException("User is not a player on this board")
+        }
 }

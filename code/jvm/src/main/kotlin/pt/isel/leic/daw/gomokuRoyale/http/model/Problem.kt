@@ -1,7 +1,7 @@
 package pt.isel.leic.daw.gomokuRoyale.http.model
 
-import java.net.URI
 import org.springframework.http.ResponseEntity
+import java.net.URI
 
 class Problem(
     typeUri: URI
@@ -17,54 +17,54 @@ class Problem(
 
         val userAlreadyExists = Problem(
             URI(
-                "example.com"
+                "userAlreadyExists.com"
             )
         )
         val insecurePassword = Problem(
             URI(
-                "example.com"
+                "insecurePassword.com"
             )
         )
 
         val userOrPasswordAreInvalid = Problem(
             URI(
-                "example.com"
+                "userOrPasswordAreInvalid.com"
             )
         )
 
         val invalidRequestContent = Problem(
             URI(
-                "example.com"
+                "invalidRequestContent.com"
             )
         )
 
         val userWithUsernameNotFound = Problem(
             URI(
-                "example.com"
+                "userWithUsernameNotFound.com"
+            )
+        )
+
+        val unknownInternalException = Problem(
+            URI(
+                "unknownInternalException.com"
             )
         )
 
         val lobbyNotFound = Problem(
             URI(
-                "example.com"
+                "lobbyNotFound.com"
             )
         )
 
         val lobbyFull = Problem(
             URI(
-                "example.com"
+                "lobbyFull.com"
             )
         )
 
         val userAlreadyInLobby = Problem(
             URI(
-                "example.com"
-            )
-        )
-
-        val unknowError = Problem(
-            URI(
-                "example.com"
+                "userAlreadyInLobby.com"
             )
         )
     }

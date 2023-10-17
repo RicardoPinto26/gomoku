@@ -41,7 +41,6 @@ class LobbyRepository(private val handle: Handle) : LobbyRepositoryInterface {
             .mapTo<Lobby>()
             .firstOrNull()
 
-
     override fun getUserLobbys(userId: Int): List<User> =
         handle.createQuery("select * from lobbys where user_id = :user_id")
             .bind("user_id", userId)

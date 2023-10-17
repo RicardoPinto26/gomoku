@@ -1,14 +1,16 @@
 package pt.isel.leic.daw.gomokuRoyale.domain
 
-import java.util.Date
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
+import java.util.Date
+
+const val MAX_POINTS_MARGIN = Int.MAX_VALUE
 
 data class Lobby(
     val id: Int,
     private val game: Game? = null,
     val user1: User,
     private val user2: User?,
-    private val pointsMargin: Int, // a 1400 point player creates a lobby with 400 point margin, he can match with a 1000 to 1800 point player
+    private val pointsMargin: Int = MAX_POINTS_MARGIN, // a 1400 point player creates a lobby with 400 point margin, he can match with a 1000 to 1800 point player
     private val startedAt: Date,
     private val settings: GameSettings
 ) {

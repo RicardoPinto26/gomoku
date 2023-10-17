@@ -5,7 +5,7 @@ import pt.isel.leic.daw.gomokuRoyale.domain.token.Token
 import pt.isel.leic.daw.gomokuRoyale.domain.token.TokenValidationInfo
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 
-interface UsersRepository {
+interface UserRepository {
     fun createUser(username: String, email: String, password: String, rating: Double): Int
 
     fun isUserStoredByUsername(username: String): Boolean

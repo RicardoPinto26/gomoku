@@ -6,7 +6,7 @@ interface GameRepositoryInterface {
 
     fun createGame(name: String, lobbyId: Int, playerBlack: Int, playerWhite: Int): Int
 
-    //fun isStoredGameName(name: String): Boolean
+    // fun isStoredGameName(name: String): Boolean
 
     fun getGameById(gameId: Int): Game?
 

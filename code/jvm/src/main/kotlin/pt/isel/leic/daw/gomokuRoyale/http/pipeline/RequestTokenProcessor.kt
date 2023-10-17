@@ -2,14 +2,12 @@ package pt.isel.leic.daw.gomokuRoyale.http.pipeline
 
 import org.springframework.stereotype.Component
 import pt.isel.leic.daw.gomokuRoyale.domain.AuthenticatedUser
-import pt.isel.leic.daw.gomokuRoyale.services.users.UsersService
+import pt.isel.leic.daw.gomokuRoyale.services.users.UserService
 
 @Component
 class RequestTokenProcessor(
-    val usersService: UsersService
+    val userService: UserService
 ) {
-
-
     fun processAuthorizationHeaderValue(authorizationValue: String?): AuthenticatedUser? {
         if (authorizationValue == null) {
             return null
@@ -22,7 +20,7 @@ class RequestTokenProcessor(
         if (parts[0].lowercase() != SCHEME) {
             return null
         }
-        return usersService.getUserByToken(parts[1])?.let {
+        return userService.getUserByToken(parts[1])?.let {
             AuthenticatedUser(
                 it,
                 parts[1]

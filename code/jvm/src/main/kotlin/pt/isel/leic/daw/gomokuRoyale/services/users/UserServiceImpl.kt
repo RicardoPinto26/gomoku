@@ -13,14 +13,12 @@ import pt.isel.leic.daw.gomokuRoyale.utils.Either
 import pt.isel.leic.daw.gomokuRoyale.utils.failure
 import pt.isel.leic.daw.gomokuRoyale.utils.success
 
-
 @Component
-class UsersServiceImpl(
-    //TODO: CHANGE FROM TransactionManager TO SOMETHING THAT ENABLES MOCKING (UsersRepository)
+class UserServiceImpl(
     private val transactionManager: TransactionManager,
     private val userDomain: UserDomain,
     private val clock: Clock
-) : UsersService {
+) : UserService {
 
     override fun registerUser(username: String, email: String, password: String): UserCreationResult {
         logger.info("Starting registration of user {}", username)
@@ -29,6 +27,7 @@ class UsersServiceImpl(
         try {
             userDomain.checkUserCredentialsRegister(username, email, password)
         } catch (e: Exception) {
+            logger.info(e.message)
             return failure(UserCreationError.InsecurePassword)
         }
         logger.info("Checked user credentials")
@@ -39,7 +38,7 @@ class UsersServiceImpl(
 
         logger.info("Starting Transaction")
         return transactionManager.run {
-            val userRepo = it.usersRepository
+            val userRepo = it.userRepository
             logger.info("Checking if user exists via username")
             if (userRepo.isUserStoredByUsername(username)) {
                 return@run failure(UserCreationError.UserAlreadyExists)
@@ -59,7 +58,7 @@ class UsersServiceImpl(
                         gamesPlayed = 0
                     )
                 )
-            } catch(e:Exception) {
+            } catch (e: Exception) {
                 failure(UserCreationError.UserAlreadyExists)
             }
         }
@@ -69,7 +68,7 @@ class UsersServiceImpl(
         userDomain.checkUserCredentialsLogin(username, null, password)
 
         return transactionManager.run {
-            val userRepo = it.usersRepository
+            val userRepo = it.userRepository
             val user: User = userRepo.getUserByUsername(username)
                 ?: return@run failure(TokenCreationError.UserOrPasswordAreInvalid)
             if (!userDomain.checkPassword(password, user.password)) {
@@ -100,7 +99,7 @@ class UsersServiceImpl(
         }
 
         val user = transactionManager.run {
-            val userRepo = it.usersRepository
+            val userRepo = it.userRepository
             userRepo.getUserByUsername(username)
         } ?: return failure(GetUserStatsError.NoSuchUser)
 
@@ -115,7 +114,7 @@ class UsersServiceImpl(
         }
 
         return transactionManager.run {
-            val usersRepository = it.usersRepository
+            val usersRepository = it.userRepository
             logger.info("userRepo : $usersRepository")
             val tokenValidationInfo = TokenValidationInfo(token)
             logger.info("tokenValidInfo : $tokenValidationInfo")
@@ -132,14 +131,13 @@ class UsersServiceImpl(
     }
 
     override fun revokeToken(token: String): Boolean {
-        val tokenValidationInfo = userDomain.createTokenValidationInformation(token)
+        val tokenValidationInfo = TokenValidationInfo(token)
         return transactionManager.run {
-            it.usersRepository.removeTokenByValidationInfo(tokenValidationInfo)
-            true
+            it.userRepository.removeTokenByValidationInfo(tokenValidationInfo) == 1
         }
     }
 
     companion object {
-        private val logger = LoggerFactory.getLogger(UsersServiceImpl::class.java)
+        private val logger = LoggerFactory.getLogger(UserServiceImpl::class.java)
     }
 }

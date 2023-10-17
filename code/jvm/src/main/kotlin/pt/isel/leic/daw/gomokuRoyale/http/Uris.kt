@@ -1,7 +1,7 @@
 package pt.isel.leic.daw.gomokuRoyale.http
 
-import java.net.URI
 import org.springframework.web.util.UriTemplate
+import java.net.URI
 
 object Uris {
 
@@ -16,10 +16,11 @@ object Uris {
         const val TOKEN = "$PREFIX/users/token"
         const val LOGOUT = "$PREFIX/logout"
         const val STATS = "$PREFIX/users/stats"
-        //const val HOME = "$PREFIX/me"
+        // const val HOME = "$PREFIX/me"
 
         fun byUsername(username: String) = UriTemplate(DETAILS).expand(username)
-        //fun home(): URI = URI(HOME)
+
+        // fun home(): URI = URI(HOME)
         fun login(): URI = URI(TOKEN)
         fun register(): URI = URI(CREATE)
     }

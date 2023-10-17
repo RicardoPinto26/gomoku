@@ -9,5 +9,11 @@ data class LobbyCreateOutputModel(
     val opening: String,
     val variant: String
 ) {
-    constructor(lei: LobbyExternalInfo) : this(lei.user1.username, lei.pointsMargin, lei.gridSize, lei.opening, lei.variant)
+    constructor(lei: LobbyExternalInfo) : this(
+        lei.user1.username,
+        lei.pointsMargin,
+        lei.gridSize,
+        lei.opening,
+        lei.variant
+    )
 }

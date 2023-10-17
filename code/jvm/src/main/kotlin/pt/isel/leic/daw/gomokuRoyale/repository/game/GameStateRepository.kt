@@ -35,9 +35,11 @@ class GameStateRepository(private val handle: Handle) : GameStateRepositoryInter
             .execute()
 
     override fun updateGameStateWinner(gameId: Int, winner: Int): Int =
-        handle.createUpdate("""
+        handle.createUpdate(
+            """
             update game_state set winner =:winner where game_id = :game_id
-        """.trimIndent())
+            """.trimIndent()
+        )
             .bind("winner", winner)
             .execute()
 

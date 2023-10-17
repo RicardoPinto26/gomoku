@@ -26,7 +26,6 @@ class GameRepository(private val handle: Handle) : GameRepositoryInterface {
             .mapTo<Game>()
             .firstOrNull()
 
-
     override fun getGameByLobbyId(lobbyId: Int): Game? =
         handle.createQuery("select * from games where lobby_id = :lobbyId")
             .bind("lobbyId", lobbyId)

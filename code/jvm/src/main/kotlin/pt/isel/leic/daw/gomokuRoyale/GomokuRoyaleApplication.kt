@@ -1,6 +1,5 @@
 package pt.isel.leic.daw.gomokuRoyale
 
-import kotlin.time.Duration.Companion.hours
 import kotlinx.datetime.Clock
 import org.jdbi.v3.core.Jdbi
 import org.postgresql.ds.PGSimpleDataSource
@@ -12,10 +11,11 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import pt.isel.leic.daw.gomokuRoyale.domain.token.Sha256TokenEncoder
-import pt.isel.leic.daw.gomokuRoyale.domain.user.UsersDomainConfig
+import pt.isel.leic.daw.gomokuRoyale.domain.user.UserDomainConfig
 import pt.isel.leic.daw.gomokuRoyale.http.pipeline.AuthenticatedUserArgumentResolver
 import pt.isel.leic.daw.gomokuRoyale.http.pipeline.AuthenticationInterceptor
 import pt.isel.leic.daw.gomokuRoyale.repository.jdbi.configureWithAppRequirements
+import kotlin.time.Duration.Companion.hours
 
 @SpringBootApplication(scanBasePackages = ["pt.isel.leic.daw.gomokuRoyale"])
 class GomokuRoyaleApplication {
@@ -33,7 +33,7 @@ class GomokuRoyaleApplication {
     fun clock() = Clock.System
 
     @Bean
-    fun usersDomainConfig() = UsersDomainConfig(
+    fun userDomainConfig() = UserDomainConfig(
         tokenSizeInBytes = 256 / 8,
         tokenTtl = 24.hours,
         tokenRollingTtl = 1.hours,

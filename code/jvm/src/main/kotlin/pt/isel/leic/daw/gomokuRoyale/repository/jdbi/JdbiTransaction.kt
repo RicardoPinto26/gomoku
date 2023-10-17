@@ -11,7 +11,7 @@ class JdbiTransaction(
     private val handle: Handle
 ) : Transaction {
 
-    override val usersRepository: UserRepositoryJDBI
+    override val userRepository: UserRepositoryJDBI
         get() = UserRepositoryJDBI(handle)
 
     override val gameRepository: GameRepository
@@ -22,7 +22,6 @@ class JdbiTransaction(
 
     override val lobbyRepository: LobbyRepository
         get() = LobbyRepository(handle)
-
 
     override fun rollback() {
         handle.rollback()

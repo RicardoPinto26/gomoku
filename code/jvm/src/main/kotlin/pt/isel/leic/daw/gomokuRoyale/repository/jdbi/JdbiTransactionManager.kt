@@ -27,6 +27,7 @@ class JdbiTransactionManager(
             logger.info("Exiting inTransaction")
         }
     }
+
     companion object {
         val logger = LoggerFactory.getLogger(JdbiTransactionManager::class.java)
     }

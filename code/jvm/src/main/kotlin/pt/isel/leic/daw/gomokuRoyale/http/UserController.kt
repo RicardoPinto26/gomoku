@@ -17,19 +17,19 @@ import pt.isel.leic.daw.gomokuRoyale.http.model.user.UserGetStatisticsOutputMode
 import pt.isel.leic.daw.gomokuRoyale.services.users.GetUserStatsError
 import pt.isel.leic.daw.gomokuRoyale.services.users.TokenCreationError
 import pt.isel.leic.daw.gomokuRoyale.services.users.UserCreationError
-import pt.isel.leic.daw.gomokuRoyale.services.users.UsersService
+import pt.isel.leic.daw.gomokuRoyale.services.users.UserService
 import pt.isel.leic.daw.gomokuRoyale.utils.Failure
 import pt.isel.leic.daw.gomokuRoyale.utils.Success
 
 @RestController
-class UsersController(
-    private val usersService: UsersService
+class UserController(
+    private val userService: UserService
 ) {
 
     @PostMapping(Uris.Users.CREATE)
     fun createUser(@RequestBody input: UserCreateInputModel): ResponseEntity<*> {
         logger.info("Starting registration of user {}", input.username)
-        val res = usersService.registerUser(input.username, input.email, input.password)
+        val res = userService.registerUser(input.username, input.email, input.password)
         logger.info("Result of registration of user {}: {}", input.username, res)
         return when (res) {
             is Success -> ResponseEntity.status(201)
@@ -49,7 +49,7 @@ class UsersController(
     fun createToken(
         @RequestBody input: UserCreateTokenInputModel
     ): ResponseEntity<*> {
-        return when (val res = usersService.createToken(input.username, input.password)) {
+        return when (val res = userService.createToken(input.username, input.password)) {
             is Success ->
                 ResponseEntity.status(201)
                     .body(UserCreateTokenOutputModel(res.value.tokenValue))
@@ -65,12 +65,12 @@ class UsersController(
     fun logout(
         user: AuthenticatedUser
     ) {
-        usersService.revokeToken(user.token)
+        userService.revokeToken(user.token)
     }
 
     @GetMapping(Uris.Users.DETAILS)
     fun userDetails(@PathVariable username: String): ResponseEntity<*> {
-        return when (val res = usersService.getStats(username)) {
+        return when (val res = userService.getStats(username)) {
             is Success ->
                 ResponseEntity.status(200)
                     .body(UserGetStatisticsOutputModel(res.value))
@@ -83,6 +83,6 @@ class UsersController(
     }
 
     companion object {
-        private val logger = LoggerFactory.getLogger(UsersController::class.java)
+        private val logger = LoggerFactory.getLogger(UserController::class.java)
     }
 }

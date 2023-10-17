@@ -2,8 +2,14 @@ package pt.isel.leic.daw.gomokuRoyale.services.lobby
 
 import pt.isel.leic.daw.gomokuRoyale.domain.Lobby
 
-interface LobbyServiceInterface {
-    fun createLobby(token: String, gridSize: Int, opening: String, variant: String, pointsMargin: Int): LobbyCreationResult
+interface LobbyService {
+    fun createLobby(
+        token: String,
+        gridSize: Int,
+        opening: String,
+        variant: String,
+        pointsMargin: Int
+    ): LobbyCreationResult
 
     fun joinLobby(token: String, lobbyId: Int): LobbyJoinResult
 
