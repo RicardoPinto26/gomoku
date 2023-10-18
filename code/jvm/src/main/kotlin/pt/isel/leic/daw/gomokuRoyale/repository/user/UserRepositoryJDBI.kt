@@ -23,6 +23,12 @@ class UserRepositoryJDBI(private val handle: Handle) : UserRepository {
             .mapTo<Int>()
             .one()
 
+    override fun getUserByID(id: Int): User? =
+            handle.createQuery("select * from users where id = :id")
+                    .bind("id", id)
+                    .mapTo<User>()
+                    .singleOrNull()
+
     override fun getUserByEmail(email: String): User? =
         handle.createQuery("select * from users where email = :email")
             .bind("email", email)

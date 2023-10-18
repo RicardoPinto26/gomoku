@@ -2,6 +2,7 @@ package pt.isel.leic.daw.gomokuRoyale.domain.user
 
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import pt.isel.leic.daw.gomokuRoyale.domain.token.Token
 import pt.isel.leic.daw.gomokuRoyale.domain.token.TokenEncoder
@@ -16,6 +17,9 @@ class UserDomain(
     val tokenEncoder: TokenEncoder,
     val config: UserDomainConfig
 ) {
+    companion object{
+        private val logger = LoggerFactory.getLogger(UserDomain::class.java)
+    }
 
     private fun bytesToHex(bytes: ByteArray): String {
         val hexChars = "0123456789ABCDEF"
@@ -77,9 +81,13 @@ class UserDomain(
         token: Token
     ): Boolean {
         val now = clock.now()
+        logger.info("token.createdAt:${token.createdAt}, $now")
+        logger.info("now-token.createdAt: ${now - token.createdAt}, ${config.tokenTtl}")
+        logger.info("now-token.lastUsedAt: ${now - token.lastUsedAt}, ${config.tokenRollingTtl}")
+
         return token.createdAt <= now &&
-            (now - token.createdAt) <= config.tokenTtl &&
-            (now - token.lastUsedAt) <= config.tokenRollingTtl
+            (now - token.createdAt) <= config.tokenTtl
+                //&& (now - token.lastUsedAt) <= config.tokenRollingTtl
     }
 
     fun createTokenValidationInformation(token: String): TokenValidationInfo =

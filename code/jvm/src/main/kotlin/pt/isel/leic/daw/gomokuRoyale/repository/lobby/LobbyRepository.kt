@@ -15,7 +15,7 @@ class LobbyRepository(private val handle: Handle) : LobbyRepositoryInterface {
                 """
         )
             .bind("creatorId", userId)
-            .bind("gridSize", userId)
+            .bind("gridSize", gridSize)
             .bind("opening", opening)
             .bind("variant", variant)
             .bind("pointsMargin", pointsMargin)
@@ -36,7 +36,18 @@ class LobbyRepository(private val handle: Handle) : LobbyRepositoryInterface {
             .execute()
 
     override fun getLobbyById(lobbyId: Int): Lobby? =
-        handle.createQuery("select * from lobbys where id = :id")
+        handle.createQuery("""
+        SELECT 
+            l.*,
+            cu.id as creator_user_id, cu.username as creator_user_username, cu.email as creator_user_email, 
+            cu.password as creator_user_password, cu.rating as creator_user_rating, cu.nr_games_played as creator_user_nr_games_played,
+            ju.id as join_user_id, ju.username as join_user_username, ju.email as join_user_email, 
+            ju.password as join_user_password, ju.rating as join_user_rating, ju.nr_games_played as join_user_nr_games_played
+        FROM lobbys l
+        LEFT JOIN users cu ON l.creator_user_id = cu.id
+        LEFT JOIN users ju ON l.join_user_id = ju.id
+        WHERE l.id = :id
+    """)
             .bind("id", lobbyId)
             .mapTo<Lobby>()
             .firstOrNull()

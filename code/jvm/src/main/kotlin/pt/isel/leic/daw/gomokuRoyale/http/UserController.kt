@@ -70,14 +70,19 @@ class UserController(
 
     @GetMapping(Uris.Users.DETAILS)
     fun userDetails(@PathVariable username: String): ResponseEntity<*> {
+        logger.info("Request received for user $username details")
         return when (val res = userService.getStats(username)) {
-            is Success ->
+            is Success ->{
+                logger.info("Success request")
                 ResponseEntity.status(200)
-                    .body(UserGetStatisticsOutputModel(res.value))
-
-            is Failure -> when (res.value) {
-                GetUserStatsError.NoSuchUser ->
-                    Problem.response(404, Problem.userWithUsernameNotFound)
+                        .body(UserGetStatisticsOutputModel(res.value))
+            }
+            is Failure ->{
+                logger.info("Failed request")
+                when (res.value) {
+                    GetUserStatsError.NoSuchUser ->
+                        Problem.response(404, Problem.userWithUsernameNotFound)
+                }
             }
         }
     }

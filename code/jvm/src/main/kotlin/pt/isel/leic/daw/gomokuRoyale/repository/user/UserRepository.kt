@@ -12,6 +12,8 @@ interface UserRepository {
 
     fun isUserStoredByEmail(email: String): Boolean
 
+    fun getUserByID(id: Int): User?
+
     fun getUserByUsername(username: String): User?
 
     fun getUserByEmail(email: String): User?

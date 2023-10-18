@@ -30,6 +30,14 @@ interface UserService {
     fun getStats(username: String): GetUserStatsResult
 
     /**
+     * Gets user by id
+     * @param id id of the user
+     *
+     * @return User if the id is valid, null if not
+     */
+    fun getUserByID(id: Int): User?
+
+    /**
      * Gets user by token
      * @param token token of the user
      *
