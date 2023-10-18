@@ -17,6 +17,7 @@ class LobbyServiceImpl(
         private val logger = LoggerFactory.getLogger(LobbyServiceImpl::class.java)
     }
     override fun createLobby(
+        name: String,
         token: String,
         gridSize: Int,
         opening: String,
@@ -30,7 +31,7 @@ class LobbyServiceImpl(
 
         return transactionManager.run {
             val lobbyRepo = it.lobbyRepository
-            val id = lobbyRepo.createLobby(user.id, gridSize, opening, variant, pointsMargin)
+            val id = lobbyRepo.createLobby(name, user.id, gridSize, opening, variant, pointsMargin)
             return@run success(
                 LobbyExternalInfo(
                     id = id,

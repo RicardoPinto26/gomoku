@@ -1,13 +1,15 @@
 package pt.isel.leic.daw.gomokuRoyale.services.game
 
-import pt.isel.leic.daw.gomokuRoyale.domain.Game
+import pt.isel.leic.daw.gomokuRoyale.domain.Position
 
 interface GameService {
-    fun createGame(name: String, tokenUser1: String, tokenUser2: String, lobbyId: Int): GameCreationResult
+    fun createGame(lobbyId: Int, userId: Int): GameCreationResult
 
-    fun forfeitGame(gameId: Int, token: String): GameForfeitResult
+    fun forfeitGame(gameId: Int, userId: Int): GameForfeitResult
 
-    // fun playGame(gameId: Int, user: Int, position: Position): GamePlayResult
+    fun playGame(gameId: Int, userId: Int, position: Position): GamePlayResult
 
-    fun getGameByLobbyId(lobbyId: Int): Game?
+    //fun getGameById(gameId: Int): GameIdentificationResult?
+
+    //fun getGameByLobbyId(lobbyId: Int): Game?
 }

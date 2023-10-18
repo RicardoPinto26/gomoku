@@ -115,9 +115,7 @@ class UserServiceImpl(
 
         return transactionManager.run {
             val usersRepository = it.userRepository
-            logger.info("userRepo : $usersRepository")
             val tokenValidationInfo = TokenValidationInfo(token)
-            logger.info("tokenValidInfo : $tokenValidationInfo")
             val userAndToken = usersRepository.getTokenByTokenValidationInfo(tokenValidationInfo)
             logger.info("userAndToken : $userAndToken")
             if (userAndToken != null && userDomain.isTokenTimeValid(clock, userAndToken.second)) {

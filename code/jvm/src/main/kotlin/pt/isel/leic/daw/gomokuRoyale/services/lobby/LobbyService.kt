@@ -4,6 +4,7 @@ import pt.isel.leic.daw.gomokuRoyale.domain.Lobby
 
 interface LobbyService {
     fun createLobby(
+        name: String,
         token: String,
         gridSize: Int,
         opening: String,
