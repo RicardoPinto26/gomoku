@@ -26,29 +26,20 @@ create table tokens
 create table lobbys
 (
     id              SERIAL PRIMARY KEY,
+    name            VARCHAR(50) NOT NULL UNIQUE,
     creator_user_id INT         NOT NULL REFERENCES users (id),
     join_user_id    INT         REFERENCES users (id) DEFAULT NULL,
     grid_size       INT         NOT NULL,
     opening         VARCHAR(50) NOT NULL,
     variant         VARCHAR(50) NOT NULL,
     points_margin   INT         NOT NULL DEFAULT 200,
-    created_at      TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at      timestamp   NOT NULL DEFAULT  current_timestamp
 );
 
 create table games
 (
-    id              SERIAL PRIMARY KEY,
-    name            VARCHAR(50)               NOT NULL,
-    lobby_id        INT REFERENCES lobbys (id),
-    player_black_id INT REFERENCES users (id) NOT NULL,
-    player_white_id INT REFERENCES users (id) NOT NULL,
-    created_at      TIMESTAMP                 NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
-
-create table game_state
-(
     id      SERIAL PRIMARY KEY,
-    game_id INT REFERENCES games (id) NOT NULL,
+    lobby_id INT REFERENCES lobbys (id) NOT NULL,
     turn    INT REFERENCES users (id) NOT NULL,
     winner  INT REFERENCES users (id) DEFAULT NULL,
     board jsonb NOT NULL,
