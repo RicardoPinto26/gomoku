@@ -7,6 +7,6 @@ data class GameSettings(
     val overflowAllowed: Boolean = true
 ) {
     init {
-        require(winningLength <= boardSize)
+        //require(winningLength <= boardSize)
     }
 }

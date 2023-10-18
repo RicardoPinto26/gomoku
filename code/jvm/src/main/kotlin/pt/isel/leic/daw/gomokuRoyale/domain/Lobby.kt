@@ -6,19 +6,20 @@ import java.util.Date
 const val MAX_POINTS_MARGIN = Int.MAX_VALUE
 
 data class Lobby(
+    val name: String,
     val id: Int,
     private val game: Game? = null,
     val user1: User,
-    private val user2: User?,
+    val user2: User?,
     private val pointsMargin: Int = MAX_POINTS_MARGIN, // a 1400 point player creates a lobby with 400 point margin, he can match with a 1000 to 1800 point player
     private val startedAt: Date,
-    private val settings: GameSettings
+    val settings: GameSettings
 ) {
     fun addUser(user: User): Lobby {
         require(user != user1)
         require(user2 == null)
 
-        return copy(user2 = user, game = Game(user1, user, settings))
+        return copy(user2 = user, game = Game(name, user1, user, settings))
     }
 
     fun placePiece(piece: Piece, position: Position, user: User): Lobby {
@@ -35,5 +36,9 @@ data class Lobby(
 
     fun isLobbyFull(): Boolean {
         return user2 != null
+    }
+
+    fun isLobbyStarted(): Boolean {
+        return game != null
     }
 }

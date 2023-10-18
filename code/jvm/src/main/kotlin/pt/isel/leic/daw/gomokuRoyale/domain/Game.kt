@@ -3,16 +3,16 @@ package pt.isel.leic.daw.gomokuRoyale.domain
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 
 data class Game internal constructor(
-    // val id: Int,
-    // val name: String,
+    val name: String,
     val user1: User,
     val user2: User,
     private val settings: GameSettings,
     val board: Board
 ) {
 
-    constructor(user1: User, user2: User, settings: GameSettings) :
+    constructor(name: String, user1: User, user2: User, settings: GameSettings) :
         this(
+            name,
             user1,
             user2,
             settings,
@@ -60,7 +60,19 @@ data class Game internal constructor(
         return board is BoardWin || board is BoardDraw
     }
 
+    fun checkUserInGame(userId: Int): User? {
+        return when (userId) {
+            user1.id -> user1
+            user2.id -> user2
+            else -> null
+        }
+    }
+
     fun checkGameCreation(user1: User, user2: User, settings: GameSettings): Boolean {
         return user1 != user2 && settings.boardSize >= 5 && settings.boardSize <= 19 && settings.winningLength >= 3 && settings.winningLength <= settings.boardSize
+    }
+
+    fun otherTurn(user: Int): User {
+        return if (user == user1.id) user2 else user1
     }
 }

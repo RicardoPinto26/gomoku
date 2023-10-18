@@ -1,5 +1,8 @@
 package pt.isel.leic.daw.gomokuRoyale.domain
 
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 import kotlin.math.max
 import kotlin.math.min
@@ -129,4 +132,14 @@ data class BoardRun internal constructor(
             player2.user -> player2
             else -> throw IllegalArgumentException("User is not a player on this board")
         }
+}
+
+fun List<List<Piece?>>.serializeToJsonString(): String {
+    val objectMapper = ObjectMapper()
+    return objectMapper.writeValueAsString(this)
+}
+
+fun String.parseJsonToBoard(): List<List<Piece?>> {
+    val objectMapper = jacksonObjectMapper()
+    return objectMapper.readValue(this)
 }
