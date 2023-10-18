@@ -67,5 +67,53 @@ class Problem(
                 "userAlreadyInLobby.com"
             )
         )
+
+        val lobbyDoesNotExist = Problem(
+            URI(
+                "lobbyDoesNotExist.com"
+            )
+        )
+
+        val lobbyNotFull = Problem(
+            URI(
+                "lobbyNotFull.com"
+            )
+        )
+
+        val lobbyAlreadyHasGame = Problem(
+            URI(
+                "lobbyAlreadyHasGame.com"
+            )
+        )
+
+        val userNotInLobby = Problem(
+            URI(
+                "userNotInLobby.com"
+            )
+        )
+
+        val gameAlreadyEnded = Problem(
+            URI(
+                "gameAlreadyEnded.com"
+            )
+        )
+
+        val gameDoesNotExist = Problem(
+            URI(
+                "gameDoesNotExist.com"
+            )
+        )
+
+        val userNotInGame = Problem(
+            URI(
+                "userNotInGame.com"
+            )
+        )
+
+        val gameAlreadyStarted = Problem(
+            URI(
+                "gameAlreadyStarted.com"
+            )
+        )
     }
 }
