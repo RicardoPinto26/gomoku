@@ -4,7 +4,7 @@ import org.apache.catalina.User
 import pt.isel.leic.daw.gomokuRoyale.domain.Lobby
 
 interface LobbyRepositoryInterface {
-    fun createLobby(userId: Int, gridSize: Int, opening: String, variant: String, pointsMargin: Int): Int
+    fun createLobby(name: String, userId: Int, gridSize: Int, opening: String, variant: String, pointsMargin: Int): Int
 
     fun joinLobby(userId: Int, lobbyId: Int): Int
 
