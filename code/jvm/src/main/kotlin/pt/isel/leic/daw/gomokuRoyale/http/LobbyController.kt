@@ -33,11 +33,12 @@ class LobbyController(
         logger.info("${body.pointsMargin}")
         return when (
             val res = lobbyService.createLobby(
-                    user.token,
-                    body.gridSize,
-                    body.opening,
-                    body.variant,
-                    body.pointsMargin
+                body.name,
+                user.token,
+                body.gridSize,
+                body.opening,
+                body.variant,
+                body.pointsMargin
             )
         ) {
             is Success -> {

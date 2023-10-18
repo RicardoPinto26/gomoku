@@ -27,7 +27,13 @@ object Uris {
 
     object Lobby {
         const val CREATE_LOBBY = "$PREFIX/lobby"
-        const val JOIN_LOBBY = "$PREFIX/lobby/{lobbyId}"
+        const val JOIN_LOBBY = "$PREFIX/lobby/{lobbyId}/join"
         //const val GET_LOBBY_DETAILS = "$PREFIX/lobby/{lobbyId}"
+    }
+
+    object Game {
+        const val CREATE_GAME = "$PREFIX/game/create"
+        const val FORFEIT_GAME = "$PREFIX/game/{gameId}/forfeit"
+        const val PLAY_GAME = "$PREFIX/game/{gameId}/play"
     }
 }
