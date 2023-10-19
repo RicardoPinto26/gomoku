@@ -9,7 +9,7 @@ class Problem(
     val type = typeUri.toASCIIString()
 
     companion object {
-        const val MEDIA_TYPE = "application/problem+json"
+        private const val MEDIA_TYPE = "application/problem+json"
         fun response(status: Int, problem: Problem) = ResponseEntity
             .status(status)
             .header("Content-Type", MEDIA_TYPE)
@@ -20,16 +20,29 @@ class Problem(
                 "userAlreadyExists.com"
             )
         )
+
+        val userOrPasswordAreInvalid = Problem(
+                URI(
+                        "userOrPasswordAreInvalid.com"
+                )
+        )
+
         val insecurePassword = Problem(
             URI(
                 "insecurePassword.com"
             )
         )
 
-        val userOrPasswordAreInvalid = Problem(
+        val invalidUsername = Problem(
             URI(
-                "userOrPasswordAreInvalid.com"
+                "invalidUsername.com"
             )
+        )
+
+        val invalidEmail = Problem(
+                URI(
+                        "invalidEmail.com"
+                )
         )
 
         val invalidRequestContent = Problem(

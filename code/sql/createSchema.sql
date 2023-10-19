@@ -38,12 +38,12 @@ create table lobbys
 
 create table games
 (
-    id      SERIAL PRIMARY KEY,
-    lobby_id INT REFERENCES lobbys (id) NOT NULL,
-    turn    INT REFERENCES users (id) NOT NULL,
-    winner  INT REFERENCES users (id) DEFAULT NULL,
-    board jsonb NOT NULL,
-    state   VARCHAR(30) CHECK ( state IN ('AWAITING FIRST MOVE', 'IN_PROGRESS', 'FINISHED')) DEFAULT 'AWAITING FIRST MOVE'
+    id          SERIAL PRIMARY KEY,
+    lobby_id    INT REFERENCES lobbys (id) NOT NULL,
+    turn        INT REFERENCES users (id) NOT NULL,
+    winner      INT REFERENCES users (id) DEFAULT NULL,
+    board       jsonb NOT NULL,
+    state       VARCHAR(30) CHECK ( state IN ('AWAITING FIRST MOVE', 'IN_PROGRESS', 'FINISHED')) DEFAULT 'AWAITING FIRST MOVE'
 );
 
 create table moves

@@ -54,7 +54,7 @@ class GameRepositoryJDBI(private val handle: Handle) : GameRepository {
     override fun updateGameBoard(gameId: Int, turn: Int, board: String): Int {
         return handle.createUpdate(
             """
-            update games set board = CAST(:board AS jsonb), turn = :turn where id = :game_id
+            update games set board = CAST(:board AS jsonb), turn = :turn, state = 'IN_PROGRESS' where id = :game_id
             """.trimIndent()
         )
             .bind("game_id", gameId)

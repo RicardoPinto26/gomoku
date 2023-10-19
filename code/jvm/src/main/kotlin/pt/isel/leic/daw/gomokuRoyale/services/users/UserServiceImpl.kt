@@ -28,7 +28,11 @@ class UserServiceImpl(
             userDomain.checkUserCredentialsRegister(username, email, password)
         } catch (e: Exception) {
             logger.info(e.message)
-            return failure(UserCreationError.InsecurePassword)
+            when(e.message){
+                "Invalid username: $username"   -> return failure(UserCreationError.InvalidUsername)
+                "Invalid email: $email"         -> return failure(UserCreationError.InvalidEmail)
+                "Insecure password"             -> return failure(UserCreationError.InsecurePassword)
+            }
         }
         logger.info("Checked user credentials")
 

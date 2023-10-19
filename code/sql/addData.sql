@@ -1,6 +1,5 @@
 INSERT INTO users (username, email, password)
-VALUES ('Francisco Medeiros', 'a46631@alunos.isel.pt',
-        '3e23edee0e2d5b04162bcbf6b34257890435f595e623e5fbc6b99f286f155e3a'),
+VALUES ('Francisco Medeiros', 'a46631@alunos.isel.pt', '3e23edee0e2d5b04162bcbf6b34257890435f595e623e5fbc6b99f286f155e3a'),
        ('Luis Macario', 'a47671@alunos.isel.pt', '5cd04b9b8b15fe69460218d1ed0f5724cfb6f7c8ef4c3b3e3c25f89c435b391c'),
        ('Ricardo Pinto', 'a47673@alunos.isel.pt', 'f7d3ce0d2bc3127c7c898e35c6d8b59f3faaf2243cb6e8f6c960c3a33c055d6b');
 
@@ -13,8 +12,8 @@ VALUES ('Game 1', 1, 2, 15, 'Standard', 'Classic'),
        ('Game 2', 2, 1, 19, 'Standard', 'Classic');
 
 INSERT INTO games (lobby_id, turn, winner, board, state)
-VALUES (1, 1, null, '{}', 'AWAITING FIRST MOVE'),
-       (2, 1, null, '{}', 'AWAITING FIRST MOVE');
+VALUES (1, 1, null, '[[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null]]', 'AWAITING FIRST MOVE'),
+       (2, 1, null, '[[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null]]', 'AWAITING FIRST MOVE');
 
 INSERT INTO moves (game_id, user_id, move_x, move_y)
 VALUES (1, 1, 7, 7),

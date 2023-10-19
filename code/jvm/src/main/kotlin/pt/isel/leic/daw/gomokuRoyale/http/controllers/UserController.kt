@@ -42,6 +42,8 @@ class UserController(
             is Failure -> when (res.value) {
                 UserCreationError.InsecurePassword -> Problem.response(400, Problem.insecurePassword)
                 UserCreationError.UserAlreadyExists -> Problem.response(409, Problem.userAlreadyExists)
+                UserCreationError.InvalidUsername -> Problem.response(400, Problem.invalidUsername)
+                UserCreationError.InvalidEmail -> Problem.response(400, Problem.invalidEmail)
             }
         }
     }

@@ -23,11 +23,10 @@ class LobbyMapper : RowMapper<Lobby> {
 
         logger.info("LobbyMapper: $id, $joinUserId, $gridSize, $pointsMargin, $createdAt, $user1, $user2")
 
-        // TODO create game mapper
         return Lobby(
             name,
             id,
-            null, // TODO go go peras
+            null,
             user1,
             user2,
             pointsMargin,
