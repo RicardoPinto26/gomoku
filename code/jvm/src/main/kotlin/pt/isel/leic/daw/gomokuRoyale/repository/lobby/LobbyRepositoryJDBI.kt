@@ -66,13 +66,13 @@ class LobbyRepositoryJDBI(private val handle: Handle) : LobbyRepository {
             """
             select
                 l.*,
-                player1.id as creator_user_id, player1.username as creator_user_username, player1.email creator_user_email,
-                player1.password as creator_user_password, player1.rating as creator_user_rating, player1.nr_games_played creator_user_nr_games_played,
-                player2.id as join_user_id, player2.username as join_user_username, player2.email creator_user_email,
-                player2.password as creator_user_password, player2.rating as creator_user_rating, player2.nr_games_played creator_user_nr_games_played
+                user1.id as user1_id, user1.username as user1_username, user1.email as user1_email,
+                user1.password as user1_password, user1.rating as user1_rating, user1.nr_games_played as user1_nr_games_played,
+                user2.id as user2_id, user2.username as user2_username, user2.email as user2_email,
+                user2.password as user2_password, user2.rating as user2_rating, user2.nr_games_played as user2_nr_games_played
             from lobbys as l
-            LEFT JOIN users as player1 ON l.creator_user_id = player1.id
-            LEFT JOIN users as player2 ON l.join_user_id = player2.id
+            LEFT JOIN users as user1 ON l.creator_user_id = user1.id
+            LEFT JOIN users as user2 ON l.join_user_id = user2.id
             where l.creator_user_id = :user_id OR l.join_user_id = :user_id
             """.trimIndent()
         )
