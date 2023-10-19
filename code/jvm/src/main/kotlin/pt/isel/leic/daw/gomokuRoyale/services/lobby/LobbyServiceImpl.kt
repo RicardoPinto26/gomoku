@@ -2,20 +2,25 @@ package pt.isel.leic.daw.gomokuRoyale.services.lobby
 
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import pt.isel.leic.daw.gomokuRoyale.domain.BoardRun
+import pt.isel.leic.daw.gomokuRoyale.domain.Game
 import pt.isel.leic.daw.gomokuRoyale.domain.Lobby
-import pt.isel.leic.daw.gomokuRoyale.repository.jdbi.JdbiTransactionManager
-import pt.isel.leic.daw.gomokuRoyale.services.users.UserServiceImpl
+import pt.isel.leic.daw.gomokuRoyale.domain.serializeToJsonString
+import pt.isel.leic.daw.gomokuRoyale.domain.user.User
+import pt.isel.leic.daw.gomokuRoyale.repository.TransactionManager
+import pt.isel.leic.daw.gomokuRoyale.services.users.UserService
 import pt.isel.leic.daw.gomokuRoyale.utils.failure
 import pt.isel.leic.daw.gomokuRoyale.utils.success
 
 @Component
 class LobbyServiceImpl(
-    private val transactionManager: JdbiTransactionManager,
-    private val usersService: UserServiceImpl
+    private val transactionManager: TransactionManager,
+    private val usersService: UserService
 ) : LobbyService {
-    companion object{
+    companion object {
         private val logger = LoggerFactory.getLogger(LobbyServiceImpl::class.java)
     }
+
     override fun createLobby(
         name: String,
         token: String,
@@ -72,5 +77,51 @@ class LobbyServiceImpl(
 
     override fun getLobbyByUserToken(token: String): Lobby? {
         TODO("Not yet implemented")
+    }
+
+    override fun seekLobby(
+        user: User,
+        gridSize: Int,
+        winningLength: Int,
+        opening: String,
+        pointsMargin: Int
+    ): LobbySeekResult {
+        return transactionManager.run {
+            val lobbyRepo = it.lobbyRepository
+
+            if (lobbyRepo.getUserLobbys(user.id).any { lobby -> !lobby.isGameFinished() }
+            ) {
+                return@run failure(LobbySeekError.UserAlreadyInALobby)
+            }
+
+            val userRating = user.rating.toInt()
+            val lobbyID: Int? = lobbyRepo.seekLobbyID(
+                userRating,
+                gridSize,
+                winningLength,
+                opening,
+                userRating - pointsMargin,
+                userRating + pointsMargin
+            )
+            if (lobbyID != null) {
+                lobbyRepo.joinLobby(user.id, lobbyID)
+                val gameRepo = it.gameRepository
+                val lobby = lobbyRepo.getLobbyById(lobbyID)!!
+                val game = Game(
+                    lobby.name,
+                    lobby.user1,
+                    lobby.user2!!,
+                    lobby.settings
+                )
+                gameRepo.createGame(
+                    lobbyID,
+                    (game.board as BoardRun).turn.user.id,
+                    game.board.internalBoard.serializeToJsonString()
+                )
+                return@run success(LobbyExternalInfo(lobby))
+            }
+            val createdLobbyID = lobbyRepo.createLobby("Seeked Lobby", user.id, gridSize, opening, "???", pointsMargin)
+            return@run success(LobbyExternalInfo(lobbyRepo.getLobbyById(createdLobbyID)!!))
+        }
     }
 }

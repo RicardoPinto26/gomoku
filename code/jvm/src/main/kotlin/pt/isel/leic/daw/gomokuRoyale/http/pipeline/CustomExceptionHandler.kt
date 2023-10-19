@@ -1,4 +1,4 @@
-package pt.isel.leic.daw.gomokuRoyale.http
+package pt.isel.leic.daw.gomokuRoyale.http.pipeline
 
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpHeaders

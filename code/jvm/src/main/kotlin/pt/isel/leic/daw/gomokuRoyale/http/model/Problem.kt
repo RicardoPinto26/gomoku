@@ -115,5 +115,11 @@ class Problem(
                 "gameAlreadyStarted.com"
             )
         )
+
+        val userAlreadyInALobby = Problem(
+            URI(
+                "userAlreadyInALobby.com"
+            )
+        )
     }
 }

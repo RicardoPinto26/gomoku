@@ -9,7 +9,7 @@ interface GameService {
 
     fun playGame(gameId: Int, userId: Int, position: Position): GamePlayResult
 
-    //fun getGameById(gameId: Int): GameIdentificationResult?
+    // fun getGameById(gameId: Int): GameIdentificationResult?
 
-    //fun getGameByLobbyId(lobbyId: Int): Game?
+    // fun getGameByLobbyId(lobbyId: Int): Game?
 }

@@ -15,9 +15,9 @@ import pt.isel.leic.daw.gomokuRoyale.utils.success
 
 @Component
 class UserServiceImpl(
-        private val transactionManager: TransactionManager,
-        private val userDomain: UserDomain,
-        private val clock: Clock
+    private val transactionManager: TransactionManager,
+    private val userDomain: UserDomain,
+    private val clock: Clock
 ) : UserService {
 
     override fun registerUser(username: String, email: String, password: String): UserCreationResult {
@@ -51,12 +51,12 @@ class UserServiceImpl(
             return@run try {
                 userRepo.createUser(username, email, hashedPassword, STARTING_RATING)
                 success(
-                        UserExternalInfo(
-                                username = username,
-                                email = email,
-                                rating = STARTING_RATING.toInt(),
-                                gamesPlayed = 0
-                        )
+                    UserExternalInfo(
+                        username = username,
+                        email = email,
+                        rating = STARTING_RATING.toInt(),
+                        gamesPlayed = 0
+                    )
                 )
             } catch (e: Exception) {
                 failure(UserCreationError.UserAlreadyExists)
@@ -70,7 +70,7 @@ class UserServiceImpl(
         return transactionManager.run {
             val userRepo = it.userRepository
             val user: User = userRepo.getUserByUsername(username)
-                    ?: return@run failure(TokenCreationError.UserOrPasswordAreInvalid)
+                ?: return@run failure(TokenCreationError.UserOrPasswordAreInvalid)
             if (!userDomain.checkPassword(password, user.password)) {
                 return@run failure(TokenCreationError.UserOrPasswordAreInvalid)
             }
@@ -78,17 +78,17 @@ class UserServiceImpl(
             val tokenValue = userDomain.generateTokenValue()
             val now = clock.now()
             val newToken = Token(
-                    createdAt = now,
-                    lastUsedAt = now,
-                    userID = user.id,
-                    token = tokenValue
+                createdAt = now,
+                lastUsedAt = now,
+                userID = user.id,
+                token = tokenValue
             )
             userRepo.createToken(user.id, newToken, userDomain.config.maxTokensPerUser)
             Either.Right(
-                    TokenExternalInfo(
-                            tokenValue,
-                            userDomain.getTokenExpiration(newToken)
-                    )
+                TokenExternalInfo(
+                    tokenValue,
+                    userDomain.getTokenExpiration(newToken)
+                )
             )
         }
     }

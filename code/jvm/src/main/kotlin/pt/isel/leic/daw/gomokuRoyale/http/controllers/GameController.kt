@@ -1,4 +1,4 @@
-package pt.isel.leic.daw.gomokuRoyale.http
+package pt.isel.leic.daw.gomokuRoyale.http.controllers
 
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PathVariable
@@ -7,12 +7,19 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import pt.isel.leic.daw.gomokuRoyale.domain.AuthenticatedUser
 import pt.isel.leic.daw.gomokuRoyale.domain.Position
+import pt.isel.leic.daw.gomokuRoyale.http.Uris
 import pt.isel.leic.daw.gomokuRoyale.http.model.Problem
-import pt.isel.leic.daw.gomokuRoyale.http.model.game.*
-import pt.isel.leic.daw.gomokuRoyale.services.game.*
+import pt.isel.leic.daw.gomokuRoyale.http.model.game.GameCreateInputModel
+import pt.isel.leic.daw.gomokuRoyale.http.model.game.GameCreateOutputModel
+import pt.isel.leic.daw.gomokuRoyale.http.model.game.GameForfeitOutputModel
+import pt.isel.leic.daw.gomokuRoyale.http.model.game.GamePlayInputModel
+import pt.isel.leic.daw.gomokuRoyale.http.model.game.GamePlayOutputModel
+import pt.isel.leic.daw.gomokuRoyale.services.game.GameCreationError
+import pt.isel.leic.daw.gomokuRoyale.services.game.GameForfeitError
+import pt.isel.leic.daw.gomokuRoyale.services.game.GamePlayError
+import pt.isel.leic.daw.gomokuRoyale.services.game.GameService
 import pt.isel.leic.daw.gomokuRoyale.utils.Failure
 import pt.isel.leic.daw.gomokuRoyale.utils.Success
-
 
 @RestController
 class GameController(
@@ -22,7 +29,7 @@ class GameController(
     @PostMapping(Uris.Game.CREATE_GAME)
     fun createGame(
         user: AuthenticatedUser,
-        @RequestBody body: CreateGameInputModel
+        @RequestBody body: GameCreateInputModel
     ): ResponseEntity<*> {
         return when (val res = gameService.createGame(body.lobbyId, user.user.id)) {
             is Success -> ResponseEntity.status(201)
@@ -30,7 +37,7 @@ class GameController(
 
             is Failure -> when (res.value) {
                 GameCreationError.LobbyDoesNotExist -> Problem.response(404, Problem.lobbyDoesNotExist)
-                //GameCreationError.GameWithThatNameAlreadyExists -> TODO()
+                // GameCreationError.GameWithThatNameAlreadyExists -> TODO()
                 GameCreationError.LobbyAlreadyHasGame -> Problem.response(409, Problem.lobbyAlreadyHasGame)
                 GameCreationError.LobbyNotFull -> Problem.response(409, Problem.lobbyDoesNotExist)
                 GameCreationError.UserNotInLobby -> Problem.response(409, Problem.userNotInLobby)
@@ -58,7 +65,7 @@ class GameController(
     fun playGame(
         user: AuthenticatedUser,
         @PathVariable gameId: Int,
-        @RequestBody body: PlayGameInputModel
+        @RequestBody body: GamePlayInputModel
     ): ResponseEntity<*> {
         return when (val res = gameService.playGame(gameId, user.user.id, Position(body.x, body.y))) {
             is Success -> ResponseEntity.status(200)
@@ -75,12 +82,3 @@ class GameController(
         }
     }
 }
-
-
-
-
-
-
-
-
-

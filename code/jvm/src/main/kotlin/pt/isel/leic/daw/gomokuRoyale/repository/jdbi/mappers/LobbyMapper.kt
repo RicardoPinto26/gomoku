@@ -9,9 +9,7 @@ import pt.isel.leic.daw.gomokuRoyale.domain.Opening
 import java.sql.Date
 import java.sql.ResultSet
 
-
-class LobbyMapper(
-) : RowMapper<Lobby> {
+class LobbyMapper : RowMapper<Lobby> {
     override fun map(rs: ResultSet, ctx: StatementContext): Lobby {
         val name = rs.getString("name")
         val id = rs.getInt("id")
@@ -20,16 +18,16 @@ class LobbyMapper(
         val pointsMargin = rs.getInt("points_margin")
         val createdAt = rs.getTimestamp("created_at").toInstant()
 
-        val user1 = UserMapper().map(rs,"creator_user_")
+        val user1 = UserMapper().map(rs, "creator_user_")
         val user2 = if (joinUserId > 0) UserMapper().map(rs, "join_user_") else null
 
         logger.info("LobbyMapper: $id, $joinUserId, $gridSize, $pointsMargin, $createdAt, $user1, $user2")
 
-        //TODO create game mapper
+        // TODO create game mapper
         return Lobby(
             name,
             id,
-            null,  // TODO go go peras
+            null, // TODO go go peras
             user1,
             user2,
             pointsMargin,
@@ -38,7 +36,7 @@ class LobbyMapper(
         )
     }
 
-    companion object{
+    companion object {
         private val logger = LoggerFactory.getLogger(LobbyMapper::class.java)
     }
 }

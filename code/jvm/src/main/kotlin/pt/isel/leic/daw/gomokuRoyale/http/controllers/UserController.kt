@@ -1,4 +1,4 @@
-package pt.isel.leic.daw.gomokuRoyale.http
+package pt.isel.leic.daw.gomokuRoyale.http.controllers
 
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import pt.isel.leic.daw.gomokuRoyale.domain.AuthenticatedUser
+import pt.isel.leic.daw.gomokuRoyale.http.Uris
 import pt.isel.leic.daw.gomokuRoyale.http.model.Problem
 import pt.isel.leic.daw.gomokuRoyale.http.model.user.UserCreateInputModel
 import pt.isel.leic.daw.gomokuRoyale.http.model.user.UserCreateOutputModel
@@ -72,12 +73,13 @@ class UserController(
     fun userDetails(@PathVariable username: String): ResponseEntity<*> {
         logger.info("Request received for user $username details")
         return when (val res = userService.getStats(username)) {
-            is Success ->{
+            is Success -> {
                 logger.info("Success request")
                 ResponseEntity.status(200)
-                        .body(UserGetStatisticsOutputModel(res.value))
+                    .body(UserGetStatisticsOutputModel(res.value))
             }
-            is Failure ->{
+
+            is Failure -> {
                 logger.info("Failed request")
                 when (res.value) {
                     GetUserStatsError.NoSuchUser ->

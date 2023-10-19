@@ -17,7 +17,7 @@ class UserDomain(
     val tokenEncoder: TokenEncoder,
     val config: UserDomainConfig
 ) {
-    companion object{
+    companion object {
         private val logger = LoggerFactory.getLogger(UserDomain::class.java)
     }
 
@@ -87,7 +87,7 @@ class UserDomain(
 
         return token.createdAt <= now &&
             (now - token.createdAt) <= config.tokenTtl
-                //&& (now - token.lastUsedAt) <= config.tokenRollingTtl
+        // && (now - token.lastUsedAt) <= config.tokenRollingTtl
     }
 
     fun createTokenValidationInformation(token: String): TokenValidationInfo =

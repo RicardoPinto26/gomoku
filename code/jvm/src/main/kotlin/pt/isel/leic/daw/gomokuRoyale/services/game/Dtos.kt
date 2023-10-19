@@ -5,7 +5,7 @@ import pt.isel.leic.daw.gomokuRoyale.domain.Position
 import pt.isel.leic.daw.gomokuRoyale.utils.Either
 
 sealed class GameCreationError {
-    //object GameWithThatNameAlreadyExists : GameCreationError()
+    // object GameWithThatNameAlreadyExists : GameCreationError()
     object LobbyDoesNotExist : GameCreationError()
     object LobbyAlreadyHasGame : GameCreationError()
     object LobbyNotFull : GameCreationError()
@@ -25,7 +25,7 @@ data class GameCreationExternalInfo(
 typealias GameCreationResult = Either<GameCreationError, GameCreationExternalInfo>
 
 /**
- --------------------------------------------------------------------------
+--------------------------------------------------------------------------
  */
 
 sealed class GameForfeitError {
@@ -57,7 +57,7 @@ sealed class GamePlayError {
 data class GamePlayExternalInfo(
     val lastMove: Position,
     val username: String,
-    val board: String,
+    val board: String
 )
 
 typealias GamePlayResult = Either<GamePlayError, GamePlayExternalInfo>
@@ -65,7 +65,6 @@ typealias GamePlayResult = Either<GamePlayError, GamePlayExternalInfo>
 /**
 --------------------------------------------------------------------------
  */
-
 
 sealed class GameIdentificationError {
     object GameDoesNotExist : GameIdentificationError()

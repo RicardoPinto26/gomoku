@@ -1,6 +1,6 @@
 package pt.isel.leic.daw.gomokuRoyale.services.lobby
 
-import pt.isel.leic.daw.gomokuRoyale.domain.Game
+import pt.isel.leic.daw.gomokuRoyale.domain.Lobby
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 import pt.isel.leic.daw.gomokuRoyale.utils.Either
 
@@ -10,14 +10,23 @@ sealed class LobbyCreationError {
 
 data class LobbyExternalInfo(
     val id: Int, // lobbyId
-    val game: Game? = null,
     val user1: User,
     val user2: User? = null,
     val gridSize: Int,
     val opening: String,
     val variant: String,
     val pointsMargin: Int
-)
+) {
+    constructor(lobby: Lobby) : this(
+        lobby.id,
+        lobby.user1,
+        lobby.user2,
+        lobby.settings.boardSize,
+        lobby.settings.opening.toString(),
+        "???",
+        lobby.pointsMargin
+    )
+}
 
 typealias LobbyCreationResult = Either<LobbyCreationError, LobbyExternalInfo>
 
@@ -34,4 +43,10 @@ data class LobbyJoinExternalInfo(
     val lobbyId: Int
 )
 
+sealed class LobbySeekError {
+    object UserAlreadyInALobby : LobbySeekError()
+}
+
 typealias LobbyJoinResult = Either<LobbyJoinError, LobbyJoinExternalInfo>
+
+typealias LobbySeekResult = Either<LobbySeekError, LobbyExternalInfo>

@@ -2,10 +2,18 @@ package pt.isel.leic.daw.gomokuRoyale.repository.jdbi.mappers
 
 import org.jdbi.v3.core.mapper.RowMapper
 import org.jdbi.v3.core.statement.StatementContext
-import pt.isel.leic.daw.gomokuRoyale.domain.*
+import pt.isel.leic.daw.gomokuRoyale.domain.BlackPlayer
+import pt.isel.leic.daw.gomokuRoyale.domain.BoardRun
+import pt.isel.leic.daw.gomokuRoyale.domain.BoardWin
+import pt.isel.leic.daw.gomokuRoyale.domain.Game
+import pt.isel.leic.daw.gomokuRoyale.domain.GameSettings
+import pt.isel.leic.daw.gomokuRoyale.domain.Opening
+import pt.isel.leic.daw.gomokuRoyale.domain.createBlackPlayer
+import pt.isel.leic.daw.gomokuRoyale.domain.createWhitePlayer
+import pt.isel.leic.daw.gomokuRoyale.domain.parseJsonToBoard
 import java.sql.ResultSet
 
-class GameMapper() : RowMapper<Game> {
+class GameMapper : RowMapper<Game> {
     override fun map(rs: ResultSet, ctx: StatementContext): Game? {
         val lobby = LobbyMapper().map(rs, ctx)
         val name = rs.getString("game_name")
@@ -18,17 +26,18 @@ class GameMapper() : RowMapper<Game> {
         val turn =
             if (rs.getInt("game_turn") == 1) {
                 createBlackPlayer(user1)
-            } else createWhitePlayer(user2)
-
+            } else {
+                createWhitePlayer(user2)
+            }
 
         return Game(
             name,
             user1,
             user2,
             settings,
-            if (winner == 0)
+            if (winner == 0) {
                 BoardRun(
-                    //settings.boardSize,
+                    // settings.boardSize,
                     settings.winningLength,
                     settings.overflowAllowed,
                     turn,
@@ -36,9 +45,9 @@ class GameMapper() : RowMapper<Game> {
                     BlackPlayer(user2),
                     board.parseJsonToBoard()
                 )
-            else
-                BoardWin(board.parseJsonToBoard(), BlackPlayer(user1)),
+            } else {
+                BoardWin(board.parseJsonToBoard(), BlackPlayer(user1))
+            }
         )
     }
 }
-

@@ -37,7 +37,6 @@ class AuthenticatedUserArgumentResolver : HandlerMethodArgumentResolver {
         }
 
         fun getUserFrom(request: HttpServletRequest): AuthenticatedUser? {
-
             return request.getAttribute(KEY)?.let {
                 logger.info("Getting user")
                 it as? AuthenticatedUser

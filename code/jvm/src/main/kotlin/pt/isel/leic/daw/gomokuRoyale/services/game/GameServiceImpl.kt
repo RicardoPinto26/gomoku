@@ -2,14 +2,19 @@ package pt.isel.leic.daw.gomokuRoyale.services.game
 
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
-import pt.isel.leic.daw.gomokuRoyale.domain.*
+import pt.isel.leic.daw.gomokuRoyale.domain.BoardRun
+import pt.isel.leic.daw.gomokuRoyale.domain.BoardWin
+import pt.isel.leic.daw.gomokuRoyale.domain.Game
+import pt.isel.leic.daw.gomokuRoyale.domain.Piece
+import pt.isel.leic.daw.gomokuRoyale.domain.Position
+import pt.isel.leic.daw.gomokuRoyale.domain.serializeToJsonString
 import pt.isel.leic.daw.gomokuRoyale.repository.TransactionManager
 import pt.isel.leic.daw.gomokuRoyale.utils.failure
 import pt.isel.leic.daw.gomokuRoyale.utils.success
 
 @Component
 class GameServiceImpl(
-    private val transactionManager: TransactionManager,
+    private val transactionManager: TransactionManager
 ) : GameService {
 
     override fun createGame(lobbyId: Int, userId: Int): GameCreationResult {
@@ -19,7 +24,7 @@ class GameServiceImpl(
             if (!lobby.isLobbyFull()) return@run failure(GameCreationError.LobbyNotFull)
             logger.info("User: $userId - ${lobby.user1.id} - ${lobby.user2?.id}")
             if (!lobby.compareUsers(userId)) return@run failure(GameCreationError.UserNotInLobby)
-            //if (!lobby.isLobbyStarted()) return@run failure(GameCreationError.LobbyAlreadyHasGame)
+            // if (!lobby.isLobbyStarted()) return@run failure(GameCreationError.LobbyAlreadyHasGame)
 
             val newGame = Game(
                 lobby.name,
@@ -51,7 +56,6 @@ class GameServiceImpl(
         }
     }
 
-
     override fun forfeitGame(gameId: Int, userId: Int): GameForfeitResult {
         return transactionManager.run {
             val gameRepo = it.gameRepository
@@ -81,7 +85,6 @@ class GameServiceImpl(
         }
     }
 
-
     override fun playGame(gameId: Int, userId: Int, position: Position): GamePlayResult {
         return transactionManager.run {
             val gameRepo = it.gameRepository
@@ -89,28 +92,28 @@ class GameServiceImpl(
             var game = gameRepo.getGameById(gameId) ?: return@run failure(GamePlayError.GameDoesNotExist)
             if (game.checkGameEnd()) return@run failure(GamePlayError.GameAlreadyEnded)
             val user = game.checkUserInGame(userId) ?: return@run failure(GamePlayError.UserNotInGame)
-            val piece = if(game.user1.id == userId) Piece.BLACK else Piece.WHITE // n é o melhor e só dá para o FREESTYLE
+            val piece =
+                if (game.user1.id == userId) Piece.BLACK else Piece.WHITE // n é o melhor e só dá para o FREESTYLE
 
-            //try {
-                game = game.placePiece(piece, position, user)
-                val board = game.board.internalBoard.serializeToJsonString()
-                val turn = game.otherTurn(userId)
+            // try {
+            game = game.placePiece(piece, position, user)
+            val board = game.board.internalBoard.serializeToJsonString()
+            val turn = game.otherTurn(userId)
 
-                gameRepo.updateGameBoard(gameId,turn.id, board)
-                return@run success(
-                    GamePlayExternalInfo(
-                        position,
-                        user.username,
-                        board
-                    )
+            gameRepo.updateGameBoard(gameId, turn.id, board)
+            return@run success(
+                GamePlayExternalInfo(
+                    position,
+                    user.username,
+                    board
                 )
-            //} catch (e: Exception) {
+            )
+            // } catch (e: Exception) {
             //    logger.info("Error: ${e.message}")
             //    failure(GamePlayError.UnknownError)
-            //}
+            // }
         }
     }
-
 
     /*override fun getGameById(gameId: Int): GameIdentificationResult {
         return transactionManager.run {
