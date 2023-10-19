@@ -39,6 +39,12 @@ class Problem(
             )
         )
 
+        val invalidToken = Problem(
+                URI(
+                        "invalidToken.com"
+                )
+        )
+
         val invalidEmail = Problem(
                 URI(
                         "invalidEmail.com"

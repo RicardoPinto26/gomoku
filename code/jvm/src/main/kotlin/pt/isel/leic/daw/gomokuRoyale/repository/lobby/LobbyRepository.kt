@@ -4,7 +4,6 @@ import pt.isel.leic.daw.gomokuRoyale.domain.Lobby
 
 interface LobbyRepository {
     fun createLobby(name: String, userId: Int, gridSize: Int, opening: String, variant: String, pointsMargin: Int): Int
-
     fun joinLobby(userId: Int, lobbyId: Int): Int
 
     fun getLobbyById(lobbyId: Int): Lobby?
@@ -16,11 +15,11 @@ interface LobbyRepository {
     fun getLobbyByVariant(variant: String): Lobby?
 
     fun seekLobbyID(
-        otherRating: Int,
-        gridSize: Int,
-        winningLength: Int,
-        opening: String,
-        minRating: Int,
-        maxRating: Int
+            otherRating: Int,
+            gridSize: Int,
+            winningLength: Int,
+            opening: String,
+            minRating: Int,
+            maxRating: Int
     ): Int?
 }

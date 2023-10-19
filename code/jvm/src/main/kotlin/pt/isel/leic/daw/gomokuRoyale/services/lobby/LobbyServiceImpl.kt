@@ -14,20 +14,20 @@ import pt.isel.leic.daw.gomokuRoyale.utils.success
 
 @Component
 class LobbyServiceImpl(
-    private val transactionManager: TransactionManager,
-    private val usersService: UserService
+        private val transactionManager: TransactionManager,
+        private val usersService: UserService
 ) : LobbyService {
     companion object {
         private val logger = LoggerFactory.getLogger(LobbyServiceImpl::class.java)
     }
 
     override fun createLobby(
-        name: String,
-        token: String,
-        gridSize: Int,
-        opening: String,
-        variant: String,
-        pointsMargin: Int
+            name: String,
+            token: String,
+            gridSize: Int,
+            opening: String,
+            variant: String,
+            pointsMargin: Int
     ): LobbyCreationResult {
         logger.info("Creating Lobby")
         logger.info("$gridSize")
@@ -38,14 +38,14 @@ class LobbyServiceImpl(
             val lobbyRepo = it.lobbyRepository
             val id = lobbyRepo.createLobby(name, user.id, gridSize, opening, variant, pointsMargin)
             return@run success(
-                LobbyExternalInfo(
-                    id = id,
-                    user1 = user,
-                    gridSize = gridSize,
-                    opening = opening,
-                    variant = variant,
-                    pointsMargin = pointsMargin
-                )
+                    LobbyExternalInfo(
+                            id = id,
+                            user1 = user,
+                            gridSize = gridSize,
+                            opening = opening,
+                            variant = variant,
+                            pointsMargin = pointsMargin
+                    )
             )
         }
     }
@@ -54,7 +54,6 @@ class LobbyServiceImpl(
         logger.info("Joining lobby $lobbyId")
         val userService = usersService
         val user = userService.getUserByToken(token) ?: return failure(LobbyJoinError.UserNotFound)
-        logger.info("Got the user")
 
         return transactionManager.run {
             val lobbyRepo = it.lobbyRepository
@@ -63,14 +62,13 @@ class LobbyServiceImpl(
             logger.info("lobby : $lobby")
             if (lobby.compareUsers(user.id)) return@run failure(LobbyJoinError.UserAlreadyInLobby)
             if (lobby.isLobbyFull()) return@run failure(LobbyJoinError.LobbyFull)
-
             val id = lobbyRepo.joinLobby(user.id, lobbyId)
             return@run success(
-                LobbyJoinExternalInfo(
-                    usernameCreator = lobby.user1.username,
-                    usernameJoin = user.username,
-                    lobbyId = id
-                )
+                    LobbyJoinExternalInfo(
+                            usernameCreator = lobby.user1.username,
+                            usernameJoin = user.username,
+                            lobbyId = id
+                    )
             )
         }
     }
@@ -80,11 +78,11 @@ class LobbyServiceImpl(
     }
 
     override fun seekLobby(
-        user: User,
-        gridSize: Int,
-        winningLength: Int,
-        opening: String,
-        pointsMargin: Int
+            user: User,
+            gridSize: Int,
+            winningLength: Int,
+            opening: String,
+            pointsMargin: Int
     ): LobbySeekResult {
         return transactionManager.run {
             val lobbyRepo = it.lobbyRepository
@@ -96,27 +94,27 @@ class LobbyServiceImpl(
 
             val userRating = user.rating.toInt()
             val lobbyID: Int? = lobbyRepo.seekLobbyID(
-                userRating,
-                gridSize,
-                winningLength,
-                opening,
-                userRating - pointsMargin,
-                userRating + pointsMargin
+                    userRating,
+                    gridSize,
+                    winningLength,
+                    opening,
+                    userRating - pointsMargin,
+                    userRating + pointsMargin
             )
             if (lobbyID != null) {
                 lobbyRepo.joinLobby(user.id, lobbyID)
                 val gameRepo = it.gameRepository
                 val lobby = lobbyRepo.getLobbyById(lobbyID)!!
                 val game = Game(
-                    lobby.name,
-                    lobby.user1,
-                    lobby.user2!!,
-                    lobby.settings
+                        lobby.name,
+                        lobby.user1,
+                        lobby.user2!!,
+                        lobby.settings
                 )
                 gameRepo.createGame(
-                    lobbyID,
-                    (game.board as BoardRun).turn.user.id,
-                    game.board.internalBoard.serializeToJsonString()
+                        lobbyID,
+                        (game.board as BoardRun).turn.user.id,
+                        game.board.internalBoard.serializeToJsonString()
                 )
                 return@run success(LobbyExternalInfo(lobby))
             }

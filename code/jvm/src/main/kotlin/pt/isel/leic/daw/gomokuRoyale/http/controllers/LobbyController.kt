@@ -78,7 +78,7 @@ class LobbyController(
                 logger.info("Failed Request")
                 when (res.value) {
                     LobbyJoinError.UserNotFound ->
-                        Problem.response(404, Problem.userWithUsernameNotFound)
+                        Problem.response(404, Problem.invalidToken)
 
                     LobbyJoinError.LobbyNotFound ->
                         Problem.response(404, Problem.lobbyNotFound)
