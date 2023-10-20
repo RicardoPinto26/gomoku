@@ -25,17 +25,17 @@ class LobbyMapper : RowMapper<Lobby> {
         val user1 = UserMapper().map(rs, "user1_")
         val user2 = if (joinUserId > 0) UserMapper().map(rs, "user2_") else null
 
-        logger.info("LobbyMapper: $id, $joinUserId, $gridSize, $pointsMargin, $createdAt, $user1, $user2")
+        logger.info("LobbyMapper: $id, $joinUserId, $gridSize, $pointsMargin, $createdAt")
 
         return Lobby(
-                name,
-                id,
-                null,
-                user1,
-                user2,
-                pointsMargin,
-                Date.from(createdAt),
-                GameSettings(gridSize, 5, Opening.FREESTYLE)
+            name,
+            id,
+            null,
+            user1,
+            user2,
+            pointsMargin,
+            Date.from(createdAt),
+            GameSettings(gridSize, 5, Opening.FREESTYLE)
         )
     }
 }

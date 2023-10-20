@@ -10,7 +10,9 @@ interface GameRepository {
 
     fun getGameByLobbyId(lobbyId: Int): Game?
 
-    fun updateGameWinner(gameId: Int, winner: Int): Int
+    fun updateGameDraw(gameId: Int, board: String): Int
+
+    fun updateGameWinner(gameId: Int, winner: Int, board: String): Int
 
     fun updateGameBoard(gameId: Int, turn: Int, board: String): Int
 }

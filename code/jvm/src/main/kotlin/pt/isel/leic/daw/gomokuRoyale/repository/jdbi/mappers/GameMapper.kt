@@ -9,13 +9,14 @@ import pt.isel.leic.daw.gomokuRoyale.domain.BoardWin
 import pt.isel.leic.daw.gomokuRoyale.domain.Game
 import pt.isel.leic.daw.gomokuRoyale.domain.GameSettings
 import pt.isel.leic.daw.gomokuRoyale.domain.Opening
+import pt.isel.leic.daw.gomokuRoyale.domain.WhitePlayer
 import pt.isel.leic.daw.gomokuRoyale.domain.createBlackPlayer
 import pt.isel.leic.daw.gomokuRoyale.domain.createWhitePlayer
 import pt.isel.leic.daw.gomokuRoyale.domain.parseJsonToBoard
 import java.sql.ResultSet
 
 class GameMapper : RowMapper<Game> {
-    companion object{
+    companion object {
         private val logger = LoggerFactory.getLogger(GameMapper::class.java)
     }
     override fun map(rs: ResultSet, ctx: StatementContext): Game? {
@@ -28,14 +29,19 @@ class GameMapper : RowMapper<Game> {
         val winner = rs.getInt("game_winner")
         val board = boardJson.parseJsonToBoard()
         logger.info(board.toString())
+
+        val turnID = rs.getInt("game_turn")
+        logger.info("TurnID: $turnID")
         val turn =
-            if (rs.getInt("game_turn") == 1) {
+            if (turnID == user1.id) {
+                logger.info("Creating black player")
                 createBlackPlayer(user1)
             } else {
+                logger.info("Creating white player")
                 createWhitePlayer(user2)
             }
 
-        return Game(
+        val game = Game(
             name,
             user1,
             user2,
@@ -45,14 +51,16 @@ class GameMapper : RowMapper<Game> {
                     // settings.boardSize,
                     settings.winningLength,
                     settings.overflowAllowed,
-                    turn,
                     BlackPlayer(user1),
-                    BlackPlayer(user2),
+                    WhitePlayer(user2),
+                    turn,
                     board
                 )
             } else {
                 BoardWin(board, BlackPlayer(user1))
             }
         )
+
+        return game
     }
 }

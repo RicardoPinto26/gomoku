@@ -8,15 +8,12 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import pt.isel.leic.daw.gomokuRoyale.domain.AuthenticatedUser
 import pt.isel.leic.daw.gomokuRoyale.http.Uris
-import pt.isel.leic.daw.gomokuRoyale.http.model.Problem
 import pt.isel.leic.daw.gomokuRoyale.http.model.lobby.LobbyCreateInputModel
 import pt.isel.leic.daw.gomokuRoyale.http.model.lobby.LobbyCreateOutputModel
 import pt.isel.leic.daw.gomokuRoyale.http.model.lobby.LobbyJoinOutputModel
 import pt.isel.leic.daw.gomokuRoyale.http.model.lobby.LobbySeekInputModel
 import pt.isel.leic.daw.gomokuRoyale.http.model.lobby.LobbySeekOutputModel
-import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbyCreationError
-import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbyJoinError
-import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbySeekError
+import pt.isel.leic.daw.gomokuRoyale.http.utils.toResponse
 import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbyService
 import pt.isel.leic.daw.gomokuRoyale.utils.Failure
 import pt.isel.leic.daw.gomokuRoyale.utils.Success
@@ -37,8 +34,8 @@ class LobbyController(
         logger.info("${body.pointsMargin}")
         return when (
             val res = lobbyService.createLobby(
+                user.user,
                 body.name,
-                user.token,
                 body.gridSize,
                 body.opening,
                 body.variant,
@@ -53,10 +50,7 @@ class LobbyController(
 
             is Failure -> {
                 logger.info("Failed Request")
-                when (res.value) {
-                    LobbyCreationError.UserNotFound ->
-                        Problem.response(404, Problem.userWithUsernameNotFound)
-                }
+                res.value.toResponse()
             }
         }
     }
@@ -67,7 +61,7 @@ class LobbyController(
         @PathVariable lobbyId: String
     ): ResponseEntity<*> {
         logger.info("Request to join lobby with id $lobbyId")
-        return when (val res = lobbyService.joinLobby(user.token, lobbyId.toInt())) {
+        return when (val res = lobbyService.joinLobby(user.user, lobbyId.toInt())) {
             is Success -> {
                 logger.info("Successful Request")
                 ResponseEntity.status(200)
@@ -76,19 +70,7 @@ class LobbyController(
 
             is Failure -> {
                 logger.info("Failed Request")
-                when (res.value) {
-                    LobbyJoinError.UserNotFound ->
-                        Problem.response(404, Problem.invalidToken)
-
-                    LobbyJoinError.LobbyNotFound ->
-                        Problem.response(404, Problem.lobbyNotFound)
-
-                    LobbyJoinError.LobbyFull ->
-                        Problem.response(409, Problem.lobbyFull)
-
-                    LobbyJoinError.UserAlreadyInLobby ->
-                        Problem.response(409, Problem.userAlreadyInLobby)
-                }
+                res.value.toResponse()
             }
         }
     }
@@ -116,10 +98,7 @@ class LobbyController(
 
             is Failure -> {
                 logger.info("Failed Request")
-                when (res.value) {
-                    LobbySeekError.UserAlreadyInALobby ->
-                        Problem.response(409, Problem.userAlreadyInALobby)
-                }
+                res.value.toResponse()
             }
         }
     }

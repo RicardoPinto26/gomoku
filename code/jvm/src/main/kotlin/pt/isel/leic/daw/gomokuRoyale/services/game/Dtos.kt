@@ -2,14 +2,17 @@ package pt.isel.leic.daw.gomokuRoyale.services.game
 
 import pt.isel.leic.daw.gomokuRoyale.domain.Board
 import pt.isel.leic.daw.gomokuRoyale.domain.Position
+import pt.isel.leic.daw.gomokuRoyale.domain.user.User
+import pt.isel.leic.daw.gomokuRoyale.services.ServicesError
 import pt.isel.leic.daw.gomokuRoyale.utils.Either
 
-sealed class GameCreationError {
+sealed interface GameServicesError : ServicesError
+
+sealed class GameCreationError : GameServicesError {
     // object GameWithThatNameAlreadyExists : GameCreationError()
     object LobbyDoesNotExist : GameCreationError()
     object LobbyAlreadyHasGame : GameCreationError()
     object LobbyNotFull : GameCreationError()
-    object UnknownError : GameCreationError()
     object UserNotInLobby : GameCreationError()
 }
 
@@ -28,11 +31,10 @@ typealias GameCreationResult = Either<GameCreationError, GameCreationExternalInf
 --------------------------------------------------------------------------
  */
 
-sealed class GameForfeitError {
+sealed class GameForfeitError : GameServicesError {
     object GameDoesNotExist : GameForfeitError()
     object GameAlreadyEnded : GameForfeitError()
     object UserNotInGame : GameForfeitError()
-    object UnknownError : GameForfeitError()
 }
 
 data class GameForfeitExternalInfo(
@@ -45,13 +47,14 @@ typealias GameForfeitResult = Either<GameForfeitError, GameForfeitExternalInfo>
 --------------------------------------------------------------------------
  */
 
-sealed class GamePlayError {
+sealed class GamePlayError : GameServicesError {
     object GameDoesNotExist : GamePlayError()
     object GameAlreadyEnded : GamePlayError()
     object UserNotInGame : GamePlayError()
     object PositionAlreadyPlayed : GamePlayError()
     object InvalidPosition : GamePlayError()
-    object UnknownError : GamePlayError()
+
+    object WrongTurn : GamePlayError()
 }
 
 data class GamePlayExternalInfo(
@@ -66,15 +69,15 @@ typealias GamePlayResult = Either<GamePlayError, GamePlayExternalInfo>
 --------------------------------------------------------------------------
  */
 
-sealed class GameIdentificationError {
+sealed class GameIdentificationError : GameServicesError {
     object GameDoesNotExist : GameIdentificationError()
 }
 
 data class GameIdentificationExternalInfo(
     val id: Int,
     val name: String,
-    val user1: String,
-    val user2: String,
+    val user1: User,
+    val user2: User,
     val board: Board
 )
 

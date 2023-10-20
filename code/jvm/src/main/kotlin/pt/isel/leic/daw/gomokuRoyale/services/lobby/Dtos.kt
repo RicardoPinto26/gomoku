@@ -2,9 +2,12 @@ package pt.isel.leic.daw.gomokuRoyale.services.lobby
 
 import pt.isel.leic.daw.gomokuRoyale.domain.Lobby
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
+import pt.isel.leic.daw.gomokuRoyale.services.ServicesError
 import pt.isel.leic.daw.gomokuRoyale.utils.Either
 
-sealed class LobbyCreationError {
+sealed interface LobbyServicesError : ServicesError
+
+sealed class LobbyCreationError : LobbyServicesError {
     object UserNotFound : LobbyCreationError()
 }
 
@@ -30,7 +33,7 @@ data class LobbyExternalInfo(
 
 typealias LobbyCreationResult = Either<LobbyCreationError, LobbyExternalInfo>
 
-sealed class LobbyJoinError {
+sealed class LobbyJoinError : LobbyServicesError {
     object LobbyNotFound : LobbyJoinError()
     object UserAlreadyInLobby : LobbyJoinError()
     object UserNotFound : LobbyJoinError()
@@ -43,7 +46,7 @@ data class LobbyJoinExternalInfo(
     val lobbyId: Int
 )
 
-sealed class LobbySeekError {
+sealed class LobbySeekError : LobbyServicesError {
     object UserAlreadyInALobby : LobbySeekError()
 }
 

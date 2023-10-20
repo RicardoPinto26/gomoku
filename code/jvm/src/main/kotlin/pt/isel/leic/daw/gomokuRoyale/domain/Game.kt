@@ -1,5 +1,8 @@
 package pt.isel.leic.daw.gomokuRoyale.domain
 
+import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.BoardWrongType
+import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.UserNotInGame
+import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.UserWrongTurn
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 
 data class Game internal constructor(
@@ -22,7 +25,7 @@ data class Game internal constructor(
                 settings.overflowAllowed,
                 BlackPlayer(user1),
                 BlackPlayer(user1),
-                BlackPlayer(user2)
+                WhitePlayer(user2)
             )
         )
 
@@ -38,11 +41,12 @@ data class Game internal constructor(
         }
 
     fun placePiece(piece: Piece, position: Position, user: User): Game {
-        require(user == user1 || user == user2)
-        require(board is BoardRun)
-        require(board.turn.user == user)
+        if (user != user1 && user != user2) throw UserNotInGame("User ${user.username} not in Game")
+        if (board !is BoardRun) throw BoardWrongType("Board type must be BoardRun")
+        if (board.turn.user != user) throw UserWrongTurn("Not that user's turn")
 
         val newBoard = board.placePiece(piece, position, user)
+
         val newUser1 = calculateUser(user1, newBoard, user2)
         val newUser2 = calculateUser(user1, newBoard, user1)
 
@@ -50,7 +54,7 @@ data class Game internal constructor(
     }
 
     fun forfeitGame(): Game {
-        require(board is BoardRun)
+        if (board !is BoardRun) throw BoardWrongType("Board type must be BoardRun")
         val winner = if (board.turn.user == user1) user2 else user1
         val newBoard = BoardWin(board.internalBoard, board.userToPlayer(winner))
         return copy(board = newBoard)
@@ -66,13 +70,5 @@ data class Game internal constructor(
             user2.id -> user2
             else -> null
         }
-    }
-
-    fun checkGameCreation(user1: User, user2: User, settings: GameSettings): Boolean {
-        return user1 != user2 && settings.boardSize >= 5 && settings.boardSize <= 19 && settings.winningLength >= 3 && settings.winningLength <= settings.boardSize
-    }
-
-    fun otherTurn(user: Int): User {
-        return if (user == user1.id) user2 else user1
     }
 }

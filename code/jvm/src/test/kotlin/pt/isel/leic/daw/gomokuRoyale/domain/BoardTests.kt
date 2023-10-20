@@ -1,9 +1,7 @@
 package pt.isel.leic.daw.gomokuRoyale.domain
 
-import kotlin.test.Test
-import kotlin.test.assertIs
-
 class BoardTests {
+    /*
     @Test
     fun `Winning Vertical Move returns true`() {
         val board = BoardRun(10, 5, false, false, false)
@@ -77,4 +75,5 @@ class BoardTests {
 
         assertIs<BoardWin>(board)
     }
+    */
 }

@@ -1,8 +1,11 @@
 package pt.isel.leic.daw.gomokuRoyale.services.users
 
+import pt.isel.leic.daw.gomokuRoyale.services.ServicesError
 import pt.isel.leic.daw.gomokuRoyale.utils.Either
 
-sealed class UserCreationError {
+sealed interface UserServicesError : ServicesError
+
+sealed class UserCreationError : UserServicesError {
     object UserAlreadyExists : UserCreationError()
     object InsecurePassword : UserCreationError()
     object InvalidUsername : UserCreationError()
@@ -10,32 +13,32 @@ sealed class UserCreationError {
 }
 
 data class UserExternalInfo(
-        val username: String,
-        val email: String,
-        val gamesPlayed: Int,
-        val rating: Int
+    val username: String,
+    val email: String,
+    val gamesPlayed: Int,
+    val rating: Int
 )
 
 typealias UserCreationResult = Either<UserCreationError, UserExternalInfo>
 
 data class TokenExternalInfo(
-        val tokenValue: String,
-        val tokenExpiration: kotlinx.datetime.Instant
+    val tokenValue: String,
+    val tokenExpiration: kotlinx.datetime.Instant
 )
 
-sealed class TokenCreationError {
+sealed class TokenCreationError : UserServicesError {
     object UserOrPasswordAreInvalid : TokenCreationError()
 }
 
 typealias TokenCreationResult = Either<TokenCreationError, TokenExternalInfo>
 
 data class PublicUserExternalInfo(
-        val username: String,
-        val gamesPlayed: Int,
-        val rating: Int
+    val username: String,
+    val gamesPlayed: Int,
+    val rating: Int
 )
 
-sealed class GetUserStatsError {
+sealed class GetUserStatsError : UserServicesError {
     object NoSuchUser : GetUserStatsError()
 }
 

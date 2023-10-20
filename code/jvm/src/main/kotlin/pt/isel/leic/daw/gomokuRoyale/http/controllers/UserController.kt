@@ -9,15 +9,12 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import pt.isel.leic.daw.gomokuRoyale.domain.AuthenticatedUser
 import pt.isel.leic.daw.gomokuRoyale.http.Uris
-import pt.isel.leic.daw.gomokuRoyale.http.model.Problem
 import pt.isel.leic.daw.gomokuRoyale.http.model.user.UserCreateInputModel
 import pt.isel.leic.daw.gomokuRoyale.http.model.user.UserCreateOutputModel
 import pt.isel.leic.daw.gomokuRoyale.http.model.user.UserCreateTokenInputModel
 import pt.isel.leic.daw.gomokuRoyale.http.model.user.UserCreateTokenOutputModel
 import pt.isel.leic.daw.gomokuRoyale.http.model.user.UserGetStatisticsOutputModel
-import pt.isel.leic.daw.gomokuRoyale.services.users.GetUserStatsError
-import pt.isel.leic.daw.gomokuRoyale.services.users.TokenCreationError
-import pt.isel.leic.daw.gomokuRoyale.services.users.UserCreationError
+import pt.isel.leic.daw.gomokuRoyale.http.utils.toResponse
 import pt.isel.leic.daw.gomokuRoyale.services.users.UserService
 import pt.isel.leic.daw.gomokuRoyale.utils.Failure
 import pt.isel.leic.daw.gomokuRoyale.utils.Success
@@ -39,12 +36,7 @@ class UserController(
                     Uris.Users.byUsername(res.value.username).toASCIIString()
                 ).body(UserCreateOutputModel(res.value))
 
-            is Failure -> when (res.value) {
-                UserCreationError.InsecurePassword -> Problem.response(400, Problem.insecurePassword)
-                UserCreationError.UserAlreadyExists -> Problem.response(409, Problem.userAlreadyExists)
-                UserCreationError.InvalidUsername -> Problem.response(400, Problem.invalidUsername)
-                UserCreationError.InvalidEmail -> Problem.response(400, Problem.invalidEmail)
-            }
+            is Failure -> res.value.toResponse()
         }
     }
 
@@ -57,10 +49,7 @@ class UserController(
                 ResponseEntity.status(201)
                     .body(UserCreateTokenOutputModel(res.value.tokenValue))
 
-            is Failure -> when (res.value) {
-                TokenCreationError.UserOrPasswordAreInvalid ->
-                    Problem.response(400, Problem.userOrPasswordAreInvalid)
-            }
+            is Failure -> res.value.toResponse()
         }
     }
 
@@ -83,10 +72,7 @@ class UserController(
 
             is Failure -> {
                 logger.info("Failed request")
-                when (res.value) {
-                    GetUserStatsError.NoSuchUser ->
-                        Problem.response(404, Problem.userWithUsernameNotFound)
-                }
+                res.value.toResponse()
             }
         }
     }

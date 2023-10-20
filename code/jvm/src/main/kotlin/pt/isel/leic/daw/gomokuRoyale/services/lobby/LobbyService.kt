@@ -5,15 +5,15 @@ import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 
 interface LobbyService {
     fun createLobby(
+        user: User,
         name: String,
-        token: String,
         gridSize: Int,
         opening: String,
         variant: String,
         pointsMargin: Int
     ): LobbyCreationResult
 
-    fun joinLobby(token: String, lobbyId: Int): LobbyJoinResult
+    fun joinLobby(user: User, lobbyId: Int): LobbyJoinResult
 
     fun getLobbyByUserToken(token: String): Lobby?
     fun seekLobby(user: User, gridSize: Int, winningLength: Int, opening: String, pointsMargin: Int): LobbySeekResult

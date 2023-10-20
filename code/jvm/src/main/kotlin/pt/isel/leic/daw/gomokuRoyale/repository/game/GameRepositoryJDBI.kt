@@ -25,15 +25,15 @@ class GameRepositoryJDBI(private val handle: Handle) : GameRepository {
         SELECT 
             l.name as game_name, g.turn as game_turn, g.board as game_board, g.winner as game_winner,
             l.*,
-            cu.id as creator_user_id, cu.username as creator_user_username, cu.email as creator_user_email, 
-            cu.password as creator_user_password, cu.rating as creator_user_rating, cu.nr_games_played as creator_user_nr_games_played,
-            ju.id as join_user_id, ju.username as join_user_username, ju.email as join_user_email, 
-            ju.password as join_user_password, ju.rating as join_user_rating, ju.nr_games_played as join_user_nr_games_played
+             user1.id as user1_id, user1.username as user1_username, user1.email as user1_email,
+                user1.password as user1_password, user1.rating as user1_rating, user1.nr_games_played as user1_nr_games_played,
+                user2.id as user2_id, user2.username as user2_username, user2.email as user2_email,
+                user2.password as user2_password, user2.rating as user2_rating, user2.nr_games_played as user2_nr_games_played
         FROM games g 
         LEFT JOIN lobbys l on l.id = g.lobby_id
-        LEFT JOIN users cu ON l.creator_user_id = cu.id
-        LEFT JOIN users ju ON l.join_user_id = ju.id
-        WHERE l.id = :id
+        LEFT JOIN users as user1 ON l.creator_user_id = user1.id
+            LEFT JOIN users as user2 ON l.join_user_id = user2.id
+        WHERE g.id = :id
     """
         )
             .bind("id", gameId)
@@ -41,13 +41,14 @@ class GameRepositoryJDBI(private val handle: Handle) : GameRepository {
             .firstOrNull()
     }
 
-    override fun updateGameWinner(gameId: Int, winner: Int): Int =
+    override fun updateGameWinner(gameId: Int, winner: Int, board: String): Int =
         handle.createUpdate(
             """
-            update games set winner =:winner, state = 'FINISHED' where id = :game_id
+            update games set board = CAST(:board AS jsonb), winner =:winner, state = 'FINISHED' where id = :game_id
             """.trimIndent()
         )
             .bind("game_id", gameId)
+            .bind("board", board)
             .bind("winner", winner)
             .execute()
 
@@ -62,6 +63,16 @@ class GameRepositoryJDBI(private val handle: Handle) : GameRepository {
             .bind("board", board)
             .execute()
     }
+
+    override fun updateGameDraw(gameId: Int, board: String): Int =
+        handle.createUpdate(
+            """
+            update games set board = CAST(:board AS jsonb), state = 'FINISHED' where id = :game_id
+            """.trimIndent()
+        )
+            .bind("game_id", gameId)
+            .bind("board", board)
+            .execute()
 
     override fun getGameByLobbyId(lobbyId: Int): Game? =
         handle.createQuery("select * from games where lobby_id = :lobbyId")

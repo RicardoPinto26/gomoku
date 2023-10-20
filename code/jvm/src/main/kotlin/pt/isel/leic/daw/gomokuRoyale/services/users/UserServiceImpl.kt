@@ -3,6 +3,9 @@ package pt.isel.leic.daw.gomokuRoyale.services.users
 import kotlinx.datetime.Clock
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.UserInvalidEmail
+import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.UserInvalidPassword
+import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.UserInvalidUsername
 import pt.isel.leic.daw.gomokuRoyale.domain.token.Token
 import pt.isel.leic.daw.gomokuRoyale.domain.token.TokenValidationInfo
 import pt.isel.leic.daw.gomokuRoyale.domain.user.STARTING_RATING
@@ -27,11 +30,10 @@ class UserServiceImpl(
         try {
             userDomain.checkUserCredentialsRegister(username, email, password)
         } catch (e: Exception) {
-            logger.info(e.message)
-            when(e.message){
-                "Invalid username: $username"   -> return failure(UserCreationError.InvalidUsername)
-                "Invalid email: $email"         -> return failure(UserCreationError.InvalidEmail)
-                "Insecure password"             -> return failure(UserCreationError.InsecurePassword)
+            when (e) {
+                is UserInvalidUsername -> return failure(UserCreationError.InvalidUsername)
+                is UserInvalidEmail -> return failure(UserCreationError.InvalidEmail)
+                is UserInvalidPassword -> return failure(UserCreationError.InsecurePassword)
             }
         }
         logger.info("Checked user credentials")

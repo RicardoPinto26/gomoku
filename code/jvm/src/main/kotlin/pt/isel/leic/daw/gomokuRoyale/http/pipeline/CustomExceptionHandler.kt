@@ -22,7 +22,7 @@ class CustomExceptionHandler : ResponseEntityExceptionHandler() {
         request: WebRequest
     ): ResponseEntity<Any>? {
         log.info("Handling MethodArgumentNotValidException: {}", ex.message)
-        return Problem.response(400, Problem.invalidRequestContent)
+        return Problem.response(Problem.invalidRequestContent)
     }
 
     override fun handleHttpMessageNotReadable(
@@ -32,14 +32,14 @@ class CustomExceptionHandler : ResponseEntityExceptionHandler() {
         request: WebRequest
     ): ResponseEntity<Any> {
         log.info("Handling HttpMessageNotReadableException: {}", ex.message)
-        return Problem.response(400, Problem.invalidRequestContent)
+        return Problem.response(Problem.invalidRequestContent)
     }
 
     @ExceptionHandler(
         Exception::class
     )
     fun handleAll(): ResponseEntity<Any> {
-        return Problem.response(500, Problem.unknownInternalException)
+        return Problem.response(Problem.unknownInternalException)
     }
 
     companion object {

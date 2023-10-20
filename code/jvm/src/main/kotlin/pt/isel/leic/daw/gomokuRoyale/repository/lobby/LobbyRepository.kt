@@ -15,11 +15,11 @@ interface LobbyRepository {
     fun getLobbyByVariant(variant: String): Lobby?
 
     fun seekLobbyID(
-            otherRating: Int,
-            gridSize: Int,
-            winningLength: Int,
-            opening: String,
-            minRating: Int,
-            maxRating: Int
+        otherRating: Int,
+        gridSize: Int,
+        winningLength: Int,
+        opening: String,
+        minRating: Int,
+        maxRating: Int
     ): Int?
 }

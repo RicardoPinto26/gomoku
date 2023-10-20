@@ -1,5 +1,8 @@
 package pt.isel.leic.daw.gomokuRoyale.domain.user
 
+import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.UserInvalidEmail
+import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.UserInvalidId
+import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.UserInvalidUsername
 import kotlin.math.pow
 
 const val STARTING_RATING = 800.0
@@ -69,10 +72,19 @@ data class User(
     }
 
     init {
-        require(validName(username)) { "Invalid username: $username" }
-        require(validEmail(email)) { "Invalid email: $email" }
-        require(validId(id)) { "Invalid user id: $id" }
+        if (!validName(username)) UserInvalidUsername("Invalid username: $username")
+        if (!validEmail(email)) UserInvalidEmail("Invalid email: $email")
+        if (!validId(id)) UserInvalidId("Invalid user id: $id")
     }
+
+    /**
+     * Calculates new user rating after a game
+     *
+     * @param result Double with the result of the game
+     * @param opponentRating Double with the opponent's rating
+     *
+     * @return Double with the new user rating
+     */
 
     fun calculateNewRating(result: Double, opponentRating: Double): Double {
         val qa = 10.0.pow(rating / C)
