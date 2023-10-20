@@ -3,8 +3,7 @@ package pt.isel.leic.daw.gomokuRoyale.domain
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.InvalidPosition
-import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.PositionAlreadyPlayed
+import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.*
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 import kotlin.math.max
 import kotlin.math.min
@@ -30,7 +29,7 @@ class BoardWin internal constructor(
      * @throws IllegalStateException if someone tries to place a piece
      */
     override fun placePiece(piece: Piece, position: Position, user: User): Board {
-        throw IllegalStateException("This game has already finished with a win.")
+        throw BoardIsBoardWin("This game has already finished with a win.")
     }
 }
 
@@ -47,7 +46,7 @@ class BoardDraw internal constructor(
      * @throws IllegalStateException if someone tries to place a piece
      */
     override fun placePiece(piece: Piece, position: Position, user: User): Board {
-        throw IllegalStateException("This game has already finished with a draw.")
+        throw BoardIsBoardDraw("This game has already finished with a draw.")
     }
 }
 
@@ -220,7 +219,7 @@ data class BoardRun internal constructor(
         when (user) {
             player1.user -> player1
             player2.user -> player2
-            else -> throw IllegalArgumentException("User is not a player on this board")
+            else -> throw UserNotInBoard("User is not a player on this board")
         }
 }
 

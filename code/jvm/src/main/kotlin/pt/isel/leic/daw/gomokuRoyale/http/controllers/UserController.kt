@@ -19,11 +19,23 @@ import pt.isel.leic.daw.gomokuRoyale.services.users.UserService
 import pt.isel.leic.daw.gomokuRoyale.utils.Failure
 import pt.isel.leic.daw.gomokuRoyale.utils.Success
 
+/**
+ * Controller that handles the requests to the /users endpoint
+ *
+ * @property userService services that deals with the user business logic
+ */
 @RestController
 class UserController(
     private val userService: UserService
 ) {
 
+    /**
+     * Handles the request to create a user.
+     *
+     * @param input the [UserCreateInputModel] with the user information
+     *
+     * @return the response to the request with the [UserCreateOutputModel] in the body or an error value
+     */
     @PostMapping(Uris.Users.CREATE)
     fun createUser(@RequestBody input: UserCreateInputModel): ResponseEntity<*> {
         logger.info("Starting registration of user {}", input.username)
@@ -40,6 +52,13 @@ class UserController(
         }
     }
 
+    /**
+     * Handles the request to create a token.
+     *
+     * @param input the [UserCreateTokenInputModel] with the user information
+     *
+     * @return the response to the request with the [UserCreateTokenOutputModel] in the body or an error value
+     */
     @PostMapping(Uris.Users.TOKEN)
     fun createToken(
         @RequestBody input: UserCreateTokenInputModel
@@ -53,6 +72,12 @@ class UserController(
         }
     }
 
+    /**
+     * Handles logout request.
+     *
+     * @param user the [AuthenticatedUser] creating the game
+     *
+     */
     @PostMapping(Uris.Users.LOGOUT)
     fun logout(
         user: AuthenticatedUser
@@ -60,6 +85,13 @@ class UserController(
         userService.revokeToken(user.token)
     }
 
+    /**
+     * Handles user's information request.
+     *
+     * @param username the name of the user whose information is being requested
+     *
+     * @return the response to the request with the [UserGetStatisticsOutputModel] in the body or an error value
+     */
     @GetMapping(Uris.Users.DETAILS)
     fun userDetails(@PathVariable username: String): ResponseEntity<*> {
         logger.info("Request received for user $username details")

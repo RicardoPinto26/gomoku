@@ -1,7 +1,19 @@
 package pt.isel.leic.daw.gomokuRoyale.http.model.lobby
 
 import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbyExternalInfo
+import pt.isel.leic.daw.gomokuRoyale.domain.Opening
+import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 
+/**
+ * Lobby seek output information
+ *
+ * @property id lobby unique identifier
+ * @property name name of the lobby
+ * @property gridSize size of the board in the lobby
+ * @property opening name of the [Opening]
+ * @property variant name of the variant to be played
+ * @property pointsMargin allowed ratings margin each [User]
+ */
 class LobbySeekOutputModel(
     val id: Int,
     val name: String,

@@ -4,6 +4,14 @@ import pt.isel.leic.daw.gomokuRoyale.domain.serializeToJsonString
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 import pt.isel.leic.daw.gomokuRoyale.services.game.GameIdentificationExternalInfo
 
+/**
+ * Game details output model
+ *
+ * @property gameId the unique identifier of the game created
+ * @property user1 name of the user that created the lobby
+ * @property user2 name of the user that joined the lobby
+ * @property board json string of the board
+ */
 class GameDetailsOutputModel(
     val gameId: Int,
     val user1: User,

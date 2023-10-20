@@ -18,10 +18,24 @@ import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbyService
 import pt.isel.leic.daw.gomokuRoyale.utils.Failure
 import pt.isel.leic.daw.gomokuRoyale.utils.Success
 
+/**
+ * Controller that handles the requests to the /lobby endpoint
+ *
+ * @property lobbyService services that deals with the lobby business logic
+ */
 @RestController
 class LobbyController(
     private val lobbyService: LobbyService
 ) {
+
+    /**
+     * Handles the request to create a lobby.
+     *
+     * @param user the [AuthenticatedUser] creating the game
+     * @param body the [LobbyCreateInputModel] with the lobby information
+     *
+     * @return the response to the request with the [LobbyCreateOutputModel] in the body or an error value
+     */
     @PostMapping(Uris.Lobby.CREATE_LOBBY)
     fun createLobby(
         user: AuthenticatedUser,
@@ -55,6 +69,14 @@ class LobbyController(
         }
     }
 
+    /**
+     * Handles the request to join a lobby.
+     *
+     * @param user the [AuthenticatedUser] creating the game
+     * @param lobbyId the unique id of the lobby being joined
+     *
+     * @return the response to the request with the [LobbyJoinOutputModel] in the body or an error value
+     */
     @PostMapping(Uris.Lobby.JOIN_LOBBY)
     fun joinLobby(
         user: AuthenticatedUser,
@@ -75,6 +97,14 @@ class LobbyController(
         }
     }
 
+    /**
+     * Handles the request to seek a lobby.
+     *
+     * @param user the [AuthenticatedUser] creating the game
+     * @param body the [LobbySeekInputModel] with the lobby information
+     *
+     * @return the response to the request with the [LobbySeekOutputModel] in the body or an error value
+     */
     @PostMapping(Uris.Lobby.SEEK_LOBBY)
     fun seekLobby(
         user: AuthenticatedUser,
