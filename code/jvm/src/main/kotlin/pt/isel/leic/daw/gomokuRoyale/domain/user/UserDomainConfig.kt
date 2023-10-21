@@ -1,5 +1,9 @@
 package pt.isel.leic.daw.gomokuRoyale.domain.user
 
+import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.TokenRollingTTLNegative
+import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.TokenSizeZeroOrNegative
+import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.TokenTTLNegative
+import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.UserCantHaveTokens
 import kotlin.time.Duration
 
 /**
@@ -18,9 +22,9 @@ data class UserDomainConfig(
     val maxTokensPerUser: Int
 ) {
     init {
-        require(tokenSizeInBytes > 0)
-        require(tokenTtl.isPositive())
-        require(tokenRollingTtl.isPositive())
-        require(maxTokensPerUser > 0)
+        if(tokenSizeInBytes <= 0) throw TokenSizeZeroOrNegative("Token size must be bigger than 0, is $tokenSizeInBytes")
+        if(tokenTtl.isNegative()) throw TokenTTLNegative("Token time to live must be positive, is $tokenTtl")
+        if(tokenRollingTtl.isNegative()) throw TokenRollingTTLNegative("Token tolling time to live must be  $tokenRollingTtl")
+        if(maxTokensPerUser <= 0) throw UserCantHaveTokens("User must have tokens, can have $maxTokensPerUser")
     }
 }

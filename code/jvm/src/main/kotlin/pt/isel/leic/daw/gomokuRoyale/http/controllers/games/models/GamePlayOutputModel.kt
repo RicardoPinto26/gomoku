@@ -1,4 +1,4 @@
-package pt.isel.leic.daw.gomokuRoyale.http.model.game
+package pt.isel.leic.daw.gomokuRoyale.http.controllers.games.models
 
 import pt.isel.leic.daw.gomokuRoyale.domain.Position
 import pt.isel.leic.daw.gomokuRoyale.services.game.GamePlayExternalInfo

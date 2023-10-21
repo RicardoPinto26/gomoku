@@ -1,4 +1,4 @@
-package pt.isel.leic.daw.gomokuRoyale.http.model.lobby
+package pt.isel.leic.daw.gomokuRoyale.http.controllers.lobbies.models
 
 import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbyJoinExternalInfo
 

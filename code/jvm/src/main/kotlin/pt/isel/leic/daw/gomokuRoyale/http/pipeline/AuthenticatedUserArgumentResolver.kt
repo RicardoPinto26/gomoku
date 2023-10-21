@@ -10,6 +10,9 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.method.support.ModelAndViewContainer
 import pt.isel.leic.daw.gomokuRoyale.domain.AuthenticatedUser
 
+/**
+ * Custom [HandlerMethodArgumentResolver] that can extract an [AuthenticatedUser] from incoming HTTP requests.
+ */
 @Component
 class AuthenticatedUserArgumentResolver : HandlerMethodArgumentResolver {
 
@@ -31,14 +34,25 @@ class AuthenticatedUserArgumentResolver : HandlerMethodArgumentResolver {
         private val logger = LoggerFactory.getLogger(AuthenticatedUserArgumentResolver::class.java)
         private const val KEY = "AuthenticatedUserArgumentResolver"
 
+        /**
+         * Stores a [AuthenticatedUser] object in a [HttpServletRequest] field
+         *
+         * @param user the AuthenticatedUser object being stored
+         * @param request the request received
+         */
         fun addUserTo(user: AuthenticatedUser, request: HttpServletRequest) {
-            logger.info("Adding authentication to user ${user.user.username}")
             return request.setAttribute(KEY, user)
         }
 
+        /**
+         * Gets a [AuthenticatedUser] object from a [HttpServletRequest] field
+         *
+         * @param request the request received
+         *
+         * @return AuthenticatedUser object if it exists in the request received, null otherwise
+         */
         fun getUserFrom(request: HttpServletRequest): AuthenticatedUser? {
             return request.getAttribute(KEY)?.let {
-                logger.info("Getting user")
                 it as? AuthenticatedUser
             }
         }

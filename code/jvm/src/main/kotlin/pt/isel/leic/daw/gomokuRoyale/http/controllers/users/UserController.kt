@@ -1,4 +1,4 @@
-package pt.isel.leic.daw.gomokuRoyale.http.controllers
+package pt.isel.leic.daw.gomokuRoyale.http.controllers.users
 
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import pt.isel.leic.daw.gomokuRoyale.domain.AuthenticatedUser
 import pt.isel.leic.daw.gomokuRoyale.http.Uris
-import pt.isel.leic.daw.gomokuRoyale.http.model.user.UserCreateInputModel
-import pt.isel.leic.daw.gomokuRoyale.http.model.user.UserCreateOutputModel
-import pt.isel.leic.daw.gomokuRoyale.http.model.user.UserCreateTokenInputModel
-import pt.isel.leic.daw.gomokuRoyale.http.model.user.UserCreateTokenOutputModel
-import pt.isel.leic.daw.gomokuRoyale.http.model.user.UserGetStatisticsOutputModel
+import pt.isel.leic.daw.gomokuRoyale.http.controllers.users.models.UserCreateInputModel
+import pt.isel.leic.daw.gomokuRoyale.http.controllers.users.models.UserCreateOutputModel
+import pt.isel.leic.daw.gomokuRoyale.http.controllers.users.models.UserCreateTokenInputModel
+import pt.isel.leic.daw.gomokuRoyale.http.controllers.users.models.UserCreateTokenOutputModel
+import pt.isel.leic.daw.gomokuRoyale.http.controllers.users.models.UserGetStatisticsOutputModel
 import pt.isel.leic.daw.gomokuRoyale.http.utils.toResponse
 import pt.isel.leic.daw.gomokuRoyale.services.users.UserService
 import pt.isel.leic.daw.gomokuRoyale.utils.Failure

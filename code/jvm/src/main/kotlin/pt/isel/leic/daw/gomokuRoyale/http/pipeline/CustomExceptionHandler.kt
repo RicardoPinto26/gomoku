@@ -10,8 +10,11 @@ import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
-import pt.isel.leic.daw.gomokuRoyale.http.model.Problem
+import pt.isel.leic.daw.gomokuRoyale.http.controllers.Problem
 
+/**
+ * Custom [ResponseEntityExceptionHandler] implementation that deals with the Spring application exceptions
+ */
 @ControllerAdvice
 class CustomExceptionHandler : ResponseEntityExceptionHandler() {
 
@@ -38,6 +41,11 @@ class CustomExceptionHandler : ResponseEntityExceptionHandler() {
     @ExceptionHandler(
         Exception::class
     )
+    /**
+     * Generic exception handler for all other exceptions.
+     *
+     * @return a [Problem] response with the status of `unknownInternalException`.
+     */
     fun handleAll(): ResponseEntity<Any> {
         return Problem.response(Problem.unknownInternalException)
     }

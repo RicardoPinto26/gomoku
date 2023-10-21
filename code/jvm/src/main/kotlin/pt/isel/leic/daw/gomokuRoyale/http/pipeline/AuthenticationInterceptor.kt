@@ -8,6 +8,12 @@ import org.springframework.web.method.HandlerMethod
 import org.springframework.web.servlet.HandlerInterceptor
 import pt.isel.leic.daw.gomokuRoyale.domain.AuthenticatedUser
 
+/**
+ * Custom [HandlerInterceptor] for requests that need user authentication.
+ *
+ * @property authorizationHeaderProcessor a [RequestTokenProcessor] that can parse authorization header and get a user
+ * from it
+ */
 @Component
 class AuthenticationInterceptor(
     private val authorizationHeaderProcessor: RequestTokenProcessor

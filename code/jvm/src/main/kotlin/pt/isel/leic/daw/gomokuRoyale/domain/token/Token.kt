@@ -18,12 +18,12 @@ data class Token(
     companion object {
 
         /**
-         * Checks occurs finish date occurs after initial date
+         * Checks finish date occurs after initial date
          *
          * @param createDate date of the token creation
          * @param lastUsedDate date of the token last usage
          *
-         * @return true if the name is valid, false if not
+         * @return true if the lastUsedDate is greater or equal to createDate, false if not
          */
         fun validDates(createDate: Instant, lastUsedDate: Instant) = lastUsedDate >= createDate
     }

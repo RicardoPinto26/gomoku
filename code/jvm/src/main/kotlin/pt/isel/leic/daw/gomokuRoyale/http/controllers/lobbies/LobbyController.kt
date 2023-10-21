@@ -1,4 +1,4 @@
-package pt.isel.leic.daw.gomokuRoyale.http.controllers
+package pt.isel.leic.daw.gomokuRoyale.http.controllers.lobbies
 
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
@@ -8,11 +8,12 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import pt.isel.leic.daw.gomokuRoyale.domain.AuthenticatedUser
 import pt.isel.leic.daw.gomokuRoyale.http.Uris
-import pt.isel.leic.daw.gomokuRoyale.http.model.lobby.LobbyCreateInputModel
-import pt.isel.leic.daw.gomokuRoyale.http.model.lobby.LobbyCreateOutputModel
-import pt.isel.leic.daw.gomokuRoyale.http.model.lobby.LobbyJoinOutputModel
-import pt.isel.leic.daw.gomokuRoyale.http.model.lobby.LobbySeekInputModel
-import pt.isel.leic.daw.gomokuRoyale.http.model.lobby.LobbySeekOutputModel
+import pt.isel.leic.daw.gomokuRoyale.http.controllers.users.UserController
+import pt.isel.leic.daw.gomokuRoyale.http.controllers.lobbies.models.LobbyCreateInputModel
+import pt.isel.leic.daw.gomokuRoyale.http.controllers.lobbies.models.LobbyCreateOutputModel
+import pt.isel.leic.daw.gomokuRoyale.http.controllers.lobbies.models.LobbyJoinOutputModel
+import pt.isel.leic.daw.gomokuRoyale.http.controllers.lobbies.models.LobbySeekInputModel
+import pt.isel.leic.daw.gomokuRoyale.http.controllers.lobbies.models.LobbySeekOutputModel
 import pt.isel.leic.daw.gomokuRoyale.http.utils.toResponse
 import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbyService
 import pt.isel.leic.daw.gomokuRoyale.utils.Failure

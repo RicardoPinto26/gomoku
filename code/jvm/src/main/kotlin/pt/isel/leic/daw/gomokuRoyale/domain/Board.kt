@@ -26,7 +26,7 @@ class BoardWin internal constructor(
 ) : Board {
 
     /**
-     * @throws IllegalStateException if someone tries to place a piece
+     * @throws BoardIsBoardWin exception if someone tries to place a piece
      */
     override fun placePiece(piece: Piece, position: Position, user: User): Board {
         throw BoardIsBoardWin("This game has already finished with a win.")
@@ -43,7 +43,7 @@ class BoardDraw internal constructor(
 ) : Board {
 
     /**
-     * @throws IllegalStateException if someone tries to place a piece
+     * @throws BoardIsBoardDraw exception if someone tries to place a piece
      */
     override fun placePiece(piece: Piece, position: Position, user: User): Board {
         throw BoardIsBoardDraw("This game has already finished with a draw.")
@@ -85,10 +85,12 @@ data class BoardRun internal constructor(
      * @param user [User] trying to place the piece
      *
      * @return new board with new piece in given position
-     * @throws IllegalStateException if it's not the user's turn
+     * @throws NotYourTurn exception if it's not the user's turn
+     * @throws InvalidPosition exception if trying to play in invalid position
+     * @throws PositionAlreadyPlayed if trying to play in occupied position
      */
     override fun placePiece(piece: Piece, position: Position, user: User): Board {
-        require(user == turn.user)
+        if(user != turn.user) throw NotYourTurn("Not your turn, it's ${turn.user.username}'s turn")
         val boardSize = internalBoard.size
         if (position.row !in 0 until boardSize || position.column !in 0 until boardSize) {
             throw InvalidPosition("Position (${position.row},${position.column}) is invalid")

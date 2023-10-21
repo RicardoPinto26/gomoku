@@ -1,7 +1,15 @@
-package pt.isel.leic.daw.gomokuRoyale.http.model
+package pt.isel.leic.daw.gomokuRoyale.http.controllers
 
 import org.springframework.http.ResponseEntity
 
+/**
+ * Entity for HTTP request problems
+ *
+ * @property type the type of problem
+ * @property title title of the problem
+ * @property status the HTTP status code of the problem
+ * @property detail a more thorough description of the problem
+ */
 class Problem(
     val type: String,
     val title: String,

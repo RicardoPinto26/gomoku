@@ -1,4 +1,4 @@
-package pt.isel.leic.daw.gomokuRoyale.http.model.user
+package pt.isel.leic.daw.gomokuRoyale.http.controllers.users.models
 
 /**
  * User creation output information
