@@ -83,9 +83,9 @@ class UserDomain(
      * @throws IllegalArgumentException if any of the parameters are invalid
      */
     fun checkUserCredentialsRegister(name: String, email: String, password: String) {
-        if (!User.validName(name)) UserInvalidUsername("Invalid username: $name")
-        if (!User.validEmail(email)) UserInvalidEmail("Invalid email: $email")
-        if (!User.isSafePassword(password)) UserInvalidPassword("Insecure password")
+        if (!User.validName(name)) throw UserInvalidUsername("Invalid username: $name")
+        if (!User.validEmail(email)) throw UserInvalidEmail("Invalid email: $email")
+        if (!User.isSafePassword(password)) throw UserInvalidPassword("Insecure password")
     }
 
     /**

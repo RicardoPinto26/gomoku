@@ -35,14 +35,6 @@ data class Lobby(
         return copy(user2 = user, game = Game(name, user1, user, settings))
     }
 
-    fun placePiece(piece: Piece, position: Position, user: User): Lobby {
-        require(user == user1 || user == user2)
-        require(game != null)
-
-        val newGame = game.placePiece(piece, position, user)
-        return copy(game = newGame)
-    }
-
     /**
      * Checks whether a user is a part of the lobby
      *

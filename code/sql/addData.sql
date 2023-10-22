@@ -5,7 +5,8 @@ VALUES ('Chiquinho do ka100', 'a46631@alunos.isel.pt', '3e23edee0e2d5b04162bcbf6
 
 INSERT INTO tokens (token, user_id, created_at, last_used_at)
 VALUES ('17NPPxEeGEUZl6wnkPrHMQNyC80NvequkDNEb6B872o=', 1, EXTRACT(EPOCH FROM NOW()), EXTRACT(EPOCH FROM NOW())),
-       ('27NPPxEeGEUZl6wnkPrHMQNyC80NvequkDNEb6B872o=', 2, EXTRACT(EPOCH FROM NOW()), EXTRACT(EPOCH FROM NOW()));
+       ('27NPPxEeGEUZl6wnkPrHMQNyC80NvequkDNEb6B872o=', 2, EXTRACT(EPOCH FROM NOW()), EXTRACT(EPOCH FROM NOW())),
+       ('37NPPxEeGEUZl6wnkPrHMQNyC80NvequkDNEb6B872o=', 3, EXTRACT(EPOCH FROM NOW()), EXTRACT(EPOCH FROM NOW()));
 
 INSERT INTO lobbys (name, creator_user_id, join_user_id, grid_size, opening, variant)
 VALUES ('Game 1', 1, 2, 15, 'Standard', 'Classic'),
@@ -14,7 +15,8 @@ VALUES ('Game 1', 1, 2, 15, 'Standard', 'Classic'),
 INSERT INTO games (lobby_id, turn, winner, board, state)
 VALUES (1, 1, null, '[[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null]]', 'AWAITING FIRST MOVE'),
        (2, 1, null, '[[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null]]', 'AWAITING FIRST MOVE'),
-       (1, 1, null, '[["WHITE","BLACK"], ["WHITE",null]]', 'AWAITING FIRST MOVE');
+       (1, 1, null, '[["WHITE","BLACK"], ["WHITE",null]]', 'IN_PROGRESS'),
+       (1, 2, null, '[["WHITE","WHITE","WHITE","WHITE", null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null]]', 'IN_PROGRESS');
 
 INSERT INTO moves (game_id, user_id, move_x, move_y)
 VALUES (1, 1, 7, 7),
