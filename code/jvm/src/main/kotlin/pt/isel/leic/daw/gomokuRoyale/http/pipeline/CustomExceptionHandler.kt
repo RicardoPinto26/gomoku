@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler
-import pt.isel.leic.daw.gomokuRoyale.http.controllers.Problem
+import pt.isel.leic.daw.gomokuRoyale.http.media.Problem
 
 /**
  * Custom [ResponseEntityExceptionHandler] implementation that deals with the Spring application exceptions

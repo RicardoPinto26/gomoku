@@ -1,6 +1,6 @@
 package pt.isel.leic.daw.gomokuRoyale.http.utils
 
-import pt.isel.leic.daw.gomokuRoyale.http.controllers.Problem
+import pt.isel.leic.daw.gomokuRoyale.http.media.Problem
 import pt.isel.leic.daw.gomokuRoyale.services.game.GameCreationError
 import pt.isel.leic.daw.gomokuRoyale.services.game.GameForfeitError
 import pt.isel.leic.daw.gomokuRoyale.services.game.GameIdentificationError
