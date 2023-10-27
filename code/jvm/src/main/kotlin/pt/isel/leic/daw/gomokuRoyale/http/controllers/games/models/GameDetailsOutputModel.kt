@@ -1,8 +1,7 @@
 package pt.isel.leic.daw.gomokuRoyale.http.controllers.games.models
 
-import pt.isel.leic.daw.gomokuRoyale.domain.serializeToJsonString
-import pt.isel.leic.daw.gomokuRoyale.domain.user.User
-import pt.isel.leic.daw.gomokuRoyale.services.game.GameIdentificationExternalInfo
+import pt.isel.leic.daw.gomokuRoyale.services.game.GameExternalInfo
+import pt.isel.leic.daw.gomokuRoyale.services.users.UserExternalInfo
 
 /**
  * Game details output model
@@ -14,14 +13,14 @@ import pt.isel.leic.daw.gomokuRoyale.services.game.GameIdentificationExternalInf
  */
 class GameDetailsOutputModel(
     val gameId: Int,
-    val user1: User,
-    val user2: User,
+    val user1: UserExternalInfo,
+    val user2: UserExternalInfo,
     val board: String
 ) {
-    constructor(giei: GameIdentificationExternalInfo) : this(
-        giei.id,
-        giei.user1,
-        giei.user2,
-        giei.board.internalBoard.serializeToJsonString()
+    constructor(gei: GameExternalInfo) : this(
+        gei.id,
+        gei.user1,
+        gei.user2,
+        gei.board
     )
 }

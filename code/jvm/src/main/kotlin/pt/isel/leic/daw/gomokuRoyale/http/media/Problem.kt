@@ -1,4 +1,4 @@
-package pt.isel.leic.daw.gomokuRoyale.http.controllers
+package pt.isel.leic.daw.gomokuRoyale.http.media
 
 import org.springframework.http.ResponseEntity
 

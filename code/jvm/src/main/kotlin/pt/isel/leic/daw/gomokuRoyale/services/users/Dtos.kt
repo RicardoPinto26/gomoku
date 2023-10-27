@@ -1,5 +1,6 @@
 package pt.isel.leic.daw.gomokuRoyale.services.users
 
+import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 import pt.isel.leic.daw.gomokuRoyale.services.ServicesError
 import pt.isel.leic.daw.gomokuRoyale.utils.Either
 
@@ -17,6 +18,13 @@ data class UserExternalInfo(
     val email: String,
     val gamesPlayed: Int,
     val rating: Int
+)
+
+fun User.toExternalInfo() = UserExternalInfo(
+    username = username,
+    email = email,
+    gamesPlayed = nrGamesPlayed,
+    rating = rating.toInt()
 )
 
 typealias UserCreationResult = Either<UserCreationError, UserExternalInfo>

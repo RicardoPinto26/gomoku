@@ -22,9 +22,9 @@ data class UserDomainConfig(
     val maxTokensPerUser: Int
 ) {
     init {
-        if(tokenSizeInBytes <= 0) throw TokenSizeZeroOrNegative("Token size must be bigger than 0, is $tokenSizeInBytes")
-        if(tokenTtl.isNegative()) throw TokenTTLNegative("Token time to live must be positive, is $tokenTtl")
-        if(tokenRollingTtl.isNegative()) throw TokenRollingTTLNegative("Token tolling time to live must be  $tokenRollingTtl")
-        if(maxTokensPerUser <= 0) throw UserCantHaveTokens("User must have tokens, can have $maxTokensPerUser")
+        if (tokenSizeInBytes <= 0) throw TokenSizeZeroOrNegative("Token size must be bigger than 0, is $tokenSizeInBytes")
+        if (tokenTtl.isNegative()) throw TokenTTLNegative("Token time to live must be positive, is $tokenTtl")
+        if (tokenRollingTtl.isNegative()) throw TokenRollingTTLNegative("Token tolling time to live must be  $tokenRollingTtl")
+        if (maxTokensPerUser <= 0) throw UserCantHaveTokens("User must have tokens, can have $maxTokensPerUser")
     }
 }

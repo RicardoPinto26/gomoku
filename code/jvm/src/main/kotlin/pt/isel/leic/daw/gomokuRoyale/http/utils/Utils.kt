@@ -1,6 +1,6 @@
 package pt.isel.leic.daw.gomokuRoyale.http.utils
 
-import pt.isel.leic.daw.gomokuRoyale.http.controllers.Problem
+import pt.isel.leic.daw.gomokuRoyale.http.media.Problem
 import pt.isel.leic.daw.gomokuRoyale.services.game.GameCreationError
 import pt.isel.leic.daw.gomokuRoyale.services.game.GameForfeitError
 import pt.isel.leic.daw.gomokuRoyale.services.game.GameIdentificationError
@@ -14,6 +14,7 @@ import pt.isel.leic.daw.gomokuRoyale.services.users.GetUserStatsError
 import pt.isel.leic.daw.gomokuRoyale.services.users.TokenCreationError
 import pt.isel.leic.daw.gomokuRoyale.services.users.UserCreationError
 import pt.isel.leic.daw.gomokuRoyale.services.users.UserServicesError
+
 fun UserServicesError.toResponse() =
     when (this) {
         is UserCreationError -> when (this) {

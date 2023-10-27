@@ -1,9 +1,13 @@
 package pt.isel.leic.daw.gomokuRoyale.services.game
 
-import pt.isel.leic.daw.gomokuRoyale.domain.Board
-import pt.isel.leic.daw.gomokuRoyale.domain.Position
-import pt.isel.leic.daw.gomokuRoyale.domain.user.User
+import pt.isel.leic.daw.gomokuRoyale.domain.BoardDraw
+import pt.isel.leic.daw.gomokuRoyale.domain.BoardRun
+import pt.isel.leic.daw.gomokuRoyale.domain.BoardWin
+import pt.isel.leic.daw.gomokuRoyale.domain.Game
+import pt.isel.leic.daw.gomokuRoyale.domain.serializeToJsonString
 import pt.isel.leic.daw.gomokuRoyale.services.ServicesError
+import pt.isel.leic.daw.gomokuRoyale.services.users.UserExternalInfo
+import pt.isel.leic.daw.gomokuRoyale.services.users.toExternalInfo
 import pt.isel.leic.daw.gomokuRoyale.utils.Either
 
 sealed interface GameServicesError : ServicesError
@@ -16,16 +20,7 @@ sealed class GameCreationError : GameServicesError {
     object UserNotInLobby : GameCreationError()
 }
 
-data class GameCreationExternalInfo(
-    val id: Int,
-    val name: String,
-    val user1: String,
-    val user2: String,
-    val board: Board,
-    val lobbyId: Int
-)
-
-typealias GameCreationResult = Either<GameCreationError, GameCreationExternalInfo>
+typealias GameCreationResult = Either<GameCreationError, GameExternalInfo>
 
 /**
 --------------------------------------------------------------------------
@@ -37,11 +32,7 @@ sealed class GameForfeitError : GameServicesError {
     object UserNotInGame : GameForfeitError()
 }
 
-data class GameForfeitExternalInfo(
-    val winner: String
-)
-
-typealias GameForfeitResult = Either<GameForfeitError, GameForfeitExternalInfo>
+typealias GameForfeitResult = Either<GameForfeitError, GameExternalInfo>
 
 /**
 --------------------------------------------------------------------------
@@ -57,13 +48,31 @@ sealed class GamePlayError : GameServicesError {
     object WrongTurn : GamePlayError()
 }
 
-data class GamePlayExternalInfo(
-    val lastMove: Position,
-    val username: String,
-    val board: String
+data class GameExternalInfo(
+    val id: Int,
+    val lobbyID: Int,
+    val user1: UserExternalInfo,
+    val user2: UserExternalInfo,
+    val board: String,
+    val status: String,
+    val winner: UserExternalInfo? = null
 )
 
-typealias GamePlayResult = Either<GamePlayError, GamePlayExternalInfo>
+fun Game.toExternalInfo(id: Int, lobbyID: Int) = GameExternalInfo(
+    id,
+    lobbyID,
+    user1.toExternalInfo(),
+    user2.toExternalInfo(),
+    board.internalBoard.serializeToJsonString(),
+    when (board) {
+        is BoardDraw -> "DRAW"
+        is BoardRun -> "PLAYING"
+        is BoardWin -> "WON"
+    },
+    if (board is BoardWin) board.winner.user.toExternalInfo() else null
+)
+
+typealias GamePlayResult = Either<GamePlayError, GameExternalInfo>
 
 /**
 --------------------------------------------------------------------------
@@ -73,12 +82,4 @@ sealed class GameIdentificationError : GameServicesError {
     object GameDoesNotExist : GameIdentificationError()
 }
 
-data class GameIdentificationExternalInfo(
-    val id: Int,
-    val name: String,
-    val user1: User,
-    val user2: User,
-    val board: Board
-)
-
-typealias GameIdentificationResult = Either<GameIdentificationError, GameIdentificationExternalInfo>
+typealias GameIdentificationResult = Either<GameIdentificationError, GameExternalInfo>

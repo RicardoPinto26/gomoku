@@ -1,6 +1,9 @@
 package pt.isel.leic.daw.gomokuRoyale.domain
 
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.assertNull
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.assertThrows
 import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.BoardWrongType
@@ -9,7 +12,7 @@ import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 import kotlin.test.Test
 import kotlin.test.assertIs
 
-class GameTest {
+class GameTests {
     private lateinit var user1: User
     private lateinit var user2: User
     private lateinit var settings: GameSettings

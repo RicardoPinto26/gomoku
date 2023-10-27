@@ -2,7 +2,11 @@ package pt.isel.leic.daw.gomokuRoyale.domain
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.assertThrows
-import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.*
+import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.BoardIsBoardDraw
+import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.BoardIsBoardWin
+import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.InvalidPosition
+import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.PositionAlreadyPlayed
+import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.UserNotInBoard
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 import kotlin.test.Test
 import kotlin.test.assertIs

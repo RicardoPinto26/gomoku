@@ -46,14 +46,7 @@ class GameServiceImpl(
                     newGame.board.internalBoard.serializeToJsonString()
                 )
                 return@run success(
-                    GameCreationExternalInfo(
-                        gameId,
-                        newGame.name,
-                        newGame.user1.username,
-                        newGame.user2.username,
-                        newGame.board,
-                        lobbyId
-                    )
+                    newGame.toExternalInfo(gameId, lobbyId)
                 )
             } catch (e: Exception) {
                 return@run failure(GameCreationError.LobbyNotFull)
@@ -79,9 +72,7 @@ class GameServiceImpl(
                 game.board.internalBoard.serializeToJsonString()
             )
             success(
-                GameForfeitExternalInfo(
-                    (newGame.board).winner.user.username
-                )
+                newGame.toExternalInfo(gameId, 1) // TODO: GET LOBBY ID
             )
 
             /**
@@ -118,17 +109,7 @@ class GameServiceImpl(
                 is BoardRun -> gameRepo.updateGameBoard(gameId, (game.board as BoardRun).turn.user.id, board)
                 is BoardWin -> gameRepo.updateGameWinner(gameId, (game.board as BoardWin).winner.user.id, board)
             }
-            return@run success(
-                GamePlayExternalInfo(
-                    position,
-                    user.username,
-                    board
-                )
-            )
-            // } catch (e: Exception) {
-            //    logger.info("Error: ${e.message}")
-            //    failure(GamePlayError.UnknownError)
-            // }
+            return@run success(game.toExternalInfo(gameId, 1)) // TODO: GET LOBBY ID
         }
     }
 
@@ -138,7 +119,7 @@ class GameServiceImpl(
 
             val game = gameRepository.getGameById(gameId) ?: return@run failure(GameIdentificationError.GameDoesNotExist)
 
-            return@run success(GameIdentificationExternalInfo(gameId, game.name, game.user1, game.user2, game.board))
+            return@run success(game.toExternalInfo(gameId, lobbyId))
         }
     }
 

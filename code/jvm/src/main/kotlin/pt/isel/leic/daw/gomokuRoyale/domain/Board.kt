@@ -3,7 +3,12 @@ package pt.isel.leic.daw.gomokuRoyale.domain
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.*
+import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.BoardIsBoardDraw
+import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.BoardIsBoardWin
+import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.InvalidPosition
+import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.NotYourTurn
+import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.PositionAlreadyPlayed
+import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.UserNotInBoard
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 import kotlin.math.max
 import kotlin.math.min
@@ -90,7 +95,7 @@ data class BoardRun internal constructor(
      * @throws PositionAlreadyPlayed if trying to play in occupied position
      */
     override fun placePiece(piece: Piece, position: Position, user: User): Board {
-        if(user != turn.user) throw NotYourTurn("Not your turn, it's ${turn.user.username}'s turn")
+        if (user != turn.user) throw NotYourTurn("Not your turn, it's ${turn.user.username}'s turn")
         val boardSize = internalBoard.size
         if (position.row !in 0 until boardSize || position.column !in 0 until boardSize) {
             throw InvalidPosition("Position (${position.row},${position.column}) is invalid")

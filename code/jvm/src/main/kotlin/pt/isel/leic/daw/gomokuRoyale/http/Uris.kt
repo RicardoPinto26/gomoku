@@ -15,7 +15,6 @@ object Uris {
         const val DETAILS = "$PREFIX/users/{username}"
         const val TOKEN = "$PREFIX/users/token"
         const val LOGOUT = "$PREFIX/logout"
-        const val STATS = "$PREFIX/users/stats"
         // const val HOME = "$PREFIX/me"
 
         fun byUsername(username: String) = UriTemplate(DETAILS).expand(username)

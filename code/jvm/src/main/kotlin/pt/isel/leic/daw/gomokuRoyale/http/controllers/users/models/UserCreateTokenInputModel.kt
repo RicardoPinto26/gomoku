@@ -1,6 +1,5 @@
 package pt.isel.leic.daw.gomokuRoyale.http.controllers.users.models
 
-
 /**
  * Token creation input information
  *

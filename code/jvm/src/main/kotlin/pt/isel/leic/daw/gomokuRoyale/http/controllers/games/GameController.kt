@@ -61,9 +61,9 @@ class GameController(
      */
     @PostMapping(Uris.Game.FORFEIT_GAME)
     fun forfeitGame(
-            user: AuthenticatedUser,
-            @PathVariable lobbyId: Int,
-            @PathVariable gameId: Int
+        user: AuthenticatedUser,
+        @PathVariable lobbyId: Int,
+        @PathVariable gameId: Int
     ): ResponseEntity<*> {
         return when (val res = gameService.forfeitGame(gameId, user.user.id)) {
             is Success -> ResponseEntity.status(200)
@@ -85,10 +85,10 @@ class GameController(
      */
     @PostMapping(Uris.Game.PLAY_GAME)
     fun playGame(
-            user: AuthenticatedUser,
-            @PathVariable gameId: Int,
-            @PathVariable lobbyId: String,
-            @RequestBody body: GamePlayInputModel
+        user: AuthenticatedUser,
+        @PathVariable gameId: Int,
+        @PathVariable lobbyId: String,
+        @RequestBody body: GamePlayInputModel
     ): ResponseEntity<*> {
         return when (val res = gameService.playGame(gameId, user.user.id, Position(body.x, body.y))) {
             is Success -> ResponseEntity.status(200)
