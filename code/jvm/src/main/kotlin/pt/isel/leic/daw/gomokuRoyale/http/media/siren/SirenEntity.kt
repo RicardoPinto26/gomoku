@@ -1,4 +1,4 @@
-package pt.isel.leic.daw.gomokuRoyale.http.media
+package pt.isel.leic.daw.gomokuRoyale.http.media.siren
 
 data class SirenEntity<T>(
     val `class`: List<String>? = null,
