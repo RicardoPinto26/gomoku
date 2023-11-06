@@ -12,7 +12,7 @@ data class GameSettings(
     val boardSize: Int,
     val winningLength: Int,
     val opening: Opening,
-    val overflowAllowed: Boolean = true
+    val overflowAllowed: Boolean
 ) {
     init {
         // require(winningLength <= boardSize)

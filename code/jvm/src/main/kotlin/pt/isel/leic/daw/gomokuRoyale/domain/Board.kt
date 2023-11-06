@@ -16,7 +16,8 @@ import kotlin.math.min
 sealed interface Board {
     val internalBoard: List<List<Piece?>>
 
-    fun placePiece(piece: Piece, position: Position, user: User): Board
+    fun chooseColor(color: Piece, user: User, changeTurn: Boolean = true): Board
+    fun placePiece(piece: Piece, position: Position, user: User, changeTurn: Boolean = true): Board
 }
 
 /**
@@ -29,11 +30,14 @@ class BoardWin internal constructor(
     override val internalBoard: List<List<Piece?>>,
     val winner: Player
 ) : Board {
+    override fun chooseColor(color: Piece, user: User, changeTurn: Boolean): Board {
+        throw BoardIsBoardWin("This game has already finished with a win.")
+    }
 
     /**
      * @throws BoardIsBoardWin exception if someone tries to place a piece
      */
-    override fun placePiece(piece: Piece, position: Position, user: User): Board {
+    override fun placePiece(piece: Piece, position: Position, user: User, changeTurn: Boolean): Board {
         throw BoardIsBoardWin("This game has already finished with a win.")
     }
 }
@@ -47,10 +51,14 @@ class BoardDraw internal constructor(
     override val internalBoard: List<List<Piece?>>
 ) : Board {
 
+    override fun chooseColor(color: Piece, user: User, changeTurn: Boolean): Board {
+        throw BoardIsBoardDraw("This game has already finished with a draw.")
+    }
+
     /**
      * @throws BoardIsBoardDraw exception if someone tries to place a piece
      */
-    override fun placePiece(piece: Piece, position: Position, user: User): Board {
+    override fun placePiece(piece: Piece, position: Position, user: User, changeTurn: Boolean): Board {
         throw BoardIsBoardDraw("This game has already finished with a draw.")
     }
 }
@@ -65,7 +73,7 @@ class BoardDraw internal constructor(
  * @property turn which [Player] is currently playing
  * @property internalBoard List<<List<[Piece]?> representing the board
  */
-data class BoardRun internal constructor(
+class BoardRun internal constructor(
     private val winningLength: Int,
     private val overflowAllowed: Boolean,
     private val player1: Player,
@@ -83,6 +91,36 @@ data class BoardRun internal constructor(
         turn: Player
     ) : this(winningLength, overflowAllowed, player1, player2, turn, List(boardSize) { List(boardSize) { null } })
 
+    override fun chooseColor(color: Piece, user: User, changeTurn: Boolean): Board {
+        val userPlayer = userToPlayer(user)
+        require(userPlayer is UnassignedPlayer)
+        val newPlayer = when (color) {
+            Piece.BLACK -> BlackPlayer(user)
+            Piece.WHITE -> WhitePlayer(user)
+        }
+
+        val newTurn = if (changeTurn) if (turn == player1) player2 else player1 else turn
+
+        return if (userPlayer == player1) {
+            BoardRun(
+                winningLength,
+                overflowAllowed,
+                newPlayer,
+                player2,
+                newTurn,
+                internalBoard
+            )
+        } else BoardRun(
+            winningLength,
+            overflowAllowed,
+            player1,
+            newPlayer,
+            newTurn,
+            internalBoard
+        )
+    }
+
+
     /**
      * Places a piece in a given position
      * @param piece [Piece] to be placed
@@ -94,7 +132,7 @@ data class BoardRun internal constructor(
      * @throws InvalidPosition exception if trying to play in invalid position
      * @throws PositionAlreadyPlayed if trying to play in occupied position
      */
-    override fun placePiece(piece: Piece, position: Position, user: User): Board {
+    override fun placePiece(piece: Piece, position: Position, user: User, changeTurn: Boolean): Board {
         if (user != turn.user) throw NotYourTurn("Not your turn, it's ${turn.user.username}'s turn")
         val boardSize = internalBoard.size
         if (position.row !in 0 until boardSize || position.column !in 0 until boardSize) {
@@ -121,7 +159,14 @@ data class BoardRun internal constructor(
         return when {
             checkWin(newBoard, piece, position) -> BoardWin(newBoard, turn)
             newBoard.all { it.all { piece -> piece != null } } -> BoardDraw(newBoard)
-            else -> this.copy(internalBoard = newBoard, turn = if (turn == player1) player2 else player1)
+            else -> BoardRun(
+                winningLength,
+                overflowAllowed,
+                player1,
+                player2,
+                if (turn == player1) player2 else player1,
+                newBoard
+            )
         }
     }
 
@@ -136,8 +181,8 @@ data class BoardRun internal constructor(
      */
     private fun checkWin(board: List<List<Piece?>>, piece: Piece, position: Position): Boolean =
         checkVerticalWin(board, piece, position) ||
-            checkHorizontalWin(board, piece, position) ||
-            checkSlashAndBackslashWin(board, piece, position)
+                checkHorizontalWin(board, piece, position) ||
+                checkSlashAndBackslashWin(board, piece, position)
 
     /**
      * Checks if vertical line from a given [Position] creates a win
@@ -228,6 +273,18 @@ data class BoardRun internal constructor(
             player2.user -> player2
             else -> throw UserNotInBoard("User is not a player on this board")
         }
+
+    fun changeTurn(): BoardRun {
+        val newTurn = if (turn == player1) player2 else player1
+        return BoardRun(
+            winningLength,
+            overflowAllowed,
+            player1,
+            player2,
+            newTurn,
+            internalBoard
+        )
+    }
 }
 
 /**
