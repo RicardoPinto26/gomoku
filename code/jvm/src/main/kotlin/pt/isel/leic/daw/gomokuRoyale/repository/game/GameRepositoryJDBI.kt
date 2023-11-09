@@ -66,9 +66,11 @@ class GameRepositoryJDBI(private val handle: Handle) : GameRepository {
     }
 
     override fun updateOpeningIndex(gameId: Int, openingIndex: Int): Int {
-        return handle.createUpdate("""
+        return handle.createUpdate(
+            """
             update games set opening_index = :opening_index where id = :game_id
-        """.trimIndent())
+            """.trimIndent()
+        )
             .bind("game_id", gameId)
             .bind("opening_index", openingIndex)
             .execute()

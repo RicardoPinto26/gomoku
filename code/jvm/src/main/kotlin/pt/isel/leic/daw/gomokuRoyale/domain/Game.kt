@@ -5,8 +5,6 @@ import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.UserNotInGame
 import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.UserWrongTurn
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 
-
-//TODO: UPDATE DATABASE TO SUPPORT NEW REPRESENTATIONS, AS WELL AS THE MAPPERS
 data class Game internal constructor(
     val name: String,
     val user1: User,
@@ -17,22 +15,21 @@ data class Game internal constructor(
 ) {
 
     constructor(name: String, user1: User, user2: User, settings: GameSettings) :
-            this(
-                name,
-                user1,
-                user2,
-                settings,
-                if (settings.opening.movesList.isEmpty()) -1 else 0,
-                BoardRun(
-                    settings.boardSize,
-                    settings.winningLength,
-                    settings.overflowAllowed,
-                    BlackPlayer(user1),
-                    BlackPlayer(user1),
-                    WhitePlayer(user2)
-                )
+        this(
+            name,
+            user1,
+            user2,
+            settings,
+            if (settings.opening.movesList.isEmpty()) -1 else 0,
+            BoardRun(
+                settings.boardSize,
+                settings.winningLength,
+                settings.overflowAllowed,
+                BlackPlayer(user1),
+                BlackPlayer(user1),
+                WhitePlayer(user2)
             )
-
+        )
 
     private fun calculateUser(user: User, board: Board, otherUser: User): User =
         when (board) {
@@ -59,27 +56,32 @@ data class Game internal constructor(
         for (variant in opening.variantList) {
             val newMovesList = variant.movesList
             if (newMovesList.firstOrNull() == move) {
-
-                if(newMovesList.size == 1) return copy(
-                    settings = settings.copy(opening = variant),
-                    currentOpeningIndex = -1,
-                    board = board
-                )
+                if (newMovesList.size == 1) {
+                    return copy(
+                        settings = settings.copy(opening = variant),
+                        currentOpeningIndex = -1,
+                        board = board
+                    )
+                }
 
                 var newOpeningIndex = if (newMovesList.isEmpty()) -1 else 0
 
                 val changeTurn =
                     newOpeningIndex != -1 && newMovesList[newOpeningIndex] == Opening.OpeningMove.CHANGE_PLAYER
 
-                if (changeTurn)
+                if (changeTurn) {
                     newOpeningIndex =
-                        if (newOpeningIndex == newMovesList.lastIndex) -1
-                        else 1
+                        if (newOpeningIndex == newMovesList.lastIndex) {
+                            -1
+                        } else {
+                            1
+                        }
+                }
 
                 return copy(
                     settings = settings.copy(opening = variant),
                     currentOpeningIndex = newOpeningIndex,
-                    board = if(changeTurn) board.changeTurn() else board
+                    board = if (changeTurn) board.changeTurn() else board
                 )
             }
         }
@@ -107,8 +109,11 @@ data class Game internal constructor(
         require(currentOpeningIndex == -1 || movesList[currentOpeningIndex] == Opening.OpeningMove.placeColor(piece))
 
         var newOpeningIndex =
-            if (currentOpeningIndex == -1 || currentOpeningIndex == movesList.lastIndex) -1
-            else currentOpeningIndex + 1
+            if (currentOpeningIndex == -1 || currentOpeningIndex == movesList.lastIndex) {
+                -1
+            } else {
+                currentOpeningIndex + 1
+            }
 
         if (user != user1 && user != user2) throw UserNotInGame("User ${user.username} not in Game")
         if (board !is BoardRun) throw BoardWrongType("Board type must be BoardRun")

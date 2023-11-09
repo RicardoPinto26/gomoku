@@ -55,7 +55,7 @@ class LobbyController(
                 body.opening,
                 body.winningLenght,
                 body.pointsMargin,
-                body.overflow,
+                body.overflow
             )
         ) {
             is Success -> {

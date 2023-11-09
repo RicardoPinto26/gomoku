@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import pt.isel.leic.daw.gomokuRoyale.domain.AuthenticatedUser
-import pt.isel.leic.daw.gomokuRoyale.domain.Position
 import pt.isel.leic.daw.gomokuRoyale.http.Uris
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.games.models.*
 import pt.isel.leic.daw.gomokuRoyale.http.utils.toResponse

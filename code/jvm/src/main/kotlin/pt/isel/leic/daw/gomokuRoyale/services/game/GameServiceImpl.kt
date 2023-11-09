@@ -154,5 +154,3 @@ sealed class GameAction {
     data class ChooseMove(val move: Opening.OpeningMove) : GameAction()
     data class ChooseColor(val color: Piece) : GameAction()
 }
-
-

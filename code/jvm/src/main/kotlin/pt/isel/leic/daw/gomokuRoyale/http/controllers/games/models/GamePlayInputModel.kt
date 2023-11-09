@@ -1,7 +1,6 @@
 package pt.isel.leic.daw.gomokuRoyale.http.controllers.games.models
 
 import pt.isel.leic.daw.gomokuRoyale.domain.Opening
-import pt.isel.leic.daw.gomokuRoyale.domain.Piece
 import pt.isel.leic.daw.gomokuRoyale.domain.Piece.Companion.toPiece
 import pt.isel.leic.daw.gomokuRoyale.domain.Position
 import pt.isel.leic.daw.gomokuRoyale.services.game.GameAction
@@ -9,8 +8,11 @@ import pt.isel.leic.daw.gomokuRoyale.services.game.GameAction
 /**
  * Game move input information
  *
- * @property x column
- * @property y row
+ * @property actionType the type of action being performed
+ * @property positionX the x coordinate of the position being played
+ * @property positionY the y coordinate of the position being played
+ * @property moveChoice the move being chosen
+ * @property color the color being chosen
  */
 
 data class GamePlayInputModel(

@@ -110,16 +110,17 @@ class BoardRun internal constructor(
                 newTurn,
                 internalBoard
             )
-        } else BoardRun(
-            winningLength,
-            overflowAllowed,
-            player1,
-            newPlayer,
-            newTurn,
-            internalBoard
-        )
+        } else {
+            BoardRun(
+                winningLength,
+                overflowAllowed,
+                player1,
+                newPlayer,
+                newTurn,
+                internalBoard
+            )
+        }
     }
-
 
     /**
      * Places a piece in a given position
@@ -181,8 +182,8 @@ class BoardRun internal constructor(
      */
     private fun checkWin(board: List<List<Piece?>>, piece: Piece, position: Position): Boolean =
         checkVerticalWin(board, piece, position) ||
-                checkHorizontalWin(board, piece, position) ||
-                checkSlashAndBackslashWin(board, piece, position)
+            checkHorizontalWin(board, piece, position) ||
+            checkSlashAndBackslashWin(board, piece, position)
 
     /**
      * Checks if vertical line from a given [Position] creates a win

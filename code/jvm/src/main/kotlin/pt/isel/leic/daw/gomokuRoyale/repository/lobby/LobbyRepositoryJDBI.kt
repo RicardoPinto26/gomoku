@@ -107,7 +107,6 @@ class LobbyRepositoryJDBI(private val handle: Handle) : LobbyRepository {
             .mapTo<Lobby>()
             .firstOrNull()
 
-
     override fun seekLobbyID(
         otherRating: Int,
         gridSize: Int,
