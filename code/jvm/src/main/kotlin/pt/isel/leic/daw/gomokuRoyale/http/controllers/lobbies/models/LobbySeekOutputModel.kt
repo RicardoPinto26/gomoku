@@ -11,7 +11,7 @@ import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbyExternalInfo
  * @property name name of the lobby
  * @property gridSize size of the board in the lobby
  * @property opening name of the [Opening]
- * @property variant name of the variant to be played
+ * @property winningLenght name of the variant to be played
  * @property pointsMargin allowed ratings margin each [User]
  */
 class LobbySeekOutputModel(
@@ -19,15 +19,17 @@ class LobbySeekOutputModel(
     val name: String,
     val gridSize: Int,
     val opening: String,
-    val variant: String,
-    val pointsMargin: Int
+    val winningLenght: Int,
+    val pointsMargin: Int,
+    val overflow: Boolean
 ) {
     constructor(lei: LobbyExternalInfo) : this(
         lei.id,
-        "Random Name",
+        "Lobby ${lei.id}",
         lei.gridSize,
         lei.opening,
-        lei.variant,
-        lei.pointsMargin
+        lei.winningLenght,
+        lei.pointsMargin,
+        lei.overflow
     )
 }

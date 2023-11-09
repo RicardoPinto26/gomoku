@@ -11,7 +11,7 @@ data class Game internal constructor(
     val name: String,
     val user1: User,
     val user2: User,
-    private val settings: GameSettings,
+    val settings: GameSettings,
     val currentOpeningIndex: Int,
     val board: Board
 ) {
@@ -59,6 +59,13 @@ data class Game internal constructor(
         for (variant in opening.variantList) {
             val newMovesList = variant.movesList
             if (newMovesList.firstOrNull() == move) {
+
+                if(newMovesList.size == 1) return copy(
+                    settings = settings.copy(opening = variant),
+                    currentOpeningIndex = -1,
+                    board = board
+                )
+
                 var newOpeningIndex = if (newMovesList.isEmpty()) -1 else 0
 
                 val changeTurn =

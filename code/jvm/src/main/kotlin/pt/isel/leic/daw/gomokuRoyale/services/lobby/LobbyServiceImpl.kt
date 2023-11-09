@@ -21,22 +21,24 @@ class LobbyServiceImpl(
         name: String,
         gridSize: Int,
         opening: String,
-        variant: String,
-        pointsMargin: Int
+        winningLenght: Int,
+        pointsMargin: Int,
+        overflow: Boolean
     ): LobbyCreationResult {
         logger.info("Creating Lobby")
         logger.info("$gridSize")
         return transactionManager.run {
             val lobbyRepo = it.lobbyRepository
-            val id = lobbyRepo.createLobby(name, user.id, gridSize, opening, variant, pointsMargin)
+            val id = lobbyRepo.createLobby(name, user.id, gridSize, opening, winningLenght, pointsMargin, overflow)
             return@run success(
                 LobbyExternalInfo(
                     id = id,
                     user1 = user,
                     gridSize = gridSize,
                     opening = opening,
-                    variant = variant,
-                    pointsMargin = pointsMargin
+                    winningLenght = winningLenght,
+                    pointsMargin = pointsMargin,
+                    overflow = overflow
                 )
             )
         }
@@ -71,6 +73,7 @@ class LobbyServiceImpl(
         gridSize: Int,
         winningLength: Int,
         opening: String,
+        overflow: Boolean,
         pointsMargin: Int
     ): LobbySeekResult {
         return transactionManager.run {
@@ -87,6 +90,7 @@ class LobbyServiceImpl(
                 gridSize,
                 winningLength,
                 opening,
+                overflow,
                 userRating - pointsMargin,
                 userRating + pointsMargin
             )
@@ -95,7 +99,15 @@ class LobbyServiceImpl(
                 val lobby = lobbyRepo.getLobbyById(lobbyID)!!
                 return@run success(LobbyExternalInfo(lobby))
             }
-            val createdLobbyID = lobbyRepo.createLobby("Seeked Lobby", user.id, gridSize, opening, "???", pointsMargin)
+            val createdLobbyID = lobbyRepo.createLobby(
+                "Seeked Lobby",
+                user.id,
+                gridSize,
+                opening,
+                winningLength,
+                pointsMargin,
+                overflow
+            )
             return@run success(LobbyExternalInfo(lobbyRepo.getLobbyById(createdLobbyID)!!))
         }
     }

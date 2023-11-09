@@ -23,7 +23,7 @@ class GameRepositoryJDBI(private val handle: Handle) : GameRepository {
         return handle.createQuery(
             """
         SELECT 
-            l.name as game_name, g.turn as game_turn, g.board as game_board, g.winner as game_winner,
+            l.name as game_name, g.turn as game_turn, g.board as game_board, g.winner as game_winner, g.opening_index as game_opening_index, g.state as game_state,
             l.*,
              user1.id as user1_id, user1.username as user1_username, user1.email as user1_email,
                 user1.password as user1_password, user1.rating as user1_rating, user1.nr_games_played as user1_nr_games_played,
@@ -52,15 +52,25 @@ class GameRepositoryJDBI(private val handle: Handle) : GameRepository {
             .bind("winner", winner)
             .execute()
 
-    override fun updateGameBoard(gameId: Int, turn: Int, board: String): Int {
+    override fun updateGameBoard(gameId: Int, turn: Int, board: String, openingIndex: Int): Int {
         return handle.createUpdate(
             """
-            update games set board = CAST(:board AS jsonb), turn = :turn, state = 'IN_PROGRESS' where id = :game_id
+            update games set board = CAST(:board AS jsonb),opening_index = :index, turn = :turn, state = 'IN_PROGRESS' where id = :game_id
             """.trimIndent()
         )
             .bind("game_id", gameId)
+            .bind("index", openingIndex)
             .bind("turn", turn)
             .bind("board", board)
+            .execute()
+    }
+
+    override fun updateOpeningIndex(gameId: Int, openingIndex: Int): Int {
+        return handle.createUpdate("""
+            update games set opening_index = :opening_index where id = :game_id
+        """.trimIndent())
+            .bind("game_id", gameId)
+            .bind("opening_index", openingIndex)
             .execute()
     }
 

@@ -8,9 +8,9 @@ VALUES ('17NPPxEeGEUZl6wnkPrHMQNyC80NvequkDNEb6B872o=', 1, EXTRACT(EPOCH FROM NO
        ('27NPPxEeGEUZl6wnkPrHMQNyC80NvequkDNEb6B872o=', 2, EXTRACT(EPOCH FROM NOW()), EXTRACT(EPOCH FROM NOW())),
        ('37NPPxEeGEUZl6wnkPrHMQNyC80NvequkDNEb6B872o=', 3, EXTRACT(EPOCH FROM NOW()), EXTRACT(EPOCH FROM NOW()));
 
-INSERT INTO lobbys (name, creator_user_id, join_user_id, grid_size, opening, variant)
-VALUES ('Game 1', 1, 2, 15, 'Standard', 'Classic'),
-       ('Game 2', 2, 1, 19, 'Standard', 'Classic');
+INSERT INTO lobbys (name, creator_user_id, join_user_id, grid_size, opening)
+VALUES ('Game 1', 1, 2, 15, 'SWAP2'),
+       ('Game 2', 2, 1, 19, 'PRO');
 
 INSERT INTO games (lobby_id, turn, winner, board, state)
 VALUES (1, 1, null, '[[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null]]', 'AWAITING FIRST MOVE'),

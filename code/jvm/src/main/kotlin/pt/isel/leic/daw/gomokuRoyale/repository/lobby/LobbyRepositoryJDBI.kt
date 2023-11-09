@@ -11,20 +11,22 @@ class LobbyRepositoryJDBI(private val handle: Handle) : LobbyRepository {
         userId: Int,
         gridSize: Int,
         opening: String,
-        variant: String,
-        pointsMargin: Int
+        winningLenght: Int,
+        pointsMargin: Int,
+        overflow: Boolean
     ): Int =
         handle.createUpdate(
             """
-                insert into lobbys(name, creator_user_id, grid_size, opening, variant, points_margin)
-                values(:name, :creatorId, :gridSize, :opening, :variant, :pointsMargin)
+                insert into lobbys(name, creator_user_id, grid_size, opening, winning_lenght, overflow, points_margin)
+                values(:name, :creatorId, :gridSize, :opening, :winningLenght, :overflow, :pointsMargin)
                 """
         )
             .bind("name", name)
             .bind("creatorId", userId)
             .bind("gridSize", gridSize)
             .bind("opening", opening)
-            .bind("variant", variant)
+            .bind("winning_lenght", winningLenght)
+            .bind("overflow", overflow)
             .bind("pointsMargin", pointsMargin)
             .executeAndReturnGeneratedKeys()
             .mapTo<Int>()
@@ -86,17 +88,32 @@ class LobbyRepositoryJDBI(private val handle: Handle) : LobbyRepository {
             .mapTo<Lobby>()
             .firstOrNull()
 
-    override fun getLobbyByVariant(variant: String): Lobby? =
-        handle.createQuery("select * from lobbys where variant = :variant")
-            .bind("variant", variant)
+    override fun getLobbyByGameId(gameId: Int): Lobby? =
+        handle.createQuery(
+            """select
+                l.*,
+                user1.id as user1_id, user1.username as user1_username, user1.email as user1_email,
+                user1.password as user1_password, user1.rating as user1_rating, user1.nr_games_played as user1_nr_games_played,
+                user2.id as user2_id, user2.username as user2_username, user2.email as user2_email,
+                user2.password as user2_password, user2.rating as user2_rating, user2.nr_games_played as user2_nr_games_played
+            FROM lobbys l
+            LEFT JOIN users as user1 ON l.creator_user_id = user1.id
+            LEFT JOIN users as user2 ON l.join_user_id = user2.id
+            join games as g on l.id = g.lobby_id
+            where g.id = :game_id
+            """.trimIndent()
+        )
+            .bind("game_id", gameId)
             .mapTo<Lobby>()
             .firstOrNull()
+
 
     override fun seekLobbyID(
         otherRating: Int,
         gridSize: Int,
         winningLength: Int,
         opening: String,
+        overflow: Boolean,
         minRating: Int,
         maxRating: Int
     ): Int? =
@@ -105,12 +122,12 @@ class LobbyRepositoryJDBI(private val handle: Handle) : LobbyRepository {
             select l.id
             from lobbys as l
             join users as u on l.creator_user_id = u.id
-            where l.join_user_id is null and l.grid_size = :grid_size and l.opening = :opening
+            where l.join_user_id is null and l.grid_size = :grid_size and l.opening = :opening and l.winning_lenght = :winning_length and l.overflow = :overflow
             AND u.rating between :min_rating and :max_rating
             """.trimIndent()
         )
             .bind("grid_size", gridSize)
-            // .bind("winning_length", winningLength)
+            .bind("winning_length", winningLength)
             .bind("opening", opening)
             .bind("min_rating", minRating)
             .bind("max_rating", maxRating)

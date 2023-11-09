@@ -5,15 +5,21 @@ enum class Opening(val movesList: List<OpeningMove>, val variantList: List<Openi
     PRO(
         listOf(
             OpeningMove.PLACE_BLACK,  //center of the board
+            OpeningMove.CHANGE_PLAYER,
             OpeningMove.PLACE_WHITE,  //anywhere on the board
-            OpeningMove.PLACE_BLACK   //least three intersections away from the first stone
+            OpeningMove.CHANGE_PLAYER,
+            OpeningMove.PLACE_BLACK,  //least three intersections away from the first stone
+            OpeningMove.CHANGE_PLAYER,
         ),
     ),
     LONG_PRO(
         listOf(
             OpeningMove.PLACE_BLACK,  //center of the board
+            OpeningMove.CHANGE_PLAYER,
             OpeningMove.PLACE_WHITE,  //anywhere on the board
-            OpeningMove.PLACE_BLACK   //least four intersections away from the first stone
+            OpeningMove.CHANGE_PLAYER,
+            OpeningMove.PLACE_BLACK,   //least four intersections away from the first stone
+            OpeningMove.CHANGE_PLAYER,
         )
     ),
     SWAP(
@@ -27,12 +33,12 @@ enum class Opening(val movesList: List<OpeningMove>, val variantList: List<Openi
     ),
     SWAP2_1(
         listOf(
-            OpeningMove.PLACE_WHITE
+            OpeningMove.PLACE_WHITE,
         )
     ),
     SWAP2_2(
         listOf(
-            OpeningMove.PLACE_BLACK
+            OpeningMove.PLACE_BLACK,
         )
     ),
     SWAP2_3(
@@ -65,5 +71,9 @@ enum class Opening(val movesList: List<OpeningMove>, val variantList: List<Openi
                     Piece.WHITE -> PLACE_WHITE
                 }
         }
+    }
+
+    companion object {
+        fun from(opening: String): Opening? = values().find { it.name == opening }
     }
 }

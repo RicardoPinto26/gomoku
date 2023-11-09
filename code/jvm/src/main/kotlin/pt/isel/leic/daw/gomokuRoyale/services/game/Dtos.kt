@@ -44,6 +44,8 @@ sealed class GamePlayError : GameServicesError {
     object UserNotInGame : GamePlayError()
     object PositionAlreadyPlayed : GamePlayError()
     object InvalidPosition : GamePlayError()
+    object InvalidNextMove : GamePlayError()
+    object InvalidColor : GamePlayError()
 
     object WrongTurn : GamePlayError()
 }

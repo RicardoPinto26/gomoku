@@ -9,12 +9,13 @@ interface LobbyService {
         name: String,
         gridSize: Int,
         opening: String,
-        variant: String,
-        pointsMargin: Int
+        winningLenght: Int,
+        pointsMargin: Int,
+        overflow: Boolean
     ): LobbyCreationResult
 
     fun joinLobby(user: User, lobbyId: Int): LobbyJoinResult
 
     fun getLobbyByUserToken(token: String): Lobby?
-    fun seekLobby(user: User, gridSize: Int, winningLength: Int, opening: String, pointsMargin: Int): LobbySeekResult
+    fun seekLobby(user: User, gridSize: Int, winningLength: Int, opening: String, overflow: Boolean, pointsMargin: Int): LobbySeekResult
 }

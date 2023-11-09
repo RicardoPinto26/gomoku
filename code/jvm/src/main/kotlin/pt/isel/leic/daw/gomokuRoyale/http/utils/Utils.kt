@@ -82,6 +82,8 @@ fun GameServicesError.toResponse() = when (this) {
         GamePlayError.InvalidPosition -> Problem.response(Problem.invalidPosition)
         GamePlayError.PositionAlreadyPlayed -> Problem.response(Problem.occupiedPosition)
         GamePlayError.WrongTurn -> Problem.response(Problem.wrongTurn)
+        GamePlayError.InvalidColor -> Problem.response(Problem.invalidColor)
+        GamePlayError.InvalidNextMove -> Problem.response(Problem.invalidNextMove)
     }
 
     is GameIdentificationError -> when (this) {

@@ -17,8 +17,9 @@ data class LobbyExternalInfo(
     val user2: User? = null,
     val gridSize: Int,
     val opening: String,
-    val variant: String,
-    val pointsMargin: Int
+    val winningLenght: Int,
+    val pointsMargin: Int,
+    val overflow: Boolean
 ) {
     constructor(lobby: Lobby) : this(
         lobby.id,
@@ -26,8 +27,9 @@ data class LobbyExternalInfo(
         lobby.user2,
         lobby.settings.boardSize,
         lobby.settings.opening.toString(),
-        "???",
-        lobby.pointsMargin
+        lobby.settings.winningLength,
+        lobby.pointsMargin,
+        lobby.settings.overflowAllowed
     )
 }
 

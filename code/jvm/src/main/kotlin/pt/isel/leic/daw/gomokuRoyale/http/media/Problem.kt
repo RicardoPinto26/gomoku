@@ -177,5 +177,17 @@ class Problem(
             409,
             "It's not your turn"
         )
+        val invalidColor = Problem(
+            "invalidColor.com",
+            "Invalid Color",
+            409,
+            "Invalid Color"
+        )
+        val invalidNextMove = Problem(
+            "invalidNextMove.com",
+            "Invalid Next Move (Opening)",
+            409,
+            "Invalid Next Move"
+        )
     }
 }

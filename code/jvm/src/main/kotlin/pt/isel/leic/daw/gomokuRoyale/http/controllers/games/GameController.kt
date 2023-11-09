@@ -9,11 +9,7 @@ import org.springframework.web.bind.annotation.RestController
 import pt.isel.leic.daw.gomokuRoyale.domain.AuthenticatedUser
 import pt.isel.leic.daw.gomokuRoyale.domain.Position
 import pt.isel.leic.daw.gomokuRoyale.http.Uris
-import pt.isel.leic.daw.gomokuRoyale.http.controllers.games.models.GameCreateOutputModel
-import pt.isel.leic.daw.gomokuRoyale.http.controllers.games.models.GameDetailsOutputModel
-import pt.isel.leic.daw.gomokuRoyale.http.controllers.games.models.GameForfeitOutputModel
-import pt.isel.leic.daw.gomokuRoyale.http.controllers.games.models.GamePlayInputModel
-import pt.isel.leic.daw.gomokuRoyale.http.controllers.games.models.GamePlayOutputModel
+import pt.isel.leic.daw.gomokuRoyale.http.controllers.games.models.*
 import pt.isel.leic.daw.gomokuRoyale.http.utils.toResponse
 import pt.isel.leic.daw.gomokuRoyale.services.game.GameService
 import pt.isel.leic.daw.gomokuRoyale.utils.Failure
@@ -90,7 +86,8 @@ class GameController(
         @PathVariable lobbyId: String,
         @RequestBody body: GamePlayInputModel
     ): ResponseEntity<*> {
-        return when (val res = gameService.playGame(gameId, user.user.id, Position(body.x, body.y))) {
+        val action = convertIntputModelToGameAction(body)
+        return when (val res = gameService.playGame(gameId, user.user.id, action)) {
             is Success -> ResponseEntity.status(200)
                 .body(GamePlayOutputModel(res.value))
 

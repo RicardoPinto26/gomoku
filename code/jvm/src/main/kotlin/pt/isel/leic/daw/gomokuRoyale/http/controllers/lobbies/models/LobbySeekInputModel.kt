@@ -15,5 +15,6 @@ data class LobbySeekInputModel(
     val gridSize: Int,
     val winningLength: Int,
     val opening: String,
-    val pointsMargin: Int
+    val pointsMargin: Int,
+    val overflow: Boolean
 )

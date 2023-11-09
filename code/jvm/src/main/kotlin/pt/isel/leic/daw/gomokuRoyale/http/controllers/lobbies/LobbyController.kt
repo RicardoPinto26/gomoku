@@ -45,7 +45,7 @@ class LobbyController(
         logger.info("Request from user ${user.user.username} to create lobby received")
         logger.info("${body.gridSize}")
         logger.info(body.opening)
-        logger.info(body.variant)
+        logger.info(body.winningLenght.toString())
         logger.info("${body.pointsMargin}")
         return when (
             val res = lobbyService.createLobby(
@@ -53,8 +53,9 @@ class LobbyController(
                 body.name,
                 body.gridSize,
                 body.opening,
-                body.variant,
-                body.pointsMargin
+                body.winningLenght,
+                body.pointsMargin,
+                body.overflow,
             )
         ) {
             is Success -> {
@@ -117,6 +118,7 @@ class LobbyController(
                 body.gridSize,
                 body.winningLength,
                 body.opening,
+                body.overflow,
                 body.pointsMargin
             )
         ) {

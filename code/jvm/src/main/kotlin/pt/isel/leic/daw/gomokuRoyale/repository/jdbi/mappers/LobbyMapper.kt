@@ -19,6 +19,9 @@ class LobbyMapper : RowMapper<Lobby> {
         val id = rs.getInt("id")
         val joinUserId = rs.getInt("join_user_id")
         val gridSize = rs.getInt("grid_size")
+        val opening = Opening.from(rs.getString("opening")) ?: throw Exception("Invalid opening")
+        val winningLenght = rs.getInt("winning_lenght")
+        val overflow = rs.getBoolean("overflow")
         val pointsMargin = rs.getInt("points_margin")
         val createdAt = rs.getTimestamp("created_at").toInstant()
 
@@ -35,7 +38,7 @@ class LobbyMapper : RowMapper<Lobby> {
             user2,
             pointsMargin,
             Date.from(createdAt),
-            GameSettings(gridSize, 5, Opening.FREESTYLE)
+            GameSettings(gridSize, winningLenght, opening, overflow)
         )
     }
 }

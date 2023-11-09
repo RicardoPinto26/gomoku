@@ -14,5 +14,7 @@ interface GameRepository {
 
     fun updateGameWinner(gameId: Int, winner: Int, board: String): Int
 
-    fun updateGameBoard(gameId: Int, turn: Int, board: String): Int
+    fun updateGameBoard(gameId: Int, turn: Int, board: String, openingIndex: Int): Int
+
+    fun updateOpeningIndex(gameId: Int, openingIndex: Int): Int
 }
