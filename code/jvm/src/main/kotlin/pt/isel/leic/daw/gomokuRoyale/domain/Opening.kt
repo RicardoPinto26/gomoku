@@ -10,6 +10,7 @@ enum class Opening(val movesList: List<OpeningMove>, val variantList: List<Openi
             OpeningMove.CHANGE_PLAYER,
             OpeningMove.PLACE_BLACK, // least three intersections away from the first stone
             OpeningMove.CHANGE_PLAYER
+            // OpeningMove.FREESTYLE
         )
     ),
     LONG_PRO(
@@ -20,6 +21,7 @@ enum class Opening(val movesList: List<OpeningMove>, val variantList: List<Openi
             OpeningMove.CHANGE_PLAYER,
             OpeningMove.PLACE_BLACK, // least four intersections away from the first stone
             OpeningMove.CHANGE_PLAYER
+            // OpeningMove.FREESTYLE
         )
     ),
     SWAP(
@@ -33,12 +35,13 @@ enum class Opening(val movesList: List<OpeningMove>, val variantList: List<Openi
     ),
     SWAP2_1(
         listOf(
-            OpeningMove.PLACE_WHITE
+            OpeningMove.PLACE_WHITE,
+            OpeningMove.CHANGE_PLAYER
         )
     ),
     SWAP2_2(
         listOf(
-            OpeningMove.PLACE_BLACK
+            OpeningMove.SWAP_COLOR
         )
     ),
     SWAP2_3(
@@ -62,7 +65,7 @@ enum class Opening(val movesList: List<OpeningMove>, val variantList: List<Openi
     );
 
     enum class OpeningMove {
-        PLACE_WHITE, PLACE_BLACK, CHOOSE_COLOR, CHANGE_PLAYER, CHOOSE_NEXT_MOVE;
+        PLACE_WHITE, PLACE_BLACK, CHOOSE_COLOR, CHANGE_PLAYER, CHOOSE_NEXT_MOVE, SWAP_COLOR;
 
         companion object {
             fun placeColor(piece: Piece): OpeningMove =

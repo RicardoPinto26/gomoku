@@ -85,7 +85,7 @@ class GameController(
         @PathVariable lobbyId: String,
         @RequestBody body: GamePlayInputModel
     ): ResponseEntity<*> {
-        val action = convertIntputModelToGameAction(body)
+        val action = convertInputModelToGameAction(body)
         return when (val res = gameService.playGame(gameId, user.user.id, action)) {
             is Success -> ResponseEntity.status(200)
                 .body(GamePlayOutputModel(res.value))

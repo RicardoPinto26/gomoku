@@ -9,14 +9,16 @@ VALUES ('17NPPxEeGEUZl6wnkPrHMQNyC80NvequkDNEb6B872o=', 1, EXTRACT(EPOCH FROM NO
        ('37NPPxEeGEUZl6wnkPrHMQNyC80NvequkDNEb6B872o=', 3, EXTRACT(EPOCH FROM NOW()), EXTRACT(EPOCH FROM NOW()));
 
 INSERT INTO lobbys (name, creator_user_id, join_user_id, grid_size, opening)
-VALUES ('Game 1', 1, 2, 15, 'SWAP2'),
-       ('Game 2', 2, 1, 19, 'PRO');
+VALUES ('Game SWAP2', 1, 2, 15, 'SWAP2'),
+       ('Game PRO', 2, 1, 19, 'PRO'),
+       ('Game SWAP', 1, 2, 15, 'SWAP');
 
-INSERT INTO games (lobby_id, turn, winner, board, state)
-VALUES (1, 1, null, '[[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null]]', 'AWAITING FIRST MOVE'),
-       (2, 1, null, '[[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null]]', 'AWAITING FIRST MOVE'),
-       (1, 1, null, '[["WHITE","BLACK"], ["WHITE",null]]', 'IN_PROGRESS'),
-       (1, 2, null, '[["WHITE","WHITE","WHITE","WHITE", null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null]]', 'IN_PROGRESS');
+INSERT INTO games (lobby_id, turn, winner,black_player, white_player, board, state)
+VALUES (1, 1, null, 1,2, '[[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null]]', 'AWAITING FIRST MOVE'),
+       (3, 1, null, 1, 2, '[[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null]]', 'AWAITING FIRST MOVE'),
+       (2, 1, null, 2,1 ,'[[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null]]', 'AWAITING FIRST MOVE'),
+       (1, 1, null, 1, 2,'[["WHITE","BLACK"], ["WHITE",null]]', 'IN_PROGRESS'),
+       (1, 2, null, 1, 2, '[["WHITE","WHITE","WHITE","WHITE", null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null]]', 'IN_PROGRESS');
 
 INSERT INTO moves (game_id, user_id, move_x, move_y)
 VALUES (1, 1, 7, 7),

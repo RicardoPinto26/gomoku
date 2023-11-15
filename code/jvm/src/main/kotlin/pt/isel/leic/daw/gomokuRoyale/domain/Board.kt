@@ -16,7 +16,7 @@ import kotlin.math.min
 sealed interface Board {
     val internalBoard: List<List<Piece?>>
 
-    fun chooseColor(color: Piece, user: User, changeTurn: Boolean = true): Board
+    fun chooseColor(color: Piece, user: User, changeTurn: Boolean = true, otherUser: User): Board
     fun placePiece(piece: Piece, position: Position, user: User, changeTurn: Boolean = true): Board
 }
 
@@ -30,7 +30,7 @@ class BoardWin internal constructor(
     override val internalBoard: List<List<Piece?>>,
     val winner: Player
 ) : Board {
-    override fun chooseColor(color: Piece, user: User, changeTurn: Boolean): Board {
+    override fun chooseColor(color: Piece, user: User, changeTurn: Boolean, otherUser: User): Board {
         throw BoardIsBoardWin("This game has already finished with a win.")
     }
 
@@ -51,7 +51,7 @@ class BoardDraw internal constructor(
     override val internalBoard: List<List<Piece?>>
 ) : Board {
 
-    override fun chooseColor(color: Piece, user: User, changeTurn: Boolean): Board {
+    override fun chooseColor(color: Piece, user: User, changeTurn: Boolean, otherUser: User): Board {
         throw BoardIsBoardDraw("This game has already finished with a draw.")
     }
 
@@ -76,8 +76,8 @@ class BoardDraw internal constructor(
 class BoardRun internal constructor(
     private val winningLength: Int,
     private val overflowAllowed: Boolean,
-    private val player1: Player,
-    private val player2: Player,
+    val player1: Player,
+    val player2: Player,
     val turn: Player,
     override val internalBoard: List<List<Piece?>>
 ) : Board {
@@ -91,35 +91,20 @@ class BoardRun internal constructor(
         turn: Player
     ) : this(winningLength, overflowAllowed, player1, player2, turn, List(boardSize) { List(boardSize) { null } })
 
-    override fun chooseColor(color: Piece, user: User, changeTurn: Boolean): Board {
-        val userPlayer = userToPlayer(user)
-        require(userPlayer is UnassignedPlayer)
-        val newPlayer = when (color) {
-            Piece.BLACK -> BlackPlayer(user)
-            Piece.WHITE -> WhitePlayer(user)
+    override fun chooseColor(color: Piece, user: User, changeTurn: Boolean, otherUser: User): Board {
+        val (newPlayer, otherNewPlayer) = when (color) {
+            Piece.BLACK -> BlackPlayer(user) to WhitePlayer(otherUser)
+            Piece.WHITE -> WhitePlayer(user) to BlackPlayer(otherUser)
         }
 
-        val newTurn = if (changeTurn) if (turn == player1) player2 else player1 else turn
-
-        return if (userPlayer == player1) {
-            BoardRun(
-                winningLength,
-                overflowAllowed,
-                newPlayer,
-                player2,
-                newTurn,
-                internalBoard
-            )
-        } else {
-            BoardRun(
-                winningLength,
-                overflowAllowed,
-                player1,
-                newPlayer,
-                newTurn,
-                internalBoard
-            )
-        }
+        return BoardRun(
+            winningLength,
+            overflowAllowed,
+            if (color == Piece.BLACK) newPlayer else otherNewPlayer,
+            if (color == Piece.WHITE) newPlayer else otherNewPlayer,
+            if (changeTurn) otherNewPlayer else newPlayer,
+            internalBoard
+        )
     }
 
     /**
@@ -165,7 +150,17 @@ class BoardRun internal constructor(
                 overflowAllowed,
                 player1,
                 player2,
-                if (turn == player1) player2 else player1,
+                if (turn == player1) {
+                    when (changeTurn) {
+                        true -> player2
+                        false -> player1
+                    }
+                } else {
+                    when (changeTurn) {
+                        true -> player1
+                        false -> player2
+                    }
+                },
                 newBoard
             )
         }
@@ -274,6 +269,19 @@ class BoardRun internal constructor(
             player2.user -> player2
             else -> throw UserNotInBoard("User is not a player on this board")
         }
+
+    fun changePlayerColors(): BoardRun {
+        val newPlayer1 = if (player1 is BlackPlayer) BlackPlayer(player2.user) else player1
+        val newPlayer2 = if (player2 is WhitePlayer) WhitePlayer(player1.user) else player2
+        return BoardRun(
+            winningLength,
+            overflowAllowed,
+            newPlayer1,
+            newPlayer2,
+            if (newPlayer1 is WhitePlayer) newPlayer1 else newPlayer2,
+            internalBoard
+        )
+    }
 
     fun changeTurn(): BoardRun {
         val newTurn = if (turn == player1) player2 else player1

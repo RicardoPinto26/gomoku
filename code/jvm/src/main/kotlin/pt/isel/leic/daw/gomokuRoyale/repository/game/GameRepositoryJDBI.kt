@@ -5,15 +5,17 @@ import org.jdbi.v3.core.kotlin.mapTo
 import pt.isel.leic.daw.gomokuRoyale.domain.Game
 
 class GameRepositoryJDBI(private val handle: Handle) : GameRepository {
-    override fun createGame(lobbyId: Int, turn: Int, board: String): Int =
+    override fun createGame(lobbyId: Int, turn: Int, blackPlayer: Int, whitePlayer: Int, board: String): Int =
         handle.createUpdate(
             """
-            INSERT INTO games (lobby_id, turn, board) 
-            VALUES (:lobbyId, :turn, CAST(:board AS jsonb))
+            INSERT INTO games (lobby_id, turn, black_player, white_player board) 
+            VALUES (:lobbyId, :turn, :blackPlayer, :whitePlayer, CAST(:board AS jsonb))
         """
         )
             .bind("lobbyId", lobbyId)
             .bind("turn", turn)
+            .bind("blackPlayer", blackPlayer)
+            .bind("whitePlayer", whitePlayer)
             .bind("board", board)
             .executeAndReturnGeneratedKeys()
             .mapTo<Int>()
@@ -23,7 +25,9 @@ class GameRepositoryJDBI(private val handle: Handle) : GameRepository {
         return handle.createQuery(
             """
         SELECT 
-            l.name as game_name, g.turn as game_turn, g.board as game_board, g.winner as game_winner, g.opening_index as game_opening_index, g.state as game_state,
+            l.name as game_name, g.turn as game_turn, g.board as game_board, g.winner as game_winner,
+             g.opening_index as game_opening_index, g.state as game_state,
+              g.black_player as game_black_player, g.white_player as game_white_player, g.opening_variant as game_opening_variant,
             l.*,
              user1.id as user1_id, user1.username as user1_username, user1.email as user1_email,
                 user1.password as user1_password, user1.rating as user1_rating, user1.nr_games_played as user1_nr_games_played,
@@ -52,6 +56,21 @@ class GameRepositoryJDBI(private val handle: Handle) : GameRepository {
             .bind("winner", winner)
             .execute()
 
+    override fun updateGamePlayer(gameId: Int, newPlayer1: Int, newPlayer2: Int, turn: Int, newOpeningIndex: Int): Int =
+        handle.createUpdate(
+            """
+            update games set black_player = :newPlayer1, white_player = :newPlayer2,
+             turn = :turn, opening_index = :newOpeningIndex
+             where id = :game_id
+            """.trimIndent()
+        )
+            .bind("game_id", gameId)
+            .bind("newPlayer1", newPlayer1)
+            .bind("newPlayer2", newPlayer2)
+            .bind("turn", turn)
+            .bind("newOpeningIndex", newOpeningIndex)
+            .execute()
+
     override fun updateGameBoard(gameId: Int, turn: Int, board: String, openingIndex: Int): Int {
         return handle.createUpdate(
             """
@@ -72,6 +91,19 @@ class GameRepositoryJDBI(private val handle: Handle) : GameRepository {
             """.trimIndent()
         )
             .bind("game_id", gameId)
+            .bind("opening_index", openingIndex)
+            .execute()
+    }
+
+    override fun updateOpeningVariant(gameId: Int, openingVariant: String, openingIndex: Int): Int {
+        return handle.createUpdate(
+            """
+            update games set opening_variant = :opening_variant,  opening_index = :opening_index 
+            where id = :game_id
+            """.trimIndent()
+        )
+            .bind("game_id", gameId)
+            .bind("opening_variant", openingVariant)
             .bind("opening_index", openingIndex)
             .execute()
     }

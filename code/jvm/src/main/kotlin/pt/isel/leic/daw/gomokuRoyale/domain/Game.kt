@@ -21,14 +21,25 @@ data class Game internal constructor(
             user2,
             settings,
             if (settings.opening.movesList.isEmpty()) -1 else 0,
-            BoardRun(
-                settings.boardSize,
-                settings.winningLength,
-                settings.overflowAllowed,
-                BlackPlayer(user1),
-                BlackPlayer(user1),
-                WhitePlayer(user2)
-            )
+            if (settings.opening == Opening.FREESTYLE || settings.opening == Opening.PRO || settings.opening == Opening.LONG_PRO) {
+                BoardRun(
+                    settings.boardSize,
+                    settings.winningLength,
+                    settings.overflowAllowed,
+                    BlackPlayer(user1),
+                    WhitePlayer(user2),
+                    BlackPlayer(user1)
+                )
+            } else {
+                BoardRun(
+                    settings.boardSize,
+                    settings.winningLength,
+                    settings.overflowAllowed,
+                    UnassignedPlayer(user1),
+                    UnassignedPlayer(user2),
+                    UnassignedPlayer(user1)
+                )
+            }
         )
 
     private fun calculateUser(user: User, board: Board, otherUser: User): User =
@@ -42,7 +53,59 @@ data class Game internal constructor(
             is BoardDraw -> user.copy(rating = user.calculateNewRating(0.5, otherUser.rating))
         }
 
-    fun chooseNextMove(move: Opening.OpeningMove, user: User): Game {
+    fun chooseNextMove(move: Opening, user: User): Game {
+        if (user != user1 && user != user2) throw UserNotInGame("User ${user.username} not in Game")
+
+        val movesList = settings.opening.movesList
+        require(currentOpeningIndex != -1 && movesList[currentOpeningIndex] == Opening.OpeningMove.CHOOSE_NEXT_MOVE)
+
+        if (board !is BoardRun) throw BoardWrongType("Board type must be BoardRun")
+        if (board.turn.user != user) throw UserWrongTurn("Not that user's turn")
+
+        val opening = settings.opening
+
+        for (variant in opening.variantList) {
+            if (variant == move) {
+                val newMovesList = variant.movesList
+                var newOpeningIndex = if (newMovesList.isEmpty()) -1 else 0
+
+                // swap color
+                if (newMovesList[newOpeningIndex] == Opening.OpeningMove.SWAP_COLOR) {
+                    newOpeningIndex = if (newOpeningIndex == newMovesList.lastIndex) {
+                        -1
+                    } else {
+                        newOpeningIndex + 2
+                    }
+                    return copy(
+                        settings = settings.copy(opening = variant),
+                        currentOpeningIndex = newOpeningIndex,
+                        board = (board.changePlayerColors())
+                    )
+                }
+
+                val changeTurn =
+                    newOpeningIndex != -1 && newMovesList[newOpeningIndex] == Opening.OpeningMove.CHANGE_PLAYER
+
+                if (changeTurn) {
+                    newOpeningIndex =
+                        if (newOpeningIndex == newMovesList.lastIndex) {
+                            -1
+                        } else {
+                            1
+                        }
+                }
+
+                return copy(
+                    settings = settings.copy(opening = variant),
+                    currentOpeningIndex = newOpeningIndex,
+                    board = if (changeTurn) board.changeTurn() else board
+                )
+            }
+        }
+
+        throw Exception("Not a valid move")
+    }
+    /*fun chooseNextMove(move: Opening.OpeningMove, user: User): Game {
         if (user != user1 && user != user2) throw UserNotInGame("User ${user.username} not in Game")
 
         val movesList = settings.opening.movesList
@@ -87,7 +150,7 @@ data class Game internal constructor(
         }
 
         throw Exception("Not a valid move")
-    }
+    }*/
 
     fun chooseColor(piece: Piece, user: User): Game {
         if (user != user1 && user != user2) throw UserNotInGame("User ${user.username} not in Game")
@@ -98,9 +161,19 @@ data class Game internal constructor(
         if (board !is BoardRun) throw BoardWrongType("Board type must be BoardRun")
         if (board.turn.user != user) throw UserWrongTurn("Not that user's turn")
 
-        val newBoard = board.chooseColor(piece, user)
+        val changeTurn = movesList[currentOpeningIndex - 2].name == "PLACE_BLACK" && piece == Piece.WHITE ||
+            movesList[currentOpeningIndex - 2].name == "PLACE_WHITE" && piece == Piece.BLACK
 
-        return copy(board = newBoard)
+        val otherUser = if (user == user1) user2 else user1
+        val newBoard = board.chooseColor(piece, user, changeTurn, otherUser)
+        val newOpeningIndex =
+            if (currentOpeningIndex == movesList.lastIndex) {
+                -1
+            } else {
+                currentOpeningIndex + 1
+            }
+
+        return copy(board = newBoard, currentOpeningIndex = newOpeningIndex)
     }
 
     fun placePiece(piece: Piece, position: Position, user: User): Game {
@@ -120,14 +193,15 @@ data class Game internal constructor(
         if (board.turn.user != user) throw UserWrongTurn("Not that user's turn")
 
         val changeTurn =
-            newOpeningIndex != -1 && movesList[newOpeningIndex] == Opening.OpeningMove.CHANGE_PLAYER
+            (newOpeningIndex != -1 && movesList[newOpeningIndex] == Opening.OpeningMove.CHANGE_PLAYER) ||
+                (newOpeningIndex == -1)
 
-        if (changeTurn) newOpeningIndex = if (newOpeningIndex == movesList.lastIndex) -1 else newOpeningIndex + 1
+        if (changeTurn) newOpeningIndex = if (newOpeningIndex == movesList.lastIndex || newOpeningIndex == -1) -1 else newOpeningIndex + 1
 
         val newBoard = board.placePiece(piece, position, user, changeTurn)
 
         val newUser1 = calculateUser(user1, newBoard, user2)
-        val newUser2 = calculateUser(user1, newBoard, user1)
+        val newUser2 = calculateUser(user2, newBoard, user1)
 
         return copy(board = newBoard, user1 = newUser1, user2 = newUser2, currentOpeningIndex = newOpeningIndex)
     }

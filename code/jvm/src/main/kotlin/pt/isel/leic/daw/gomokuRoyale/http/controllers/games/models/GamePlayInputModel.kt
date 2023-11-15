@@ -4,6 +4,7 @@ import pt.isel.leic.daw.gomokuRoyale.domain.Opening
 import pt.isel.leic.daw.gomokuRoyale.domain.Piece.Companion.toPiece
 import pt.isel.leic.daw.gomokuRoyale.domain.Position
 import pt.isel.leic.daw.gomokuRoyale.services.game.GameAction
+import java.lang.IllegalStateException
 
 /**
  * Game move input information
@@ -23,7 +24,7 @@ data class GamePlayInputModel(
     val color: String? // used for ChooseColor
 )
 
-fun convertIntputModelToGameAction(input: GamePlayInputModel): GameAction {
+fun convertInputModelToGameAction(input: GamePlayInputModel): GameAction {
     return when (input.actionType) {
         "PlacePiece" -> {
             val position = Position(
@@ -35,7 +36,7 @@ fun convertIntputModelToGameAction(input: GamePlayInputModel): GameAction {
 
         "ChooseMove" -> {
             val move = input.moveChoice ?: throw Exception("Invalid move choice")
-            GameAction.ChooseMove(Opening.OpeningMove.valueOf(move))
+            GameAction.ChooseMove(Opening.valueOf(move))
         }
 
         "ChooseColor" -> {
@@ -43,6 +44,6 @@ fun convertIntputModelToGameAction(input: GamePlayInputModel): GameAction {
         }
 
         else ->
-            throw Exception("Invalid action type")
+            throw IllegalStateException("Invalid action type")
     }
 }

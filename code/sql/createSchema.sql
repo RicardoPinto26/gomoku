@@ -30,22 +30,26 @@ create table lobbys
     creator_user_id INT         NOT NULL REFERENCES users (id),
     join_user_id    INT REFERENCES users (id) DEFAULT NULL,
     grid_size       INT         NOT NULL,
-    opening         VARCHAR(50) NOT NULL CHECK ( opening IN ('PRO', 'LONG PRO', 'SWAP', 'SWAP2')),
-    winning_lenght  INT         NOT NULL DEFAULT 5,
-    overflow        BOOLEAN     NOT NULL DEFAULT FALSE,
+    opening         VARCHAR(50) NOT NULL CHECK ( opening IN
+                                                 ('PRO', 'LONG PRO', 'SWAP', 'SWAP2')),
+    winning_lenght  INT         NOT NULL      DEFAULT 5,
+    overflow        BOOLEAN     NOT NULL      DEFAULT FALSE,
     points_margin   INT         NOT NULL      DEFAULT 200,
     created_at      timestamp   NOT NULL      DEFAULT current_timestamp
 );
 
 create table games
 (
-    id            SERIAL PRIMARY KEY,
-    lobby_id      INT REFERENCES lobbys (id) NOT NULL,
-    turn          INT REFERENCES users (id)  NOT NULL,
-    winner        INT REFERENCES users (id)                                                        DEFAULT NULL,
-    board         jsonb                      NOT NULL,
-    opening_index INT                        NOT NULL                                              DEFAULT 0,
-    state         VARCHAR(30) CHECK ( state IN ('AWAITING FIRST MOVE', 'IN_PROGRESS', 'FINISHED')) DEFAULT 'AWAITING FIRST MOVE'
+    id              SERIAL PRIMARY KEY,
+    lobby_id        INT REFERENCES lobbys (id) NOT NULL,
+    turn            INT REFERENCES users (id)  NOT NULL,
+    black_player    INT REFERENCES users (id)  NOT NULL,
+    white_player    INT REFERENCES users (id)  NOT NULL,
+    winner          INT REFERENCES users (id)                                                        DEFAULT NULL,
+    board           jsonb                      NOT NULL,
+    opening_index   INT                        NOT NULL                                              DEFAULT 0,
+    opening_variant VARCHAR(50) CHECK (opening_variant IN ('SWAP2_1', 'SWAP2_2', 'SWAP2_3'))         DEFAULT NULL,
+    state           VARCHAR(30) CHECK ( state IN ('AWAITING FIRST MOVE', 'IN_PROGRESS', 'FINISHED')) DEFAULT 'AWAITING FIRST MOVE'
 );
 
 create table moves

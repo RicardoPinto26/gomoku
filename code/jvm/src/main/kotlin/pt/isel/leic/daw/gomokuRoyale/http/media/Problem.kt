@@ -189,5 +189,23 @@ class Problem(
             409,
             "Invalid Next Move"
         )
+        val chooseCorrectActionColor = Problem(
+            "chooseCorrectActionColor.com",
+            "Choose the piece color",
+            409,
+            "Choose the piece color you want to play with"
+        )
+        val chooseCorrectActionPlacePiece = Problem(
+            "chooseCorrectActionPlacePiece.com",
+            "Choose the position to place the piece",
+            409,
+            "Choose the position to place the piece"
+        )
+        val chooseCorrectActionNextMove = Problem(
+            "chooseCorrectActionNextMove.com",
+            "Choose the variant of the opening",
+            409,
+            "Choose the variant of the opening"
+        )
     }
 }

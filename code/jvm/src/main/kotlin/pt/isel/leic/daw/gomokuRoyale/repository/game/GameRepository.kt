@@ -4,7 +4,7 @@ import pt.isel.leic.daw.gomokuRoyale.domain.Game
 
 interface GameRepository {
 
-    fun createGame(lobbyId: Int, turn: Int, board: String): Int
+    fun createGame(lobbyId: Int, turn: Int, blackPlayer: Int, whitePlayer: Int, board: String): Int
 
     fun getGameById(gameId: Int): Game?
 
@@ -14,7 +14,11 @@ interface GameRepository {
 
     fun updateGameWinner(gameId: Int, winner: Int, board: String): Int
 
+    fun updateGamePlayer(gameId: Int, newPlayer1: Int, newPlayer2: Int, turn: Int, newOpeningIndex: Int): Int
+
     fun updateGameBoard(gameId: Int, turn: Int, board: String, openingIndex: Int): Int
 
     fun updateOpeningIndex(gameId: Int, openingIndex: Int): Int
+
+    fun updateOpeningVariant(gameId: Int, openingVariant: String, openingIndex: Int): Int
 }

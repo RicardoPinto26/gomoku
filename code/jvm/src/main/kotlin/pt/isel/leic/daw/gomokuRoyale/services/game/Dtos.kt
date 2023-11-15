@@ -46,6 +46,9 @@ sealed class GamePlayError : GameServicesError {
     object InvalidPosition : GamePlayError()
     object InvalidNextMove : GamePlayError()
     object InvalidColor : GamePlayError()
+    object ChooseCorrectActionColor : GamePlayError()
+    object ChooseCorrectActionNextMove : GamePlayError()
+    object ChooseCorrectActionPlacePiece : GamePlayError()
 
     object WrongTurn : GamePlayError()
 }
