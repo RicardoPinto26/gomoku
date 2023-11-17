@@ -1,6 +1,7 @@
 package pt.isel.leic.daw.gomokuRoyale.domain
 
 import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.BoardWrongType
+import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.InvalidPosition
 import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.UserNotInGame
 import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.UserWrongTurn
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
@@ -105,52 +106,6 @@ data class Game internal constructor(
 
         throw Exception("Not a valid move")
     }
-    /*fun chooseNextMove(move: Opening.OpeningMove, user: User): Game {
-        if (user != user1 && user != user2) throw UserNotInGame("User ${user.username} not in Game")
-
-        val movesList = settings.opening.movesList
-        require(currentOpeningIndex != -1 && movesList[currentOpeningIndex] == Opening.OpeningMove.CHOOSE_NEXT_MOVE)
-
-        if (board !is BoardRun) throw BoardWrongType("Board type must be BoardRun")
-        if (board.turn.user != user) throw UserWrongTurn("Not that user's turn")
-
-        val opening = settings.opening
-
-        for (variant in opening.variantList) {
-            val newMovesList = variant.movesList
-            if (newMovesList.firstOrNull() == move) {
-                if (newMovesList.size == 1) {
-                    return copy(
-                        settings = settings.copy(opening = variant),
-                        currentOpeningIndex = -1,
-                        board = board
-                    )
-                }
-
-                var newOpeningIndex = if (newMovesList.isEmpty()) -1 else 0
-
-                val changeTurn =
-                    newOpeningIndex != -1 && newMovesList[newOpeningIndex] == Opening.OpeningMove.CHANGE_PLAYER
-
-                if (changeTurn) {
-                    newOpeningIndex =
-                        if (newOpeningIndex == newMovesList.lastIndex) {
-                            -1
-                        } else {
-                            1
-                        }
-                }
-
-                return copy(
-                    settings = settings.copy(opening = variant),
-                    currentOpeningIndex = newOpeningIndex,
-                    board = if (changeTurn) board.changeTurn() else board
-                )
-            }
-        }
-
-        throw Exception("Not a valid move")
-    }*/
 
     fun chooseColor(piece: Piece, user: User): Game {
         if (user != user1 && user != user2) throw UserNotInGame("User ${user.username} not in Game")
@@ -177,9 +132,11 @@ data class Game internal constructor(
     }
 
     fun placePiece(piece: Piece, position: Position, user: User): Game {
-        val movesList = settings.opening.movesList
+        val opening = settings.opening
+        val movesList = opening.movesList
 
         require(currentOpeningIndex == -1 || movesList[currentOpeningIndex] == Opening.OpeningMove.placeColor(piece))
+        validateUser(user, user1, user2, board)
 
         var newOpeningIndex =
             if (currentOpeningIndex == -1 || currentOpeningIndex == movesList.lastIndex) {
@@ -188,15 +145,26 @@ data class Game internal constructor(
                 currentOpeningIndex + 1
             }
 
-        if (user != user1 && user != user2) throw UserNotInGame("User ${user.username} not in Game")
-        if (board !is BoardRun) throw BoardWrongType("Board type must be BoardRun")
-        if (board.turn.user != user) throw UserWrongTurn("Not that user's turn")
+        if (opening == Opening.PRO || opening == Opening.LONG_PRO) {
+            val centerRow = (board.internalBoard.size - 1) / 2
+            val centerColumn = (board.internalBoard[0].size - 1) / 2
+            checkOpeningRules(opening, position, centerRow, centerColumn)
+        }
 
         val changeTurn =
             (newOpeningIndex != -1 && movesList[newOpeningIndex] == Opening.OpeningMove.CHANGE_PLAYER) ||
                 (newOpeningIndex == -1)
 
-        if (changeTurn) newOpeningIndex = if (newOpeningIndex == movesList.lastIndex || newOpeningIndex == -1) -1 else newOpeningIndex + 1
+        if (changeTurn) {
+            newOpeningIndex =
+                if (newOpeningIndex == movesList.lastIndex || newOpeningIndex == -1) {
+                    -1
+                } else if (movesList[newOpeningIndex + 1] == Opening.OpeningMove.CHANGE_PLAYER) {
+                    newOpeningIndex + 2
+                } else {
+                    newOpeningIndex + 1
+                }
+        }
 
         val newBoard = board.placePiece(piece, position, user, changeTurn)
 
@@ -223,5 +191,38 @@ data class Game internal constructor(
             user2.id -> user2
             else -> null
         }
+    }
+
+    private fun checkOpeningRules(opening: Opening, position: Position, centerRow: Int, centerColumn: Int) {
+        when (currentOpeningIndex) {
+            0 -> {
+                if (position.row != centerRow || position.column != centerColumn) {
+                    throw InvalidPosition("Invalid position, must be on the center of the board")
+                }
+            }
+            4 -> {
+                if (opening == Opening.PRO && (
+                    position.row !in centerRow - 1..centerRow + 1 ||
+                        position.column !in centerColumn - 1..centerColumn + 1
+                    )
+                ) {
+                    throw InvalidPosition("Invalid position, must be at most one intersection away from the first stone")
+                }
+
+                if (opening == Opening.LONG_PRO && (
+                    position.row !in centerRow - 4..centerRow + 4 ||
+                        position.column !in centerColumn - 4..centerColumn + 4
+                    )
+                ) {
+                    throw InvalidPosition("Invalid position, must be within four intersections from the first stone")
+                }
+            }
+        }
+    }
+
+    private fun validateUser(user: User, user1: User, user2: User, board: Board) {
+        if (user != user1 && user != user2) throw UserNotInGame("User ${user.username} not in Game")
+        if (board !is BoardRun) throw BoardWrongType("Board type must be BoardRun")
+        if (board.turn.user != user) throw UserWrongTurn("Not that user's turn")
     }
 }

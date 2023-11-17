@@ -8,9 +8,7 @@ enum class Opening(val movesList: List<OpeningMove>, val variantList: List<Openi
             OpeningMove.CHANGE_PLAYER,
             OpeningMove.PLACE_WHITE, // anywhere on the board
             OpeningMove.CHANGE_PLAYER,
-            OpeningMove.PLACE_BLACK, // least three intersections away from the first stone
-            OpeningMove.CHANGE_PLAYER
-            // OpeningMove.FREESTYLE
+            OpeningMove.PLACE_BLACK // least three intersections away from the first stone
         )
     ),
     LONG_PRO(
@@ -21,7 +19,6 @@ enum class Opening(val movesList: List<OpeningMove>, val variantList: List<Openi
             OpeningMove.CHANGE_PLAYER,
             OpeningMove.PLACE_BLACK, // least four intersections away from the first stone
             OpeningMove.CHANGE_PLAYER
-            // OpeningMove.FREESTYLE
         )
     ),
     SWAP(
