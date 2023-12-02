@@ -35,6 +35,7 @@ data class LobbyExternalInfo(
 
 typealias LobbyCreationResult = Either<LobbyCreationError, LobbyExternalInfo>
 
+// Lobby Join
 sealed class LobbyJoinError : LobbyServicesError {
     object LobbyNotFound : LobbyJoinError()
     object UserAlreadyInLobby : LobbyJoinError()
@@ -48,10 +49,40 @@ data class LobbyJoinExternalInfo(
     val lobbyId: Int
 )
 
+typealias LobbyJoinResult = Either<LobbyJoinError, LobbyJoinExternalInfo>
+
+// Lobby Seek
 sealed class LobbySeekError : LobbyServicesError {
     object UserAlreadyInALobby : LobbySeekError()
 }
 
-typealias LobbyJoinResult = Either<LobbyJoinError, LobbyJoinExternalInfo>
-
 typealias LobbySeekResult = Either<LobbySeekError, LobbyExternalInfo>
+
+data class LobbiesAvailableExternalInfo(
+    val lobbyId: Int,
+    val name: String,
+    val creatorUsername: String,
+    val gridSize: Int,
+    val opening: String,
+    val winningLenght: Int,
+    val pointsMargin: Int,
+    val overflow: Boolean
+) {
+    constructor(lobby: Lobby) : this(
+        lobby.id,
+        lobby.name,
+        lobby.user1.username,
+        lobby.settings.boardSize,
+        lobby.settings.opening.toString(),
+        lobby.settings.winningLength,
+        lobby.pointsMargin,
+        lobby.settings.overflowAllowed
+    )
+}
+
+// Get Lobbies
+sealed class GetLobbiesError : LobbyServicesError {
+    object UserNotFound : GetLobbiesError()
+}
+
+typealias LobbiesAvailableResult = Either<GetLobbiesError, List<LobbiesAvailableExternalInfo>>

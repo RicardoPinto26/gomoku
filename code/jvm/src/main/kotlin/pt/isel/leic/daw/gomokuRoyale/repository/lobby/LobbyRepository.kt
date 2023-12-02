@@ -32,4 +32,6 @@ interface LobbyRepository {
         minRating: Int,
         maxRating: Int
     ): Int?
+
+    fun getAvailableLobbies(): List<Lobby>
 }

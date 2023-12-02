@@ -2,6 +2,7 @@ package pt.isel.leic.daw.gomokuRoyale.http.controllers.lobbies
 
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -127,6 +128,22 @@ class LobbyController(
                 val lobbyEI = res.value
                 ResponseEntity.status(if (lobbyEI.user2 == null) 201 else 200)
                     .body(LobbySeekOutputModel(lobbyEI))
+            }
+
+            is Failure -> {
+                logger.info("Failed Request")
+                res.value.toResponse()
+            }
+        }
+    }
+
+    @GetMapping(Uris.Lobby.GET_AVAILABLE_LOBBIES)
+    fun getLobbies(user: AuthenticatedUser): ResponseEntity<*> {
+        return when (val res = lobbyService.getAvailableLobbies(user.user)) {
+            is Success -> {
+                logger.info("Successful Request")
+                ResponseEntity.status(200)
+                    .body(res.value)
             }
 
             is Failure -> {

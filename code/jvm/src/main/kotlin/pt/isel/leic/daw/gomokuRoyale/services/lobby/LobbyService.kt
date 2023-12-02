@@ -17,5 +17,8 @@ interface LobbyService {
     fun joinLobby(user: User, lobbyId: Int): LobbyJoinResult
 
     fun getLobbyByUserToken(token: String): Lobby?
+
     fun seekLobby(user: User, gridSize: Int, winningLength: Int, opening: String, overflow: Boolean, pointsMargin: Int): LobbySeekResult
+
+    fun getAvailableLobbies(user: User): LobbiesAvailableResult
 }

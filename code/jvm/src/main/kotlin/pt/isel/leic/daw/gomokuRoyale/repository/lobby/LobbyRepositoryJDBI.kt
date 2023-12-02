@@ -25,7 +25,7 @@ class LobbyRepositoryJDBI(private val handle: Handle) : LobbyRepository {
             .bind("creatorId", userId)
             .bind("gridSize", gridSize)
             .bind("opening", opening)
-            .bind("winning_lenght", winningLenght)
+            .bind("winningLenght", winningLenght)
             .bind("overflow", overflow)
             .bind("pointsMargin", pointsMargin)
             .executeAndReturnGeneratedKeys()
@@ -132,4 +132,22 @@ class LobbyRepositoryJDBI(private val handle: Handle) : LobbyRepository {
             .bind("max_rating", maxRating)
             .mapTo<Int>()
             .firstOrNull()
+
+    override fun getAvailableLobbies(): List<Lobby> =
+        handle.createQuery(
+            """
+            select
+                l.*,
+                user1.id as user1_id, user1.username as user1_username, user1.email as user1_email,
+                user1.password as user1_password, user1.rating as user1_rating, user1.nr_games_played as user1_nr_games_played,
+                user2.id as user2_id, user2.username as user2_username, user2.email as user2_email,
+                user2.password as user2_password, user2.rating as user2_rating, user2.nr_games_played as user2_nr_games_played
+            FROM lobbys l
+            LEFT JOIN users as user1 ON l.creator_user_id = user1.id
+            LEFT JOIN users as user2 ON l.join_user_id = user2.id
+            WHERE l.join_user_id is null
+            """.trimIndent()
+        )
+            .mapTo<Lobby>()
+            .toList()
 }
