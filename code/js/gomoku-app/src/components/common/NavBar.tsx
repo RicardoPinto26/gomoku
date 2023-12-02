@@ -11,10 +11,22 @@ import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import {useNavigate} from "react-router-dom";
 import {ReactComponent as GomokuLogo} from '../../logo.svg';
+import {useCurrentUser} from "../Authn";
+import {Avatar, Tooltip} from "@mui/material";
 
-const pages = ['login', 'register', 'play', 'rankings'];
+const pages = [
+    {name: 'Login', href: '/login', auth: false},
+    {name: 'Register', href: '/register', auth: false},
+    {name: 'Play', href: '/play', auth: true},
+    {name: 'Ranking', href: '/ranking'},
+]
+const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+
 export function NavBar(){
     const navigate = useNavigate()
+    const user= useCurrentUser()
+    const loggedIn = !!(user)
+    console.log("Current user:" + user)
 
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
@@ -37,7 +49,16 @@ export function NavBar(){
         <AppBar position="static">
             <Container maxWidth="xl">
                 <Toolbar disableGutters>
-                    <GomokuLogo onClick={() => navigate('/')}/>
+
+                    <GomokuLogo
+                        onClick={() => navigate('/')}
+                        style={{
+                            width: 50,
+                            height: 'auto',
+                            cursor: 'pointer',
+                        }}
+                    />
+
                     <Typography
                         variant="h6"
                         noWrap
@@ -50,10 +71,11 @@ export function NavBar(){
                             letterSpacing: '.3rem',
                             color: 'inherit',
                             textDecoration: 'none',
-                            cursor: 'pointer'
+                            cursor: 'pointer',
                         }}
                         onClick={() => navigate('/')}
-                    > GOMOKU ROYALE
+                    >
+                        GOMOKU ROYALE
                     </Typography>
 
                     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
@@ -86,33 +108,86 @@ export function NavBar(){
                             }}
                         >
                             {pages.map((page) => (
-                                <MenuItem key={page} onClick={() => {
+                                (page.auth && loggedIn || !page.auth && !loggedIn || page.auth === undefined) &&
+                                <MenuItem key={page.name} onClick={()=> {
                                     handleCloseNavMenu()
-                                    navigate(page)
+                                    navigate(page.href)
                                 }}>
-                                    <Typography textAlign="center">{page}</Typography>
+                                    <Typography textAlign="center">{page.name}</Typography>
                                 </MenuItem>
                             ))}
                         </Menu>
                     </Box>
 
+                    <Typography
+                        variant="h5"
+                        noWrap
+                        component="a"
+                        sx={{
+                            mr: 2,
+                            display: { xs: 'flex', md: 'none' },
+                            flexGrow: 1,
+                            fontFamily: 'monospace',
+                            fontWeight: 700,
+                            letterSpacing: '.3rem',
+                            color: 'inherit',
+                            textDecoration: 'none',
+                        }}
+                    >
+                        Gomoku Royale
+                    </Typography>
                     <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                         {pages.map((page) => (
+                            (page.auth && loggedIn || !page.auth && !loggedIn || page.auth === undefined) &&
                             <Button
-                                key={page}
-                                onClick={() => {
+                                key={page.name}
+                                onClick={()=>{
                                     handleCloseNavMenu()
-                                    navigate(`/${page}`)
+                                    navigate(page.href)
                                 }}
                                 sx={{ my: 2, color: 'white', display: 'block' }}
                             >
-                                {page}
+                                {page.name}
                             </Button>
                         ))}
                     </Box>
 
+
+                    { loggedIn
+                        ?
+                        <Box sx={{ flexGrow: 0 }}>
+                            <Tooltip title="Open settings">
+                                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                                    <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                                </IconButton>
+                            </Tooltip>
+                            <Menu
+                                sx={{ mt: '45px' }}
+                                id="menu-appbar"
+                                anchorEl={anchorElUser}
+                                anchorOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'right',
+                                }}
+                                open={Boolean(anchorElUser)}
+                                onClose={handleCloseUserMenu}
+                            >
+                                {settings.map((setting) => (
+                                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                                        <Typography textAlign="center">{setting}</Typography>
+                                    </MenuItem>
+                                ))}
+                            </Menu>
+                        </Box>
+                        : <></>
+                    }
                 </Toolbar>
             </Container>
         </AppBar>
-    );
+    )
 }

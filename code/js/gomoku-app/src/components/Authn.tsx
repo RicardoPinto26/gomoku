@@ -25,7 +25,7 @@ export function AuthnContainer({ children }: { children: React.ReactNode }) {
 }*/
 
 export function useCurrentUser() {
-    return useContext(LoggedInContext).user
+    return useContext(LoggedInContext).user || null
 }
 
 export function useSetUser() {
