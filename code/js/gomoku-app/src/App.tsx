@@ -1,57 +1,34 @@
 import React from 'react';
 import './App.css';
-import {createBrowserRouter, Route, RouterProvider, Routes} from "react-router-dom";
+import {Route, Routes} from "react-router-dom";
 import {Login, Register} from "./components/Login";
 import Home from "./components/Home";
 import Profile from "./components/Profile";
+import Footer from "./components/common/Footer";
+import {NavBar} from "./components/common/NavBar";
+import {Uris} from "./utils/navigation/Uris";
+import HOME = Uris.HOME;
+import LOGIN = Uris.LOGIN;
+import REGISTER = Uris.REGISTER;
+import PROFILE = Uris.PROFILE;
 
 
-function App() {
+export default function App() {
     return (
         <div className="App">
+            <NavBar/>
             <div className="App-content">
-                <RouterProvider router={router} />
+                <Routes>
+                    <Route path={HOME} element={<Home/>}/>
+
+                    <Route path={LOGIN} element={<Login/>}/>
+                    <Route path={REGISTER} element={<Register/>}/>
+
+                    <Route path={PROFILE} element={<Profile/>}/>
+                </Routes>
             </div>
-            <footer>
-                <p> Francisco Medeiros </p>
-                <p> Ricardo Pinto</p>
-                <p> Luis Macario </p>
-            </footer>
+            <Footer></Footer>
         </div>
     )
         ;
 }
-
-export default App;
-
-
-const router = createBrowserRouter([
-    {
-        "path": "/",
-        "children": [
-            {
-                "path": "/",
-                "element": <Home/>,
-                "children": [
-                    {
-                        "path": "/rankings",
-                        //"element": < />,
-                    }
-                ]
-
-            },
-            {
-                "path": "/login",
-                "element": <Login/>
-            },
-            {
-                "path": "/register",
-                "element": <Register/>
-            },
-            {
-                "path": "/profile",
-                "element": <Profile/>
-            }
-        ]
-    }
-])
