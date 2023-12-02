@@ -11,7 +11,8 @@ VALUES ('17NPPxEeGEUZl6wnkPrHMQNyC80NvequkDNEb6B872o=', 1, EXTRACT(EPOCH FROM NO
 INSERT INTO lobbys (name, creator_user_id, join_user_id, grid_size, opening)
 VALUES ('Game SWAP2', 1, 2, 15, 'SWAP2'),
        ('Game PRO', 2, 1, 19, 'PRO'),
-       ('Game SWAP', 1, 2, 15, 'SWAP');
+       ('Game SWAP', 1, 2, 15, 'SWAP'),
+         ('Game PRO2', 1, null, 19, 'PRO');
 
 INSERT INTO games (lobby_id, turn, winner,black_player, white_player, board, state)
 VALUES (1, 1, null, 1,2, '[[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null]]', 'AWAITING FIRST MOVE'),

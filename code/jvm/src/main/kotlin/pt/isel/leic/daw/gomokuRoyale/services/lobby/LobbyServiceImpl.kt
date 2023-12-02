@@ -48,9 +48,7 @@ class LobbyServiceImpl(
         logger.info("Joining lobby $lobbyId")
         return transactionManager.run {
             val lobbyRepo = it.lobbyRepository
-            logger.info("lobbyRepo: $lobbyRepo")
             val lobby = lobbyRepo.getLobbyById(lobbyId) ?: return@run failure(LobbyJoinError.LobbyNotFound)
-            logger.info("lobby : $lobby")
             if (lobby.compareUsers(user.id)) return@run failure(LobbyJoinError.UserAlreadyInLobby)
             if (lobby.isLobbyFull()) return@run failure(LobbyJoinError.LobbyFull)
             val id = lobbyRepo.joinLobby(user.id, lobbyId)
@@ -109,6 +107,14 @@ class LobbyServiceImpl(
                 overflow
             )
             return@run success(LobbyExternalInfo(lobbyRepo.getLobbyById(createdLobbyID)!!))
+        }
+    }
+
+    override fun getAvailableLobbies(user: User): LobbiesAvailableResult {
+        return transactionManager.run {
+            val lobbyRepo = it.lobbyRepository
+            val lobbies = lobbyRepo.getAvailableLobbies()
+            return@run success(lobbies.map { lobby -> LobbiesAvailableExternalInfo(lobby) })
         }
     }
 }

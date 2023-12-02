@@ -15,6 +15,7 @@ import pt.isel.leic.daw.gomokuRoyale.domain.user.UserDomainConfig
 import pt.isel.leic.daw.gomokuRoyale.http.pipeline.AuthenticatedUserArgumentResolver
 import pt.isel.leic.daw.gomokuRoyale.http.pipeline.AuthenticationInterceptor
 import pt.isel.leic.daw.gomokuRoyale.repository.jdbi.configureWithAppRequirements
+import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 
 @SpringBootApplication(scanBasePackages = ["pt.isel.leic.daw.gomokuRoyale"])
@@ -35,7 +36,7 @@ class GomokuRoyaleApplication {
     @Bean
     fun userDomainConfig() = UserDomainConfig(
         tokenSizeInBytes = 256 / 8,
-        tokenTtl = 24.hours,
+        tokenTtl = 31.days,
         tokenRollingTtl = 1.hours,
         maxTokensPerUser = 3
     )
