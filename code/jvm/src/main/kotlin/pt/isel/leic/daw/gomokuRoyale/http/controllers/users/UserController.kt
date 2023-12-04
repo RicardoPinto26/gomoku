@@ -8,12 +8,17 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import pt.isel.leic.daw.gomokuRoyale.domain.AuthenticatedUser
+import pt.isel.leic.daw.gomokuRoyale.http.Actions
+import pt.isel.leic.daw.gomokuRoyale.http.Links
+import pt.isel.leic.daw.gomokuRoyale.http.Rels
 import pt.isel.leic.daw.gomokuRoyale.http.Uris
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.users.models.UserCreateInputModel
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.users.models.UserCreateOutputModel
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.users.models.UserCreateTokenInputModel
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.users.models.UserCreateTokenOutputModel
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.users.models.UserGetStatisticsOutputModel
+import pt.isel.leic.daw.gomokuRoyale.http.media.siren.SirenEntity
+import pt.isel.leic.daw.gomokuRoyale.http.media.siren.SubEntity
 import pt.isel.leic.daw.gomokuRoyale.http.utils.toResponse
 import pt.isel.leic.daw.gomokuRoyale.services.users.UserService
 import pt.isel.leic.daw.gomokuRoyale.utils.Failure
@@ -29,6 +34,21 @@ class UserController(
     private val userService: UserService
 ) {
 
+    @GetMapping(Uris.Users.HOME)
+    fun getUserHome(): SirenEntity<Unit> {
+        return SirenEntity(
+            `class` = listOf(Rels.USER_HOME),
+            actions = listOf(
+                Actions.logout,
+                Actions.seekLobby,
+                Actions.listLobbies
+            ),
+            links = listOf(
+                Links.self(Uris.userHome())
+            )
+        )
+    }
+
     /**
      * Handles the request to create a user.
      *
@@ -36,7 +56,7 @@ class UserController(
      *
      * @return the response to the request with the [UserCreateOutputModel] in the body or an error value
      */
-    @PostMapping(Uris.Users.CREATE)
+    @PostMapping(Uris.Users.PREFIX)
     fun createUser(@RequestBody input: UserCreateInputModel): ResponseEntity<*> {
         logger.info("Starting registration of user {}", input.username)
         val res = userService.registerUser(input.username, input.email, input.password)
@@ -46,7 +66,15 @@ class UserController(
                 .header(
                     "Location",
                     Uris.Users.byUsername(res.value.username).toASCIIString()
-                ).body(UserCreateOutputModel(res.value))
+                ).body(
+                    SirenEntity(
+                        `class` = listOf(Rels.REGISTER),
+                        properties = UserCreateOutputModel(res.value),
+                        links = listOf(
+                            Links.userHome
+                        )
+                    )
+                )
 
             is Failure -> res.value.toResponse()
         }
@@ -66,7 +94,15 @@ class UserController(
         return when (val res = userService.createToken(input.username, input.password)) {
             is Success ->
                 ResponseEntity.status(201)
-                    .body(UserCreateTokenOutputModel(res.value.tokenValue))
+                    .body(
+                        SirenEntity(
+                            `class` = listOf(Rels.LOGIN),
+                            properties = UserCreateTokenOutputModel(res.value.tokenValue),
+                            links = listOf(
+                                Links.userHome
+                            )
+                        )
+                    )
 
             is Failure -> res.value.toResponse()
         }
@@ -81,8 +117,15 @@ class UserController(
     @PostMapping(Uris.Users.LOGOUT)
     fun logout(
         user: AuthenticatedUser
-    ) {
+    ): SirenEntity<Unit> {
         userService.revokeToken(user.token)
+
+        return SirenEntity(
+            `class` = listOf(Rels.LOGOUT),
+            links = listOf(
+                Links.home
+            )
+        )
     }
 
     /**
@@ -99,7 +142,15 @@ class UserController(
             is Success -> {
                 logger.info("Success request")
                 ResponseEntity.status(200)
-                    .body(UserGetStatisticsOutputModel(res.value))
+                    .body(
+                        SirenEntity(
+                            `class` = listOf(Rels.USER),
+                            properties = UserGetStatisticsOutputModel(res.value),
+                            links = listOf(
+                                Links.self(Uris.Users.byUsername(username))
+                            )
+                        )
+                    )
             }
 
             is Failure -> {
@@ -109,14 +160,29 @@ class UserController(
         }
     }
 
-    @GetMapping(Uris.Users.RANKING)
-    fun getUsersRanking(): ResponseEntity<*> {
+    @GetMapping(Uris.Users.PREFIX)
+    fun getUsers(): ResponseEntity<*> {
         logger.info("Request received for users ranking")
         return when (val res = userService.getUsersRanking()) {
             is Success -> {
                 logger.info("Success request")
                 ResponseEntity.status(200)
-                    .body(res.value)
+                    .body(
+                        SirenEntity<Unit>(
+                            `class` = listOf(Rels.LIST_USERS),
+                            entities = res.value.users.map {
+                                SubEntity.EmbeddedSubEntity(
+                                    `class` = listOf(Rels.USER),
+                                    rel = listOf(Rels.ITEM, Rels.USER),
+                                    properties = UserGetStatisticsOutputModel(it),
+                                    links = listOf(
+                                        Links.self(Uris.Users.byUsername(it.username))
+                                    )
+                                )
+                            }
+
+                        )
+                    )
             }
 
             is Failure -> {
@@ -125,6 +191,7 @@ class UserController(
             }
         }
     }
+
     companion object {
         private val logger = LoggerFactory.getLogger(UserController::class.java)
     }

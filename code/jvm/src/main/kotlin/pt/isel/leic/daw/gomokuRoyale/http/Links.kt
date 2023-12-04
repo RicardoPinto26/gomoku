@@ -9,4 +9,14 @@ object Links {
         rel = listOf(Rels.SELF),
         href = href
     )
+
+    val home = Link(
+        rel = listOf(Rels.HOME),
+        href = Uris.home()
+    )
+
+    val userHome = Link(
+        rel = listOf(Rels.USER_HOME),
+        href = Uris.userHome()
+    )
 }

@@ -7,6 +7,7 @@ type ContextType = {
 const LoggedInContext = createContext<ContextType>({
     user: undefined,
     setUser: () => {
+
     },
 })
 

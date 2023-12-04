@@ -2,6 +2,7 @@ package pt.isel.leic.daw.gomokuRoyale.http.controllers.home
 
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
+import pt.isel.leic.daw.gomokuRoyale.http.Actions
 import pt.isel.leic.daw.gomokuRoyale.http.Links
 import pt.isel.leic.daw.gomokuRoyale.http.Rels
 import pt.isel.leic.daw.gomokuRoyale.http.Uris
@@ -45,7 +46,11 @@ class HomeController {
             links = listOf(
                 Links.self(Uris.home())
             ),
-            actions = null // TODO: Figure out actions xd
+            actions = listOf(
+                Actions.listUsers,
+                Actions.register,
+                Actions.login
+            )
         )
     }
 }

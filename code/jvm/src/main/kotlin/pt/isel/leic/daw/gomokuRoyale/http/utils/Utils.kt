@@ -36,7 +36,7 @@ fun UserServicesError.toResponse() =
                 Problem.response(Problem.userWithUsernameNotFound)
         }
 
-        is GetUsersRankingError -> when(this) {
+        is GetUsersRankingError -> when (this) {
             GetUsersRankingError.NoUsers ->
                 Problem.response(Problem.noUsersFound)
         }

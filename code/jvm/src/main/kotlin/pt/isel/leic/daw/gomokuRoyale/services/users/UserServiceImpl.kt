@@ -161,18 +161,20 @@ class UserServiceImpl(
             val userRepo = it.userRepository
             val users: List<User> = userRepo.getAllUsers()
 
-            if(users.isEmpty()) {
+            if (users.isEmpty()) {
                 return@run failure(GetUsersRankingError.NoUsers)
             }
 
             return@run Success(
-                GetUsersRankingExternalInfo(users.sortedByDescending { user -> user.rating }.map { user ->
-                    UserExternalInfo(
-                        username = user.username,
-                        email = user.email,
-                        gamesPlayed = user.nrGamesPlayed,
-                        rating = user.rating.toInt()
-                    ) })
+                GetUsersRankingExternalInfo(
+                    users.sortedByDescending { user -> user.rating }.map { user ->
+                        PublicUserExternalInfo(
+                            username = user.username,
+                            gamesPlayed = user.nrGamesPlayed,
+                            rating = user.rating.toInt()
+                        )
+                    }
+                )
             )
         }
     }

@@ -9,19 +9,22 @@ object Uris {
     const val HOME = PREFIX
 
     fun home(): URI = URI(HOME)
+    fun users(): URI = URI(Users.PREFIX)
+    fun userHome(): URI = URI(Users.HOME)
+    fun loginUser(): URI = URI(Users.TOKEN)
+    fun logoutUser(): URI = URI(Users.LOGOUT)
+
+    fun seekLobby(): URI = URI(Lobby.SEEK_LOBBY)
+    fun listLobbies(): URI = URI(Lobby.GET_AVAILABLE_LOBBIES)
 
     object Users {
-        const val CREATE = "$PREFIX/users"
-        const val DETAILS = "$PREFIX/users/{username}"
-        const val TOKEN = "$PREFIX/users/token"
+        const val PREFIX = "${Uris.PREFIX}/users"
+        const val HOME = "$PREFIX/home"
+        const val DETAILS = "$PREFIX/{username}"
+        const val TOKEN = "$PREFIX/token"
         const val LOGOUT = "$PREFIX/logout"
-        const val RANKING ="$PREFIX/users/ranking"
 
         fun byUsername(username: String) = UriTemplate(DETAILS).expand(username)
-
-        fun home(): URI = URI(HOME)
-        fun login(): URI = URI(TOKEN)
-        fun register(): URI = URI(CREATE)
     }
 
     object Lobby {
