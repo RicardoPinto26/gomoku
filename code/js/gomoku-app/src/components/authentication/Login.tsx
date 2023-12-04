@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
-import { useSetUser } from '../Authn';
+import {Navigate, useLocation} from 'react-router-dom';
+import {useSetUser} from '../Authn';
 import {login} from "../../services/LoginService";
 import reduce from "./utils/Reduce";
 
@@ -12,21 +12,23 @@ export async function authenticate(username: string, password: string): Promise<
 
 export function Login() {
     console.log('Login');
-    const [state, dispatch] = React.useReducer(reduce, { tag: 'editing', inputs: { username: '', password: '' } });
+    const [state, dispatch] = React.useReducer(reduce, {tag: 'editing', inputs: {username: '', password: ''}});
     const setUser = useSetUser();
     const location = useLocation();
     if (state.tag === 'redirect') {
-        return <Navigate to={location.state?.source?.pathname || '/me'} replace={true} />;
+        return <Navigate to={location.state?.source?.pathname || '/me'} replace={true}/>;
     }
+
     function handleChange(ev: React.FormEvent<HTMLInputElement>) {
-        dispatch({ type: 'edit', inputName: ev.currentTarget.name, inputValue: ev.currentTarget.value });
+        dispatch({type: 'edit', inputName: ev.currentTarget.name, inputValue: ev.currentTarget.value});
     }
+
     function handleSubmit(ev: React.FormEvent<HTMLFormElement>) {
         ev.preventDefault();
         if (state.tag !== 'editing') {
             return;
         }
-        dispatch({ type: 'submit' });
+        dispatch({type: 'submit'});
         const username = state.inputs.username;
         const password = state.inputs.password;
         authenticate(username, password)
@@ -34,13 +36,13 @@ export function Login() {
                 if (res) {
                     console.log(`setUser(${res})`);
                     setUser(res);
-                    dispatch({ type: 'success' });
+                    dispatch({type: 'success'});
                 } else {
-                    dispatch({ type: 'error', message: 'Invalid username or password' });
+                    dispatch({type: 'error', message: 'Invalid username or password'});
                 }
             })
             .catch(error => {
-                dispatch({ type: 'error', message: error.message });
+                dispatch({type: 'error', message: error.message});
             });
     }
 
@@ -51,11 +53,11 @@ export function Login() {
             <fieldset disabled={state.tag !== 'editing'}>
                 <div>
                     <label htmlFor="username">Username</label>
-                    <input id="username" type="text" name="username" value={username} onChange={handleChange} />
+                    <input id="username" type="text" name="username" value={username} onChange={handleChange}/>
                 </div>
                 <div>
                     <label htmlFor="password">Password</label>
-                    <input id="password" type="text" name="password" value={password} onChange={handleChange} />
+                    <input id="password" type="text" name="password" value={password} onChange={handleChange}/>
                 </div>
                 <div>
                     <button type="submit">Login</button>

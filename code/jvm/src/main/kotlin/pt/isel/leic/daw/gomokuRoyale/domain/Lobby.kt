@@ -1,7 +1,7 @@
 package pt.isel.leic.daw.gomokuRoyale.domain
 
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
-import java.util.Date
+import java.util.*
 
 const val MAX_POINTS_MARGIN = Int.MAX_VALUE
 

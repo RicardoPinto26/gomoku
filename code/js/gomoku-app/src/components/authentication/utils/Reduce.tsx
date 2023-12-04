@@ -1,5 +1,5 @@
 export type State =
-    | { tag: 'editing'; error?: string; inputs: {username: string; password: string } }
+    | { tag: 'editing'; error?: string; inputs: { username: string; password: string } }
     | { tag: 'submitting'; username: string }
     | { tag: 'redirect' };
 
@@ -12,13 +12,18 @@ export type Action =
 function logUnexpectedAction(state: State, action: Action) {
     console.log(`Unexpected action '${action.type} on state '${state.tag}'`);
 }
+
 export default function reduce(state: State, action: Action): State {
     switch (state.tag) {
         case 'editing':
             if (action.type === 'edit') {
-                return { tag: 'editing', error: undefined, inputs: { ...state.inputs, [action.inputName]: action.inputValue } };
+                return {
+                    tag: 'editing',
+                    error: undefined,
+                    inputs: {...state.inputs, [action.inputName]: action.inputValue}
+                };
             } else if (action.type === 'submit') {
-                return { tag: 'submitting', username: state.inputs.username };
+                return {tag: 'submitting', username: state.inputs.username};
             } else {
                 logUnexpectedAction(state, action);
                 return state;
@@ -26,9 +31,9 @@ export default function reduce(state: State, action: Action): State {
 
         case 'submitting':
             if (action.type === 'success') {
-                return { tag: 'redirect' };
+                return {tag: 'redirect'};
             } else if (action.type === 'error') {
-                return { tag: 'editing', error: action.message, inputs: { username: state.username, password: '' } };
+                return {tag: 'editing', error: action.message, inputs: {username: state.username, password: ''}};
             } else {
                 logUnexpectedAction(state, action);
                 return state;

@@ -4,7 +4,6 @@ import pt.isel.leic.daw.gomokuRoyale.domain.Opening
 import pt.isel.leic.daw.gomokuRoyale.domain.Piece.Companion.toPiece
 import pt.isel.leic.daw.gomokuRoyale.domain.Position
 import pt.isel.leic.daw.gomokuRoyale.services.game.GameAction
-import java.lang.IllegalStateException
 
 /**
  * Game move input information

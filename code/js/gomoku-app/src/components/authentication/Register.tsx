@@ -4,7 +4,7 @@ import {Navigate, useLocation} from "react-router-dom";
 import reduce from "./utils/Reduce"
 import {register} from "../../services/LoginService";
 
-async function registerUser(email:String, username: string, password: string): Promise<string | undefined> {
+async function registerUser(email: String, username: string, password: string): Promise<string | undefined> {
     console.log(`registerUser(${username}, ${password})`)
     const user = await register(email, username, password);
     console.log(`registerUser(${username}, ${password}) => ${user}`);
@@ -14,21 +14,23 @@ async function registerUser(email:String, username: string, password: string): P
 
 export default function Register() {
     console.log('Register');
-    const [state, dispatch] = React.useReducer(reduce, { tag: 'editing', inputs: { username: '', password: '' } });
+    const [state, dispatch] = React.useReducer(reduce, {tag: 'editing', inputs: {username: '', password: ''}});
     const setUser = useSetUser();
     const location = useLocation();
     if (state.tag === 'redirect') {
-        return <Navigate to={location.state?.source?.pathname || '/me'} replace={true} />;
+        return <Navigate to={location.state?.source?.pathname || '/me'} replace={true}/>;
     }
+
     function handleChange(ev: React.FormEvent<HTMLInputElement>) {
-        dispatch({ type: 'edit', inputName: ev.currentTarget.name, inputValue: ev.currentTarget.value });
+        dispatch({type: 'edit', inputName: ev.currentTarget.name, inputValue: ev.currentTarget.value});
     }
+
     function handleSubmit(ev: React.FormEvent<HTMLFormElement>) {
         ev.preventDefault();
         if (state.tag !== 'editing') {
             return;
         }
-        dispatch({ type: 'submit' });
+        dispatch({type: 'submit'});
 
         const email = "test1111@gmail.com"//state.inputs.email;
         const username = state.inputs.username;
@@ -38,13 +40,13 @@ export default function Register() {
                 if (res) {
                     console.log(`setUser(${res})`);
                     setUser(res);
-                    dispatch({ type: 'success' });
+                    dispatch({type: 'success'});
                 } else {
-                    dispatch({ type: 'error', message: 'Invalid username or password' });
+                    dispatch({type: 'error', message: 'Invalid username or password'});
                 }
             })
             .catch(error => {
-                dispatch({ type: 'error', message: error.message });
+                dispatch({type: 'error', message: error.message});
             });
     }
 

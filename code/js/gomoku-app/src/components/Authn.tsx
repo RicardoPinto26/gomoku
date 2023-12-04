@@ -1,8 +1,4 @@
-import {
-    useState,
-    createContext,
-    useContext,
-} from 'react'
+import {createContext, useContext,} from 'react'
 
 type ContextType = {
     user: string | undefined,
@@ -10,7 +6,8 @@ type ContextType = {
 }
 const LoggedInContext = createContext<ContextType>({
     user: undefined,
-    setUser: () => { },
+    setUser: () => {
+    },
 })
 
 /*

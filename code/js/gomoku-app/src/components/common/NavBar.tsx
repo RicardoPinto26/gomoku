@@ -22,9 +22,9 @@ const pages = [
 ]
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
-export function NavBar(){
+export function NavBar() {
     const navigate = useNavigate()
-    const user= useCurrentUser()
+    const user = useCurrentUser()
     const loggedIn = !!(user)
     console.log("Current user:" + user)
 
@@ -65,7 +65,7 @@ export function NavBar(){
                         component="a"
                         sx={{
                             mr: 2,
-                            display: { xs: 'none', md: 'flex' },
+                            display: {xs: 'none', md: 'flex'},
                             fontFamily: 'monospace',
                             fontWeight: 700,
                             letterSpacing: '.3rem',
@@ -78,7 +78,7 @@ export function NavBar(){
                         GOMOKU ROYALE
                     </Typography>
 
-                    <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+                    <Box sx={{flexGrow: 1, display: {xs: 'flex', md: 'none'}}}>
                         <IconButton
                             size="large"
                             aria-label="account of current user"
@@ -87,7 +87,7 @@ export function NavBar(){
                             onClick={handleOpenNavMenu}
                             color="inherit"
                         >
-                            <MenuIcon />
+                            <MenuIcon/>
                         </IconButton>
                         <Menu
                             id="menu-appbar"
@@ -104,12 +104,12 @@ export function NavBar(){
                             open={Boolean(anchorElNav)}
                             onClose={handleCloseNavMenu}
                             sx={{
-                                display: { xs: 'block', md: 'none' },
+                                display: {xs: 'block', md: 'none'},
                             }}
                         >
                             {pages.map((page) => (
                                 (page.auth && loggedIn || !page.auth && !loggedIn || page.auth === undefined) &&
-                                <MenuItem key={page.name} onClick={()=> {
+                                <MenuItem key={page.name} onClick={() => {
                                     handleCloseNavMenu()
                                     navigate(page.href)
                                 }}>
@@ -125,7 +125,7 @@ export function NavBar(){
                         component="a"
                         sx={{
                             mr: 2,
-                            display: { xs: 'flex', md: 'none' },
+                            display: {xs: 'flex', md: 'none'},
                             flexGrow: 1,
                             fontFamily: 'monospace',
                             fontWeight: 700,
@@ -136,16 +136,16 @@ export function NavBar(){
                     >
                         Gomoku Royale
                     </Typography>
-                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+                    <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex'}}}>
                         {pages.map((page) => (
                             (page.auth && loggedIn || !page.auth && !loggedIn || page.auth === undefined) &&
                             <Button
                                 key={page.name}
-                                onClick={()=>{
+                                onClick={() => {
                                     handleCloseNavMenu()
                                     navigate(page.href)
                                 }}
-                                sx={{ my: 2, color: 'white', display: 'block' }}
+                                sx={{my: 2, color: 'white', display: 'block'}}
                             >
                                 {page.name}
                             </Button>
@@ -153,16 +153,16 @@ export function NavBar(){
                     </Box>
 
 
-                    { loggedIn
+                    {loggedIn
                         ?
-                        <Box sx={{ flexGrow: 0 }}>
+                        <Box sx={{flexGrow: 0}}>
                             <Tooltip title="Open settings">
-                                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                    <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                                <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
+                                    <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg"/>
                                 </IconButton>
                             </Tooltip>
                             <Menu
-                                sx={{ mt: '45px' }}
+                                sx={{mt: '45px'}}
                                 id="menu-appbar"
                                 anchorEl={anchorElUser}
                                 anchorOrigin={{

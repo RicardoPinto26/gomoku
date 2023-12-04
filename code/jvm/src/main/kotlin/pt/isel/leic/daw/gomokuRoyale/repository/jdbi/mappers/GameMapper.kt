@@ -49,6 +49,7 @@ class GameMapper : RowMapper<Game> {
                     WhitePlayer(user1)
                 }
             }
+
             user2.id -> {
                 if (whitePlayer == user2.id) {
                     WhitePlayer(user2)
@@ -56,6 +57,7 @@ class GameMapper : RowMapper<Game> {
                     BlackPlayer(user2)
                 }
             }
+
             else -> {
                 throw UserNotInGame("User not in game")
             }

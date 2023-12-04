@@ -8,12 +8,12 @@ import {ReactNode} from "react";
  * @property title Title of the page, optional
  * @property children ReactNodes that compose the page
  */
-interface PageProps{
-    title?:string,
-    children:ReactNode
+interface PageProps {
+    title?: string,
+    children: ReactNode
 }
 
-export default function Page({title, children}:PageProps) {
+export default function Page({title, children}: PageProps) {
     return (
         <Container maxWidth="xs">
             <h1>{title}</h1>

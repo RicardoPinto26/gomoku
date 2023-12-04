@@ -2,6 +2,7 @@ package pt.isel.leic.daw.gomokuRoyale.http.controllers.lobbies.models
 
 import pt.isel.leic.daw.gomokuRoyale.domain.Opening
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
+
 /**
  * Lobby seek input information
  *

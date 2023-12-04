@@ -23,7 +23,8 @@ class UserDomainTests {
     @BeforeEach
     fun setup() {
         tokenEncoder = Sha256TokenEncoder()
-        config = UserDomainConfig(tokenSizeInBytes = 32, tokenTtl = 1.hours, tokenRollingTtl = 1.hours, maxTokensPerUser = 1)
+        config =
+            UserDomainConfig(tokenSizeInBytes = 32, tokenTtl = 1.hours, tokenRollingTtl = 1.hours, maxTokensPerUser = 1)
         userDomain = UserDomain(tokenEncoder, config)
     }
 
@@ -48,8 +49,26 @@ class UserDomainTests {
 
     @Test
     fun `checkUserCredentialsRegister should throw exception for invalid credentials`() {
-        assertThrows<UserInvalidUsername> { userDomain.checkUserCredentialsRegister("", "email@email.com", "Password1") }
-        assertThrows<UserInvalidEmail> { userDomain.checkUserCredentialsRegister("username", "invalidemail", "Password1") }
-        assertThrows<UserInvalidPassword> { userDomain.checkUserCredentialsRegister("username", "email@email.com", "pass") }
+        assertThrows<UserInvalidUsername> {
+            userDomain.checkUserCredentialsRegister(
+                "",
+                "email@email.com",
+                "Password1"
+            )
+        }
+        assertThrows<UserInvalidEmail> {
+            userDomain.checkUserCredentialsRegister(
+                "username",
+                "invalidemail",
+                "Password1"
+            )
+        }
+        assertThrows<UserInvalidPassword> {
+            userDomain.checkUserCredentialsRegister(
+                "username",
+                "email@email.com",
+                "pass"
+            )
+        }
     }
 }

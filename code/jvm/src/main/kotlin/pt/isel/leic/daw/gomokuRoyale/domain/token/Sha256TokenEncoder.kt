@@ -1,7 +1,7 @@
 package pt.isel.leic.daw.gomokuRoyale.domain.token
 
 import java.security.MessageDigest
-import java.util.Base64
+import java.util.*
 
 class Sha256TokenEncoder : TokenEncoder {
 

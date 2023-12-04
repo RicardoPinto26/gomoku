@@ -200,6 +200,7 @@ data class Game internal constructor(
                     throw InvalidPosition("Invalid position, must be on the center of the board")
                 }
             }
+
             4 -> {
                 if (opening == Opening.PRO && (
                     position.row !in centerRow - 1..centerRow + 1 ||

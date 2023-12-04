@@ -1,5 +1,6 @@
 const apiUrl = 'http://localhost:8080/api';
 
+//TODO: Use siren hypermedia to get the url
 export async function register(email: String, username: String, password: String) {
     console.log(`register(${email}, ${username}, ${password})`)
     const response = await fetch(`${apiUrl}/users`, {

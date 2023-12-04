@@ -6,7 +6,11 @@ import pt.isel.leic.daw.gomokuRoyale.services.game.GameForfeitError
 import pt.isel.leic.daw.gomokuRoyale.services.game.GameIdentificationError
 import pt.isel.leic.daw.gomokuRoyale.services.game.GamePlayError
 import pt.isel.leic.daw.gomokuRoyale.services.game.GameServicesError
-import pt.isel.leic.daw.gomokuRoyale.services.lobby.*
+import pt.isel.leic.daw.gomokuRoyale.services.lobby.GetLobbiesError
+import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbyCreationError
+import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbyJoinError
+import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbySeekError
+import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbyServicesError
 import pt.isel.leic.daw.gomokuRoyale.services.users.GetUserStatsError
 import pt.isel.leic.daw.gomokuRoyale.services.users.TokenCreationError
 import pt.isel.leic.daw.gomokuRoyale.services.users.UserCreationError

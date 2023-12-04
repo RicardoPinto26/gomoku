@@ -12,7 +12,7 @@ import {useCurrentUser} from "./Authn";
  */
 function Home() {
 
-    const user= useCurrentUser();
+    const user = useCurrentUser();
     const navigate = useNavigate()
 
     return (
