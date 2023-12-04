@@ -12,6 +12,10 @@ import HOME = Uris.HOME;
 import LOGIN = Uris.LOGIN;
 import REGISTER = Uris.REGISTER;
 import PROFILE = Uris.PROFILE;
+import About from './components/About';
+import ABOUT = Uris.ABOUT;
+import RANKING = Uris.RANKING;
+import Ranking from "./components/Ranking";
 
 
 export default function App() {
@@ -24,8 +28,11 @@ export default function App() {
 
                     <Route path={LOGIN} element={<Login/>}/>
                     <Route path={REGISTER} element={<Register/>}/>
-
                     <Route path={PROFILE} element={<Profile/>}/>
+
+                    <Route path={ABOUT} element={<About/>}/>
+
+                    <Route path={RANKING} element={<Ranking/>}/>
                 </Routes>
             </div>
             <Footer></Footer>

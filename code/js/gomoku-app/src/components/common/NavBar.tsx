@@ -19,6 +19,7 @@ const pages = [
     {name: 'Register', href: '/register', auth: false},
     {name: 'Play', href: '/play', auth: true},
     {name: 'Ranking', href: '/ranking'},
+    {name: 'About', href: '/about'},
 ]
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
