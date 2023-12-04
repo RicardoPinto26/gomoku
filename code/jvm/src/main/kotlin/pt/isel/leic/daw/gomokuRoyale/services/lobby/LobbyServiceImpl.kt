@@ -2,7 +2,10 @@ package pt.isel.leic.daw.gomokuRoyale.services.lobby
 
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
+import pt.isel.leic.daw.gomokuRoyale.domain.BoardRun
+import pt.isel.leic.daw.gomokuRoyale.domain.Game
 import pt.isel.leic.daw.gomokuRoyale.domain.Lobby
+import pt.isel.leic.daw.gomokuRoyale.domain.serializeToJsonString
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 import pt.isel.leic.daw.gomokuRoyale.repository.TransactionManager
 import pt.isel.leic.daw.gomokuRoyale.utils.failure
@@ -48,14 +51,33 @@ class LobbyServiceImpl(
         logger.info("Joining lobby $lobbyId")
         return transactionManager.run {
             val lobbyRepo = it.lobbyRepository
+            val gameRepo = it.gameRepository
             val lobby = lobbyRepo.getLobbyById(lobbyId) ?: return@run failure(LobbyJoinError.LobbyNotFound)
             if (lobby.compareUsers(user.id)) return@run failure(LobbyJoinError.UserAlreadyInLobby)
             if (lobby.isLobbyFull()) return@run failure(LobbyJoinError.LobbyFull)
             val id = lobbyRepo.joinLobby(user.id, lobbyId)
+
+            val newLobby = lobbyRepo.getLobbyById(id)!!
+
+            val newGame = Game(
+                lobby.name,
+                lobby.user1,
+                lobby.user2!!,
+                lobby.settings
+            )
+
+            gameRepo.createGame(
+                newLobby.id,
+                (newGame.board as BoardRun).turn.user.id,
+                newLobby.user1.id,
+                newLobby.user2!!.id,
+                newGame.board.internalBoard.serializeToJsonString()
+            )
+
             return@run success(
                 LobbyJoinExternalInfo(
-                    usernameCreator = lobby.user1.username,
-                    usernameJoin = user.username,
+                    usernameCreator = newLobby.user1.username,
+                    usernameJoin = newLobby.user2.username,
                     lobbyId = id
                 )
             )
