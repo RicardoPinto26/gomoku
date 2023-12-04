@@ -8,7 +8,7 @@ export async function register(email: String, username: String, password: String
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({email, username, password})
+        body: JSON.stringify({"email": email, "username": username, "password": password})
     })
 
     if (!response.ok)
