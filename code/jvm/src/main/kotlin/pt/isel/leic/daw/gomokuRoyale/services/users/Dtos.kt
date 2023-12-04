@@ -51,3 +51,16 @@ sealed class GetUserStatsError : UserServicesError {
 }
 
 typealias GetUserStatsResult = Either<GetUserStatsError, PublicUserExternalInfo>
+
+
+// RANKINGS
+
+data class GetUsersRankingExternalInfo(
+    val users: List<UserExternalInfo>
+)
+
+sealed class GetUsersRankingError : UserServicesError {
+    object NoUsers : GetUsersRankingError()
+}
+
+typealias GetUsersRankingResult = Either<GetUsersRankingError, GetUsersRankingExternalInfo>

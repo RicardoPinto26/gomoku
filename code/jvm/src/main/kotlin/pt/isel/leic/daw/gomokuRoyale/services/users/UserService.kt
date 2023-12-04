@@ -52,4 +52,10 @@ interface UserService {
      * @return true if the token was revoked, false if not
      */
     fun revokeToken(token: String): Boolean
+
+    /**
+     * Gets all users
+     * @return List of all users
+     */
+    fun getUsersRanking(): GetUsersRankingResult
 }

@@ -12,6 +12,7 @@ import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbyJoinError
 import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbySeekError
 import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbyServicesError
 import pt.isel.leic.daw.gomokuRoyale.services.users.GetUserStatsError
+import pt.isel.leic.daw.gomokuRoyale.services.users.GetUsersRankingError
 import pt.isel.leic.daw.gomokuRoyale.services.users.TokenCreationError
 import pt.isel.leic.daw.gomokuRoyale.services.users.UserCreationError
 import pt.isel.leic.daw.gomokuRoyale.services.users.UserServicesError
@@ -33,6 +34,11 @@ fun UserServicesError.toResponse() =
         is GetUserStatsError -> when (this) {
             GetUserStatsError.NoSuchUser ->
                 Problem.response(Problem.userWithUsernameNotFound)
+        }
+
+        is GetUsersRankingError -> when(this) {
+            GetUsersRankingError.NoUsers ->
+                Problem.response(Problem.noUsersFound)
         }
     }
 

@@ -109,6 +109,22 @@ class UserController(
         }
     }
 
+    @GetMapping(Uris.Users.RANKING)
+    fun getUsersRanking(): ResponseEntity<*> {
+        logger.info("Request received for users ranking")
+        return when (val res = userService.getUsersRanking()) {
+            is Success -> {
+                logger.info("Success request")
+                ResponseEntity.status(200)
+                    .body(res.value)
+            }
+
+            is Failure -> {
+                logger.info("Failed request")
+                res.value.toResponse()
+            }
+        }
+    }
     companion object {
         private val logger = LoggerFactory.getLogger(UserController::class.java)
     }

@@ -66,6 +66,13 @@ class Problem(
             "The mail is not valid, an email must be in the format: abc@def.ghi"
         )
 
+        val noUsersFound = Problem(
+            "noUsersFound.com",
+            "No users found",
+            404,
+            "No users found"
+        )
+
         val invalidRequestContent = Problem(
             "invalidRequestContent.com",
             "The request content is not valid",

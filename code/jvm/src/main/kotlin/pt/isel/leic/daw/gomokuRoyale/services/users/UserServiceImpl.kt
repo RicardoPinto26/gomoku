@@ -13,6 +13,7 @@ import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 import pt.isel.leic.daw.gomokuRoyale.domain.user.UserDomain
 import pt.isel.leic.daw.gomokuRoyale.repository.TransactionManager
 import pt.isel.leic.daw.gomokuRoyale.utils.Either
+import pt.isel.leic.daw.gomokuRoyale.utils.Success
 import pt.isel.leic.daw.gomokuRoyale.utils.failure
 import pt.isel.leic.daw.gomokuRoyale.utils.success
 
@@ -152,6 +153,27 @@ class UserServiceImpl(
         val tokenValidationInfo = TokenValidationInfo(token)
         return transactionManager.run {
             it.userRepository.removeTokenByValidationInfo(tokenValidationInfo) == 1
+        }
+    }
+
+    override fun getUsersRanking(): GetUsersRankingResult {
+        return transactionManager.run {
+            val userRepo = it.userRepository
+            val users: List<User> = userRepo.getAllUsers()
+
+            if(users.isEmpty()) {
+                return@run failure(GetUsersRankingError.NoUsers)
+            }
+
+            return@run Success(
+                GetUsersRankingExternalInfo(users.sortedByDescending { user -> user.rating }.map { user ->
+                    UserExternalInfo(
+                        username = user.username,
+                        email = user.email,
+                        gamesPlayed = user.nrGamesPlayed,
+                        rating = user.rating.toInt()
+                    ) })
+            )
         }
     }
 
