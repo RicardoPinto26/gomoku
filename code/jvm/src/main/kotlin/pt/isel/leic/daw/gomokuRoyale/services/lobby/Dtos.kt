@@ -46,7 +46,8 @@ sealed class LobbyJoinError : LobbyServicesError {
 data class LobbyJoinExternalInfo(
     val usernameCreator: String, // user1
     val usernameJoin: String, // user2
-    val lobbyId: Int
+    val lobbyId: Int,
+    val gameId: Int
 )
 
 typealias LobbyJoinResult = Either<LobbyJoinError, LobbyJoinExternalInfo>
@@ -83,6 +84,7 @@ data class LobbiesAvailableExternalInfo(
 // Get Lobbies
 sealed class GetLobbiesError : LobbyServicesError {
     object UserNotFound : GetLobbiesError()
+    object NoLobbiesAvailable : GetLobbiesError()
 }
 
 typealias LobbiesAvailableResult = Either<GetLobbiesError, List<LobbiesAvailableExternalInfo>>

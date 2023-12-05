@@ -153,6 +153,26 @@ class LobbyController(
         }
     }
 
+    @GetMapping(Uris.Lobby.GET_LOBBY_STATE)
+    fun getLobbyState(
+        user: AuthenticatedUser,
+        @PathVariable lobbyId: Int
+    ): ResponseEntity<*> {
+        TODO()
+        /*return when (val res = lobbyService.getLobbyState(user.user, lobbyId)) {
+            is Success -> {
+                logger.info("Successful Request")
+                ResponseEntity.status(200)
+                    .body(res.value)
+            }
+
+            is Failure -> {
+                logger.info("Failed Request")
+                res.value.toResponse()
+            }
+        }*/
+    }
+
     companion object {
         private val logger = LoggerFactory.getLogger(UserController::class.java)
     }

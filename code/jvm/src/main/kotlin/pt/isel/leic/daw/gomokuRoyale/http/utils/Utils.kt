@@ -67,7 +67,10 @@ fun LobbyServicesError.toResponse() = when (this) {
             Problem.response(Problem.userAlreadyInALobby)
     }
 
-    GetLobbiesError.UserNotFound -> Problem.response(Problem.tokenNotFound)
+    is GetLobbiesError -> when(this) {
+        GetLobbiesError.UserNotFound -> Problem.response(Problem.tokenNotFound)
+        GetLobbiesError.NoLobbiesAvailable -> Problem.response(Problem.noLobbiesAvailable)
+    }
 }
 
 fun GameServicesError.toResponse() = when (this) {

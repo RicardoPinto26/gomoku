@@ -12,7 +12,13 @@ INSERT INTO lobbys (name, creator_user_id, join_user_id, grid_size, opening)
 VALUES ('Game SWAP2', 1, 2, 15, 'SWAP2'),
        ('Game PRO', 2, 1, 19, 'PRO'),
        ('Game SWAP', 1, 2, 15, 'SWAP'),
-         ('Game PRO2', 1, null, 19, 'PRO');
+         ('Game 19', 1, null, 150, 'FREESTYLE'),
+         ('Game 19', 1, null, 150, 'FREESTYLE'),
+         ('Game 15', 1, null, 15, 'FREESTYLE'),
+         ('Game 15', 1, null, 15, 'FREESTYLE'),
+         ('Game 10', 1, null, 10, 'FREESTYLE'),
+         ('Game 10', 1, null, 10, 'FREESTYLE');
+
 
 INSERT INTO games (lobby_id, turn, winner,black_player, white_player, board, state)
 VALUES (1, 1, null, 1,2, '[[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null],[null,null,null,null,null]]', 'AWAITING FIRST MOVE'),

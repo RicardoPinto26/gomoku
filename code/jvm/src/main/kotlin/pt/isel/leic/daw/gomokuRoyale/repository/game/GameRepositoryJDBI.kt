@@ -8,7 +8,7 @@ class GameRepositoryJDBI(private val handle: Handle) : GameRepository {
     override fun createGame(lobbyId: Int, turn: Int, blackPlayer: Int, whitePlayer: Int, board: String): Int =
         handle.createUpdate(
             """
-            INSERT INTO games (lobby_id, turn, black_player, white_player board) 
+            INSERT INTO games (lobby_id, turn, black_player, white_player, board) 
             VALUES (:lobbyId, :turn, :blackPlayer, :whitePlayer, CAST(:board AS jsonb))
         """
         )

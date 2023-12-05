@@ -129,6 +129,13 @@ class Problem(
             "The lobby already has a game"
         )
 
+        val noLobbiesAvailable = Problem(
+            "noLobbiesAvailable.com",
+            "No lobbies available",
+            404,
+            "No lobbies available"
+        )
+
         val userNotInLobby = Problem(
             "userNotInLobby.com",
             "You don't have access to that lobby",

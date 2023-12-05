@@ -62,11 +62,11 @@ class LobbyServiceImpl(
             val newGame = Game(
                 lobby.name,
                 lobby.user1,
-                lobby.user2!!,
+                user,
                 lobby.settings
             )
 
-            gameRepo.createGame(
+            val gameId = gameRepo.createGame(
                 newLobby.id,
                 (newGame.board as BoardRun).turn.user.id,
                 newLobby.user1.id,
@@ -78,7 +78,8 @@ class LobbyServiceImpl(
                 LobbyJoinExternalInfo(
                     usernameCreator = newLobby.user1.username,
                     usernameJoin = newLobby.user2.username,
-                    lobbyId = id
+                    lobbyId = id,
+                    gameId = gameId
                 )
             )
         }
@@ -136,7 +137,17 @@ class LobbyServiceImpl(
         return transactionManager.run {
             val lobbyRepo = it.lobbyRepository
             val lobbies = lobbyRepo.getAvailableLobbies()
+            if (lobbies.isEmpty()) return@run failure(GetLobbiesError.NoLobbiesAvailable)
+
             return@run success(lobbies.map { lobby -> LobbiesAvailableExternalInfo(lobby) })
         }
+    }
+
+    override fun getLobbyState(user: User, lobbyId: Int): Unit {
+        /*return transactionManager.run {
+            val lobbyRepo = it.lobbyRepository
+
+        }*/
+        TODO()
     }
 }

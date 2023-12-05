@@ -31,7 +31,7 @@ create table lobbys
     join_user_id    INT REFERENCES users (id) DEFAULT NULL,
     grid_size       INT         NOT NULL,
     opening         VARCHAR(50) NOT NULL CHECK ( opening IN
-                                                 ('PRO', 'LONG PRO', 'SWAP', 'SWAP2', 'LONG_PRO')),
+                                                 ('PRO', 'LONG PRO', 'SWAP', 'SWAP2', 'LONG_PRO', 'FREESTYLE')),
     winning_lenght  INT         NOT NULL      DEFAULT 5,
     overflow        BOOLEAN     NOT NULL      DEFAULT FALSE,
     points_margin   INT         NOT NULL      DEFAULT 200,

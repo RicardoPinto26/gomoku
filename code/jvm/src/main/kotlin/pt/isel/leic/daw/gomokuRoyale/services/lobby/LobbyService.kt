@@ -28,4 +28,6 @@ interface LobbyService {
     ): LobbySeekResult
 
     fun getAvailableLobbies(user: User): LobbiesAvailableResult
+
+    fun getLobbyState(user: User, lobbyId: Int): Unit
 }

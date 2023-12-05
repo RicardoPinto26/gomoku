@@ -59,6 +59,7 @@ data class GameExternalInfo(
     val user1: UserExternalInfo,
     val user2: UserExternalInfo,
     val board: String,
+    val turn: String?,
     val status: String,
     val winner: UserExternalInfo? = null
 )
@@ -69,6 +70,11 @@ fun Game.toExternalInfo(id: Int, lobbyID: Int) = GameExternalInfo(
     user1.toExternalInfo(),
     user2.toExternalInfo(),
     board.internalBoard.serializeToJsonString(),
+    when (board) {
+        is BoardDraw -> null
+        is BoardRun -> board.turn.user.username
+        is BoardWin -> null
+    },
     when (board) {
         is BoardDraw -> "DRAW"
         is BoardRun -> "PLAYING"

@@ -12,7 +12,8 @@ import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbyJoinExternalInfo
 data class LobbyJoinOutputModel(
     val usernameCreator: String,
     val usernameJoin: String,
-    val lobbyId: Int
+    val lobbyId: Int,
+    val gameId: Int
 ) {
-    constructor(uei: LobbyJoinExternalInfo) : this(uei.usernameCreator, uei.usernameJoin, uei.lobbyId)
+    constructor(uei: LobbyJoinExternalInfo) : this(uei.usernameCreator, uei.usernameJoin, uei.lobbyId, uei.gameId)
 }
