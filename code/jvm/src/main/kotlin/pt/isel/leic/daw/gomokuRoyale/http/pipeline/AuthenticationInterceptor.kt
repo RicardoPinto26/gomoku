@@ -24,12 +24,11 @@ class AuthenticationInterceptor(
                 it.parameterType == AuthenticatedUser::class.java
             }
         ) {
-            // enforce authentication
-            val user = authorizationHeaderProcessor
-                .processAuthorizationHeaderValue(
-                    request.getHeader(NAME_AUTHORIZATION_HEADER)
-                        ?: ("Bearer " + (request.cookies.firstOrNull { logger.info(it.name); it.name == "token" }?.value))
-                )
+            val authHeader = request.getHeader(NAME_AUTHORIZATION_HEADER)
+            val tokenCookie = request.cookies?.firstOrNull { logger.info(it.name); it.name == "token" }
+            val bearerString = authHeader ?: tokenCookie?.value?.let { "Bearer $it" }
+
+            val user = authorizationHeaderProcessor.processAuthorizationHeaderValue(bearerString)
             return if (user == null) {
                 response.status = 401
                 response.addHeader(NAME_WWW_AUTHENTICATE_HEADER, RequestTokenProcessor.SCHEME)
