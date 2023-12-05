@@ -1,22 +1,19 @@
 package pt.isel.leic.daw.gomokuRoyale.http.controllers.lobbies.models
 
-import pt.isel.leic.daw.gomokuRoyale.domain.Opening
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbyExternalInfo
 
 /**
- * Lobby seek output information
+ * Lobby join output information
  *
- * @property id lobby unique identifier
- * @property name name of the lobby
- * @property gridSize size of the board in the lobby
- * @property opening name of the [Opening]
- * @property winningLength name of the variant to be played
- * @property pointsMargin allowed ratings margin each [User]
+ * @property usernameCreator name of the user that created the lobby
+ * @property usernameJoin name of the user that joined the lobby
+ * @property lobbyId lobby unique identifier
  */
-class LobbySeekOutputModel(
-    val id: Int,
-    val name: String,
+data class LobbyDetailsOutputModel(
+    val id: Int, // lobbyId
+    val user1: User,
+    val user2: User? = null,
     val gridSize: Int,
     val opening: String,
     val winningLength: Int,
@@ -25,7 +22,8 @@ class LobbySeekOutputModel(
 ) {
     constructor(lei: LobbyExternalInfo) : this(
         lei.id,
-        "Lobby ${lei.id}",
+        lei.user1,
+        lei.user2,
         lei.gridSize,
         lei.opening,
         lei.winningLength,

@@ -39,7 +39,7 @@ class LobbyServiceImpl(
                     user1 = user,
                     gridSize = gridSize,
                     opening = opening,
-                    winningLenght = winningLenght,
+                    winningLength = winningLenght,
                     pointsMargin = pointsMargin,
                     overflow = overflow
                 )
@@ -137,17 +137,17 @@ class LobbyServiceImpl(
         return transactionManager.run {
             val lobbyRepo = it.lobbyRepository
             val lobbies = lobbyRepo.getAvailableLobbies()
-            if (lobbies.isEmpty()) return@run failure(GetLobbiesError.NoLobbiesAvailable)
-
-            return@run success(lobbies.map { lobby -> LobbiesAvailableExternalInfo(lobby) })
+            return@run success(LobbiesAvailableExternalInfo(lobbies.map { lobby -> LobbyExternalInfo(lobby) }))
         }
     }
 
-    override fun getLobbyState(user: User, lobbyId: Int): Unit {
-        /*return transactionManager.run {
+    override fun getLobbyDetails(user: User, lobbyId: Int): LobbyDetailsResult {
+        return transactionManager.run {
             val lobbyRepo = it.lobbyRepository
 
-        }*/
-        TODO()
+            val lobby = lobbyRepo.getLobbyById(lobbyId) ?: return@run failure(LobbyDetailsError.LobbyNotFound)
+
+            return@run success(LobbyExternalInfo(lobby))
+        }
     }
 }

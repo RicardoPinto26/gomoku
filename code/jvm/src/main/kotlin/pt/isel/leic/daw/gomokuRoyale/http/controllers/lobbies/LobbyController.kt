@@ -8,13 +8,18 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import pt.isel.leic.daw.gomokuRoyale.domain.AuthenticatedUser
+import pt.isel.leic.daw.gomokuRoyale.http.Links
+import pt.isel.leic.daw.gomokuRoyale.http.Rels
 import pt.isel.leic.daw.gomokuRoyale.http.Uris
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.lobbies.models.LobbyCreateInputModel
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.lobbies.models.LobbyCreateOutputModel
+import pt.isel.leic.daw.gomokuRoyale.http.controllers.lobbies.models.LobbyDetailsOutputModel
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.lobbies.models.LobbyJoinOutputModel
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.lobbies.models.LobbySeekInputModel
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.lobbies.models.LobbySeekOutputModel
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.users.UserController
+import pt.isel.leic.daw.gomokuRoyale.http.media.siren.SirenEntity
+import pt.isel.leic.daw.gomokuRoyale.http.media.siren.SubEntity
 import pt.isel.leic.daw.gomokuRoyale.http.utils.toResponse
 import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbyService
 import pt.isel.leic.daw.gomokuRoyale.utils.Failure
@@ -38,6 +43,8 @@ class LobbyController(
      *
      * @return the response to the request with the [LobbyCreateOutputModel] in the body or an error value
      */
+    // TODO: SIREN
+    // TODO: DO WE EVEN NEED TO ALLOW JOIN/CREATE LOBBY? ISN'T MATCHMAKING ENOUGH?
     @PostMapping(Uris.Lobby.CREATE_LOBBY)
     fun createLobby(
         user: AuthenticatedUser,
@@ -80,6 +87,8 @@ class LobbyController(
      *
      * @return the response to the request with the [LobbyJoinOutputModel] in the body or an error value
      */
+    // TODO: SIREN
+    // TODO: DO WE EVEN NEED TO ALLOW JOIN/CREATE LOBBY? ISN'T MATCHMAKING ENOUGH?
     @PostMapping(Uris.Lobby.JOIN_LOBBY)
     fun joinLobby(
         user: AuthenticatedUser,
@@ -127,7 +136,15 @@ class LobbyController(
                 logger.info("Successful Request")
                 val lobbyEI = res.value
                 ResponseEntity.status(if (lobbyEI.user2 == null) 201 else 200)
-                    .body(LobbySeekOutputModel(lobbyEI))
+                    .body(
+                        SirenEntity(
+                            `class` = listOf(Rels.SEEK_LOBBY),
+                            properties = LobbySeekOutputModel(lobbyEI),
+                            entities = listOf(
+                                // TODO: SUBENTITY DO GAME
+                            )
+                        )
+                    )
             }
 
             is Failure -> {
@@ -137,13 +154,31 @@ class LobbyController(
         }
     }
 
+    // TODO: IF WE DON'T ALLOW CREATE/JOIN LOBBY, THIS IS USELESS
     @GetMapping(Uris.Lobby.GET_AVAILABLE_LOBBIES)
     fun getLobbies(user: AuthenticatedUser): ResponseEntity<*> {
         return when (val res = lobbyService.getAvailableLobbies(user.user)) {
             is Success -> {
                 logger.info("Successful Request")
                 ResponseEntity.status(200)
-                    .body(res.value)
+                    .body(
+                        SirenEntity<Unit>(
+                            `class` = listOf(Rels.LIST_LOBBIES),
+                            entities = res.value.lobbies.map {
+                                SubEntity.EmbeddedSubEntity(
+                                    `class` = listOf(Rels.LOBBY),
+                                    rel = listOf(Rels.ITEM, Rels.LOBBY),
+                                    properties = LobbyDetailsOutputModel(it),
+                                    links = listOf(
+                                        Links.self(Uris.Lobby.byId(it.id))
+                                    ),
+                                    entities = listOf(
+                                        // TODO: SUBENTITY DO GAME
+                                    )
+                                )
+                            }
+                        )
+                    )
             }
 
             is Failure -> {
@@ -153,24 +188,34 @@ class LobbyController(
         }
     }
 
-    @GetMapping(Uris.Lobby.GET_LOBBY_STATE)
-    fun getLobbyState(
+    @GetMapping(Uris.Lobby.GET_LOBBY_DETAILS)
+    fun getLobbyDetails(
         user: AuthenticatedUser,
         @PathVariable lobbyId: Int
     ): ResponseEntity<*> {
-        TODO()
-        /*return when (val res = lobbyService.getLobbyState(user.user, lobbyId)) {
+        return when (val res = lobbyService.getLobbyDetails(user.user, lobbyId)) {
             is Success -> {
                 logger.info("Successful Request")
                 ResponseEntity.status(200)
-                    .body(res.value)
+                    .body(
+                        SirenEntity(
+                            `class` = listOf(Rels.LOBBY),
+                            properties = LobbyDetailsOutputModel(res.value),
+                            links = listOf(
+                                Links.self(Uris.Lobby.byId(res.value.id))
+                            ),
+                            entities = listOf(
+                                // TODO: SUBENTITY DO GAME
+                            )
+                        )
+                    )
             }
 
             is Failure -> {
                 logger.info("Failed Request")
                 res.value.toResponse()
             }
-        }*/
+        }
     }
 
     companion object {

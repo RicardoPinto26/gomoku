@@ -19,7 +19,7 @@ class GameDetailsOutputModel(
     val user2: UserExternalInfo,
     val board: String,
     val status: String,
-    val turn : String?,
+    val turn: String?
 ) {
     constructor(gei: GameExternalInfo) : this(
         gei.id,

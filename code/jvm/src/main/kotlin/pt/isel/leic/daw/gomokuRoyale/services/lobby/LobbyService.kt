@@ -29,5 +29,5 @@ interface LobbyService {
 
     fun getAvailableLobbies(user: User): LobbiesAvailableResult
 
-    fun getLobbyState(user: User, lobbyId: Int): Unit
+    fun getLobbyDetails(user: User, lobbyId: Int): LobbyDetailsResult
 }

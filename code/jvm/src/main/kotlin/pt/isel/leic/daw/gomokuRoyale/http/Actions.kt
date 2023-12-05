@@ -46,4 +46,18 @@ object Actions {
         method = Method.GET,
         href = Uris.listLobbies()
     )
+
+    val play = Action(
+        name = Rels.PLAY,
+        title = "Play",
+        method = Method.POST,
+        href = Uris.play()
+    )
+
+    val forfeitGame = Action(
+        name = Rels.FORFEIT_GAME,
+        title = "Forfeit Game",
+        method = Method.POST,
+        href = Uris.forfeitGame()
+    )
 }

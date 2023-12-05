@@ -14,4 +14,9 @@ object Rels {
 
     const val SEEK_LOBBY = "seek-lobby"
     const val LIST_LOBBIES = "list-lobbies"
+    const val LOBBY = "lobby"
+
+    const val FORFEIT_GAME = "forfeit-game"
+    const val PLAY = "play"
+    const val GAME = "game"
 }

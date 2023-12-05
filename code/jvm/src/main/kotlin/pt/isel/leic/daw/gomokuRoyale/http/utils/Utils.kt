@@ -8,6 +8,7 @@ import pt.isel.leic.daw.gomokuRoyale.services.game.GamePlayError
 import pt.isel.leic.daw.gomokuRoyale.services.game.GameServicesError
 import pt.isel.leic.daw.gomokuRoyale.services.lobby.GetLobbiesError
 import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbyCreationError
+import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbyDetailsError
 import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbyJoinError
 import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbySeekError
 import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbyServicesError
@@ -67,9 +68,12 @@ fun LobbyServicesError.toResponse() = when (this) {
             Problem.response(Problem.userAlreadyInALobby)
     }
 
-    is GetLobbiesError -> when(this) {
+    is GetLobbiesError -> when (this) {
         GetLobbiesError.UserNotFound -> Problem.response(Problem.tokenNotFound)
-        GetLobbiesError.NoLobbiesAvailable -> Problem.response(Problem.noLobbiesAvailable)
+    }
+
+    is LobbyDetailsError -> when (this) {
+        LobbyDetailsError.LobbyNotFound -> Problem.response(Problem.lobbyNotFound)
     }
 }
 

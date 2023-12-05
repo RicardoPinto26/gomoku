@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import pt.isel.leic.daw.gomokuRoyale.domain.AuthenticatedUser
+import pt.isel.leic.daw.gomokuRoyale.http.Actions
+import pt.isel.leic.daw.gomokuRoyale.http.Rels
 import pt.isel.leic.daw.gomokuRoyale.http.Uris
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.games.models.GameCreateOutputModel
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.games.models.GameDetailsOutputModel
@@ -14,6 +16,7 @@ import pt.isel.leic.daw.gomokuRoyale.http.controllers.games.models.GameForfeitOu
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.games.models.GamePlayInputModel
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.games.models.GamePlayOutputModel
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.games.models.convertInputModelToGameAction
+import pt.isel.leic.daw.gomokuRoyale.http.media.siren.SirenEntity
 import pt.isel.leic.daw.gomokuRoyale.http.utils.toResponse
 import pt.isel.leic.daw.gomokuRoyale.services.game.GameService
 import pt.isel.leic.daw.gomokuRoyale.utils.Failure
@@ -37,6 +40,8 @@ class GameController(
      *
      * @return the response to the request with the [GameCreateOutputModel] in the body or an error value
      */
+    // TODO: SIREN
+    // TODO: IF WE DON'T ALLOW CREATE/JOIN LOBBY, THIS IS USELESS
     @PostMapping(Uris.Game.CREATE_GAME)
     fun createGame(
         user: AuthenticatedUser,
@@ -67,7 +72,12 @@ class GameController(
     ): ResponseEntity<*> {
         return when (val res = gameService.forfeitGame(gameId, user.user.id)) {
             is Success -> ResponseEntity.status(200)
-                .body(GameForfeitOutputModel(res.value))
+                .body(
+                    SirenEntity(
+                        `class` = listOf(Rels.FORFEIT_GAME),
+                        properties = GameForfeitOutputModel(res.value)
+                    )
+                )
 
             is Failure -> res.value.toResponse()
         }
@@ -93,7 +103,12 @@ class GameController(
         val action = convertInputModelToGameAction(body)
         return when (val res = gameService.playGame(gameId, user.user.id, action)) {
             is Success -> ResponseEntity.status(200)
-                .body(GamePlayOutputModel(res.value))
+                .body(
+                    SirenEntity(
+                        `class` = listOf(Rels.PLAY),
+                        properties = GamePlayOutputModel(res.value)
+                    )
+                )
 
             is Failure -> res.value.toResponse()
         }
@@ -111,7 +126,16 @@ class GameController(
     fun getGameById(@PathVariable gameId: Int, @PathVariable lobbyId: Int): ResponseEntity<*> {
         return when (val res = gameService.getGameById(gameId, lobbyId)) {
             is Success -> ResponseEntity.status(200)
-                .body(GameDetailsOutputModel(res.value))
+                .body(
+                    SirenEntity(
+                        `class` = listOf(Rels.GAME),
+                        properties = GameDetailsOutputModel(res.value),
+                        actions = listOf(
+                            Actions.play,
+                            Actions.forfeitGame
+                        )
+                    )
+                )
 
             is Failure -> res.value.toResponse()
         }

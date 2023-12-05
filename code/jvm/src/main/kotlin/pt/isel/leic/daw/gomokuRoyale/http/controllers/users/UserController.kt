@@ -40,8 +40,8 @@ class UserController(
             `class` = listOf(Rels.USER_HOME),
             actions = listOf(
                 Actions.logout,
-                Actions.seekLobby,
-                Actions.listLobbies
+                Actions.seekLobby
+                // Actions.listLobbies
             ),
             links = listOf(
                 Links.self(Uris.userHome())
@@ -180,7 +180,6 @@ class UserController(
                                     )
                                 )
                             }
-
                         )
                     )
             }

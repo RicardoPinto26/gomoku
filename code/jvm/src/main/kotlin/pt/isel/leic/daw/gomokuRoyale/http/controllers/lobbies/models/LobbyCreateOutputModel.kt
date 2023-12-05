@@ -26,7 +26,7 @@ data class LobbyCreateOutputModel(
         lei.pointsMargin,
         lei.gridSize,
         lei.opening,
-        lei.winningLenght,
+        lei.winningLength,
         lei.overflow
     )
 }
