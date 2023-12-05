@@ -12,7 +12,7 @@ export async function authenticate(username: string, password: string): Promise<
 
 export function Login() {
     console.log('Login');
-    const [state, dispatch] = React.useReducer(reduce, {tag: 'editing', inputs: {username: '', password: ''}});
+    const [state, dispatch] = React.useReducer(reduce, {tag: 'editing', inputs: {username: '', email: '', password: ''}});
     const setUser = useSetUser();
     const location = useLocation();
     if (state.tag === 'redirect') {

@@ -1,5 +1,5 @@
 export type State =
-    | { tag: 'editing'; error?: string; inputs: { username: string; password: string } }
+    | { tag: 'editing'; error?: string; inputs: { username: string; email: string, password: string } }
     | { tag: 'submitting'; username: string }
     | { tag: 'redirect' };
 
@@ -33,7 +33,7 @@ export default function reduce(state: State, action: Action): State {
             if (action.type === 'success') {
                 return {tag: 'redirect'};
             } else if (action.type === 'error') {
-                return {tag: 'editing', error: action.message, inputs: {username: state.username, password: ''}};
+                return {tag: 'editing', error: action.message, inputs: {username: state.username, email: '', password: ''}};
             } else {
                 logUnexpectedAction(state, action);
                 return state;

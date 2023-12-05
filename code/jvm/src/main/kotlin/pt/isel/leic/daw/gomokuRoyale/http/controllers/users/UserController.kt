@@ -98,7 +98,7 @@ class UserController(
     ): ResponseEntity<*> {
         return when (val res = userService.createToken(input.username, input.password)) {
             is Success -> {
-                sendTokenCookie(response, res.value.tokenValue )
+                sendTokenCookie(response, res.value.tokenValue)
                 ResponseEntity.status(201)
                     .body(
                         SirenEntity(

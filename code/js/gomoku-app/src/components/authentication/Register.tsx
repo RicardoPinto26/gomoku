@@ -14,7 +14,8 @@ async function registerUser(email: String, username: string, password: string): 
 
 export default function Register() {
     console.log('Register');
-    const [state, dispatch] = React.useReducer(reduce, {tag: 'editing', inputs: {username: '', password: ''}});
+    const [state, dispatch] =
+        React.useReducer(reduce, {tag: 'editing', inputs: {username: '', email: '', password: ''}});
     const setUser = useSetUser();
     const location = useLocation();
     if (state.tag === 'redirect') {
@@ -32,7 +33,7 @@ export default function Register() {
         }
         dispatch({type: 'submit'});
 
-        const email = "test1111@gmail.com"//state.inputs.email;
+        const email = state.inputs.email;
         const username = state.inputs.username;
         const password = state.inputs.password;
         registerUser(email, username, password)
@@ -42,7 +43,7 @@ export default function Register() {
                     setUser(res);
                     dispatch({type: 'success'});
                 } else {
-                    dispatch({type: 'error', message: 'Invalid username or password'});
+                    dispatch({type: 'error', message: 'Invalid username, email or password'});
                 }
             })
             .catch(error => {
@@ -51,13 +52,14 @@ export default function Register() {
     }
 
     const username = state.tag === 'submitting' ? state.username : state.inputs.username
+    const email = state.tag === 'submitting' ? '' : state.inputs.email
     const password = state.tag === 'submitting' ? "" : state.inputs.password
     return (
         <form onSubmit={handleSubmit}>
             <fieldset disabled={state.tag !== 'editing'}>
                 <div>
-                    <label htmlFor="email">Username</label>
-                    <input id="email" type="text" name="email" value={username} onChange={handleChange}/>
+                    <label htmlFor="email">Email</label>
+                    <input id="email" type="text" name="email" value={email} onChange={handleChange}/>
                 </div>
                 <div>
                     <label htmlFor="username">Username</label>
@@ -65,7 +67,7 @@ export default function Register() {
                 </div>
                 <div>
                     <label htmlFor="password">Password</label>
-                    <input id="password" type="text" name="password" value={password} onChange={handleChange}/>
+                    <input id="password" type="password" name="password" value={password} onChange={handleChange}/>
                 </div>
                 <div>
                     <button type="submit">Register</button>

@@ -1,4 +1,4 @@
-import {createContext, useContext,} from 'react'
+import React, {createContext, useContext, useState,} from 'react'
 
 type ContextType = {
     user: string | undefined,
@@ -7,20 +7,18 @@ type ContextType = {
 const LoggedInContext = createContext<ContextType>({
     user: undefined,
     setUser: () => {
-
     },
 })
 
-/*
-export function AuthnContainer({ children }: { children: React.ReactNode }) {
-    const [user, setUser] = useState(undefined)
+export function AuthnContainer({children}: { children: React.ReactNode }) {
+    const [user, setUser] = useState<string | undefined>(undefined)
     console.log(`AuthnContainer: ${user}`)
     return (
-        <LoggedInContext.Provider value={{ user: user, setUser: setUser }}>
+        <LoggedInContext.Provider value={{user: user, setUser: setUser}}>
             {children}
         </LoggedInContext.Provider>
     )
-}*/
+}
 
 export function useCurrentUser() {
     return useContext(LoggedInContext).user || null

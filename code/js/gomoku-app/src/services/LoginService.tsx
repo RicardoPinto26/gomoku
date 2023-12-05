@@ -19,16 +19,31 @@ export async function register(email: String, username: String, password: String
 
 
 export async function login(username: String, password: String) {
-    const response = await fetch(`${apiUrl}/users/login`, {
+    const response = await fetch(`${apiUrl}/users/token`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({username, password})
+        body: JSON.stringify({"username": username, "password": password})
     })
 
     if (!response.ok)
         throw await response.json();
+
+    return await response.json()
+}
+
+export async function logout() {
+    const response = await fetch(`${apiUrl}/users/logout`, {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({"ola": "another thing", "adeus": "another another thing"})
+    })
+
+    if (!response.ok) {
+        throw await response.json();
+    }
+
 
     return await response.json()
 }
