@@ -15,7 +15,7 @@ interface PageProps {
 
 export default function Page({title, children}: PageProps) {
     return (
-        <Container maxWidth="xs">
+        <Container maxWidth="xl">
             <h1>{title}</h1>
             <Box sx={{
                 marginTop: 8,

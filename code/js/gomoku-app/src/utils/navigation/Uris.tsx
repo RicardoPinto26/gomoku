@@ -5,5 +5,7 @@ export namespace Uris {
     export const REGISTER = "/register"
     export const PROFILE = "/me"
 
+    export const ABOUT = "/about"
+
     export const RANKING = "/ranking"
 }
