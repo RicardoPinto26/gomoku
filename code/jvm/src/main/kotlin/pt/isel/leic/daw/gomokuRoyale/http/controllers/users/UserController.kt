@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import pt.isel.leic.daw.gomokuRoyale.domain.AuthenticatedUser
 import pt.isel.leic.daw.gomokuRoyale.http.Actions
@@ -170,9 +171,12 @@ class UserController(
     }
 
     @GetMapping(Uris.Users.PREFIX)
-    fun getUsers(): ResponseEntity<*> {
+    fun getUsers(
+        @RequestParam(defaultValue = "0") skip: Int,
+        @RequestParam(defaultValue = "100" /*TODO: HARDCODED*/) limit: Int
+    ): ResponseEntity<*> {
         logger.info("Request received for users ranking")
-        return when (val res = userService.getUsersRanking()) {
+        return when (val res = userService.getUsersRanking(skip, limit)) {
             is Success -> {
                 logger.info("Success request")
                 ResponseEntity.status(200)

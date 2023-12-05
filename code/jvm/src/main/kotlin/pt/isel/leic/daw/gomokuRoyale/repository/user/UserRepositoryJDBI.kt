@@ -35,8 +35,10 @@ class UserRepositoryJDBI(private val handle: Handle) : UserRepository {
             .mapTo<User>()
             .singleOrNull()
 
-    override fun getAllUsers(): List<User> =
-        handle.createQuery("select * from users")
+    override fun getAllUsers(skip: Int, limit: Int): List<User> =
+        handle.createQuery("select * from users offset :skip limit :limit")
+            .bind("limit", limit)
+            .bind("skip", skip)
             .mapTo<User>()
             .toList()
 

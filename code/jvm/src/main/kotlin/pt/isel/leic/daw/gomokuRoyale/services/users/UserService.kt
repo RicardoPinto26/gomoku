@@ -57,5 +57,5 @@ interface UserService {
      * Gets all users
      * @return List of all users
      */
-    fun getUsersRanking(): GetUsersRankingResult
+    fun getUsersRanking(skip: Int, limit: Int): GetUsersRankingResult
 }

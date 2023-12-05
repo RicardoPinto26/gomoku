@@ -18,7 +18,7 @@ interface UserRepository {
 
     fun getUserByEmail(email: String): User?
 
-    fun getAllUsers(): List<User>
+    fun getAllUsers(skip: Int, limit: Int): List<User>
 
     fun createToken(userId: Int, token: Token, maxTokens: Int): Int
 

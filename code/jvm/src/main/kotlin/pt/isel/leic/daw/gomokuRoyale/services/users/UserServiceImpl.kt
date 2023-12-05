@@ -156,14 +156,10 @@ class UserServiceImpl(
         }
     }
 
-    override fun getUsersRanking(): GetUsersRankingResult {
+    override fun getUsersRanking(skip: Int, limit: Int): GetUsersRankingResult {
         return transactionManager.run {
             val userRepo = it.userRepository
-            val users: List<User> = userRepo.getAllUsers()
-
-            if (users.isEmpty()) {
-                return@run failure(GetUsersRankingError.NoUsers)
-            }
+            val users: List<User> = userRepo.getAllUsers(skip, limit)
 
             return@run Success(
                 GetUsersRankingExternalInfo(
