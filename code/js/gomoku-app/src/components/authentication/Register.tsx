@@ -1,8 +1,10 @@
 import * as React from "react";
 import {useSetUser} from "../Authn";
-import {Navigate, useLocation} from "react-router-dom";
+import {Navigate, useLocation, useNavigate} from "react-router-dom";
 import reduce from "./utils/Reduce"
 import {register} from "../../services/LoginService";
+import Page from "../common/Page";
+import Button from "@mui/material/Button";
 
 async function registerUser(email: String, username: string, password: string): Promise<string | undefined> {
     console.log(`registerUser(${username}, ${password})`)
@@ -13,6 +15,7 @@ async function registerUser(email: String, username: string, password: string): 
 }
 
 export default function Register() {
+    const navigate = useNavigate()
     console.log('Register');
     const [state, dispatch] =
         React.useReducer(reduce, {tag: 'editing', inputs: {username: '', email: '', password: ''}});
@@ -55,25 +58,38 @@ export default function Register() {
     const email = state.tag === 'submitting' ? '' : state.inputs.email
     const password = state.tag === 'submitting' ? "" : state.inputs.password
     return (
-        <form onSubmit={handleSubmit}>
-            <fieldset disabled={state.tag !== 'editing'}>
-                <div>
-                    <label htmlFor="email">Email</label>
-                    <input id="email" type="text" name="email" value={email} onChange={handleChange}/>
-                </div>
-                <div>
-                    <label htmlFor="username">Username</label>
-                    <input id="username" type="text" name="username" value={username} onChange={handleChange}/>
-                </div>
-                <div>
-                    <label htmlFor="password">Password</label>
-                    <input id="password" type="password" name="password" value={password} onChange={handleChange}/>
-                </div>
-                <div>
-                    <button type="submit">Register</button>
-                </div>
-            </fieldset>
-            {state.tag === 'editing' && state.error}
-        </form>
+        <Page title={"Register"}>
+            <form onSubmit={handleSubmit}>
+                <fieldset disabled={state.tag !== 'editing'}>
+                    <div>
+                        <label htmlFor="email">Email</label>
+                        <input id="email" type="text" name="email" value={email} onChange={handleChange}/>
+                    </div>
+                    <div>
+                        <label htmlFor="username">Username</label>
+                        <input id="username" type="text" name="username" value={username} onChange={handleChange}/>
+                    </div>
+                    <div>
+                        <label htmlFor="password">Password</label>
+                        <input id="password" type="password" name="password" value={password} onChange={handleChange}/>
+                    </div>
+                    <div>
+                        <button type="submit">Register</button>
+                    </div>
+                </fieldset>
+                {state.tag === 'editing' && state.error}
+            </form>
+            <Button
+                size="small"
+                variant="contained"
+                sx={{mt: 3, mb: 2}}
+                color="primary"
+                onClick={() => {
+                    navigate('/login')
+                }}
+            >
+                Already have an account? Login!
+            </Button>
+        </Page>
     );
 }

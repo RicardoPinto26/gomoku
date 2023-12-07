@@ -1,8 +1,10 @@
 import * as React from 'react';
-import {Navigate, useLocation} from 'react-router-dom';
+import {Navigate, useLocation, useNavigate} from 'react-router-dom';
 import {useSetUser} from '../Authn';
 import {login} from "../../services/LoginService";
 import reduce from "./utils/Reduce";
+import Page from '../common/Page';
+import Button from "@mui/material/Button";
 
 export async function authenticate(username: string, password: string): Promise<string | undefined> {
     const user = await login(username, password);
@@ -11,6 +13,7 @@ export async function authenticate(username: string, password: string): Promise<
 }
 
 export function Login() {
+    const navigate = useNavigate()
     console.log('Login');
     const [state, dispatch] = React.useReducer(reduce, {tag: 'editing', inputs: {username: '', email: '', password: ''}});
     const setUser = useSetUser();
@@ -49,21 +52,36 @@ export function Login() {
     const username = state.tag === 'submitting' ? state.username : state.inputs.username
     const password = state.tag === 'submitting' ? "" : state.inputs.password
     return (
-        <form onSubmit={handleSubmit}>
-            <fieldset disabled={state.tag !== 'editing'}>
-                <div>
-                    <label htmlFor="username">Username</label>
-                    <input id="username" type="text" name="username" value={username} onChange={handleChange}/>
-                </div>
-                <div>
-                    <label htmlFor="password">Password</label>
-                    <input id="password" type="text" name="password" value={password} onChange={handleChange}/>
-                </div>
-                <div>
-                    <button type="submit">Login</button>
-                </div>
-            </fieldset>
-            {state.tag === 'editing' && state.error}
-        </form>
+        <Page title={"Login"}>
+            <form onSubmit={handleSubmit}>
+                <fieldset disabled={state.tag !== 'editing'}>
+                    <div>
+                        <label htmlFor="username">Username</label>
+                        <input id="username" type="text" name="username" value={username} onChange={handleChange}/>
+                    </div>
+                    <div>
+                        <label htmlFor="password">Password</label>
+                        <input id="password" type="text" name="password" value={password} onChange={handleChange}/>
+                    </div>
+                    <div>
+                        <button type="submit">Login</button>
+                    </div>
+                </fieldset>
+                {state.tag === 'editing' && state.error}
+            </form>
+            <Button>
+                <Button
+                    size="small"
+                    variant="contained"
+                    sx={{mt: 3, mb: 2}}
+                    color="primary"
+                    onClick={() => {
+                        navigate('/register')
+                    }}
+                >
+                    Don't have an account yet? Register!
+                </Button>
+            </Button>
+        </Page>
     );
 }
