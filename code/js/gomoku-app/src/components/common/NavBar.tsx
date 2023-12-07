@@ -12,14 +12,16 @@ import MenuItem from '@mui/material/MenuItem';
 import {useNavigate} from "react-router-dom";
 import {ReactComponent as GomokuLogo} from '../../logo.svg';
 import {useCurrentUser} from "../Authn";
-import {Avatar, Tooltip} from "@mui/material";
+import {Avatar, ListItemIcon, Tooltip} from "@mui/material";
+import VideogameAssetIcon from '@mui/icons-material/VideogameAsset';
+import LeaderboardIcon from '@mui/icons-material/Leaderboard';
+import InfoIcon from '@mui/icons-material/Info';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 const pages = [
-    {name: 'Login', href: '/login', auth: false},
-    {name: 'Register', href: '/register', auth: false},
-    {name: 'Play', href: '/play', auth: true},
-    {name: 'Ranking', href: '/ranking'},
-    {name: 'About', href: '/about'},
+    {name: 'Play', href: '/play', auth: true, icon: <VideogameAssetIcon/>},
+    {name: 'Ranking', href: '/ranking', icon: <LeaderboardIcon/>},
+    {name: 'About', href: '/about', icon: <InfoIcon/>},
 ]
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
@@ -114,6 +116,9 @@ export function NavBar() {
                                     handleCloseNavMenu()
                                     navigate(page.href)
                                 }}>
+                                    <ListItemIcon>
+                                        {page.icon}
+                                    </ListItemIcon>
                                     <Typography textAlign="center">{page.name}</Typography>
                                 </MenuItem>
                             ))}
@@ -146,7 +151,8 @@ export function NavBar() {
                                     handleCloseNavMenu()
                                     navigate(page.href)
                                 }}
-                                sx={{my: 2, color: 'white', display: 'block'}}
+                                endIcon={page.icon}
+                                sx={{my: 2, color: 'white', display: 'box'}}
                             >
                                 {page.name}
                             </Button>
@@ -185,7 +191,22 @@ export function NavBar() {
                                 ))}
                             </Menu>
                         </Box>
-                        : <></>
+
+                        :
+
+                        <Box>
+                            <Button
+                                key="Sign In"
+                                startIcon=<AccountCircleIcon/>
+                                onClick={() => {
+                                    handleCloseNavMenu()
+                                    navigate("/register")
+                                }}
+                                sx={{my: 2, color: 'white', display: 'box'}}
+                            >
+                                Sign In
+                            </Button>
+                        </Box>
                     }
                 </Toolbar>
             </Container>
