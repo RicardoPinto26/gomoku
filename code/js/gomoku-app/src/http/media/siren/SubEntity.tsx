@@ -5,7 +5,7 @@ export abstract class SubEntity {
     abstract rel: string[];
 }
 
-class EmbeddedLink extends SubEntity {
+export class EmbeddedLink extends SubEntity {
     rel: string[];
     class?: string[];
     href: string;
@@ -22,7 +22,7 @@ class EmbeddedLink extends SubEntity {
     }
 }
 
-class EmbeddedSubEntity<T> extends SubEntity {
+export class EmbeddedSubEntity<T> extends SubEntity {
     class?: string[];
     rel: string[];
     properties?: T;
