@@ -11,24 +11,27 @@ import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import {useNavigate} from "react-router-dom";
 import {ReactComponent as GomokuLogo} from '../../logo.svg';
-import {useCurrentUser} from "../Authn";
+import {useCurrentUser, useUserManager} from "../Authn";
 import {Avatar, ListItemIcon, Tooltip} from "@mui/material";
 import VideogameAssetIcon from '@mui/icons-material/VideogameAsset';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import InfoIcon from '@mui/icons-material/Info';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import AccountBoxOutlinedIcon from '@mui/icons-material/AccountBoxOutlined';
+import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 
 const pages = [
     {name: 'Play', href: '/play', auth: true, icon: <VideogameAssetIcon/>},
     {name: 'Ranking', href: '/ranking', icon: <LeaderboardIcon/>},
     {name: 'About', href: '/about', icon: <InfoIcon/>},
 ]
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 export function NavBar() {
     const navigate = useNavigate()
     const user = useCurrentUser()
     const loggedIn = !!(user)
+
+    const userManager = useUserManager();
     console.log("Current user:" + user)
 
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
@@ -47,6 +50,30 @@ export function NavBar() {
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
+
+    const settings = [
+        {
+            name:'Profile',
+            icon: <AccountBoxOutlinedIcon/>,
+            callback: () => navigate('/me')
+
+        },
+        {
+            name:'Logout',
+            icon: <LogoutOutlinedIcon/>,
+            callback: async () => {
+                if(!user){
+                    navigate('/')
+                    return
+                }
+
+                //await logout(user)
+                userManager.clearUser()
+                navigate('/')
+            }
+        }
+    ];
+
 
     return (
         <AppBar position="static">
@@ -185,8 +212,16 @@ export function NavBar() {
                                 onClose={handleCloseUserMenu}
                             >
                                 {settings.map((setting) => (
-                                    <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                        <Typography textAlign="center">{setting}</Typography>
+                                    <MenuItem key={setting.name}
+                                              onClick={()=>{
+                                                  handleCloseUserMenu()
+                                                  setting.callback()
+                                              }
+                                    }>
+                                        <ListItemIcon>
+                                            {setting.icon}
+                                        </ListItemIcon>
+                                        <Typography textAlign="center">{setting.name}</Typography>
                                     </MenuItem>
                                 ))}
                             </Menu>

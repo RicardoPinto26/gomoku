@@ -1,12 +1,15 @@
 import React, {createContext, useContext, useState,} from 'react'
 
-type ContextType = {
+type UserManager = {
     user: string | undefined,
-    setUser: (v: string | undefined) => void
+    setUser: (user: string) => void
+    clearUser : () => void
 }
-const LoggedInContext = createContext<ContextType>({
+const LoggedInContext = createContext<UserManager>({
     user: undefined,
     setUser: () => {
+    },
+    clearUser: () => {
     },
 })
 
@@ -14,16 +17,28 @@ export function AuthnContainer({children}: { children: React.ReactNode }) {
     const [user, setUser] = useState<string | undefined>(undefined)
     console.log(`AuthnContainer: ${user}`)
     return (
-        <LoggedInContext.Provider value={{user: user, setUser: setUser}}>
+        <LoggedInContext.Provider value={
+            {
+                user: user,
+                setUser: setUser,
+                clearUser: () => {
+                    setUser(undefined)
+                }
+            }
+        }>
             {children}
         </LoggedInContext.Provider>
     )
 }
 
 export function useCurrentUser() {
-    return useContext(LoggedInContext).user || null
+    return useContext(LoggedInContext).user
 }
 
 export function useSetUser() {
     return useContext(LoggedInContext).setUser
+}
+
+export function useUserManager() {
+    return useContext(LoggedInContext)
 }
