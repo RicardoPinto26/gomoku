@@ -9,6 +9,7 @@ import Button from "@mui/material/Button";
 export async function authenticate(username: string, password: string): Promise<string | undefined> {
     const user = await login(username, password);
     console.log(`authenticate(${username}, ${password}) => ${user}`);
+    console.log(user.properties.token)
     return user;
 }
 
@@ -38,7 +39,8 @@ export function Login() {
             .then(res => {
                 if (res) {
                     console.log(`setUser(${res})`);
-                    setUser(res);
+                    //setUser(res);
+                    setUser(username);
                     dispatch({type: 'success'});
                 } else {
                     dispatch({type: 'error', message: 'Invalid username or password'});

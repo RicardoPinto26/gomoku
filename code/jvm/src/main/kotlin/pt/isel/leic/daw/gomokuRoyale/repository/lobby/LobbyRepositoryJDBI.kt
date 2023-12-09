@@ -128,6 +128,7 @@ class LobbyRepositoryJDBI(private val handle: Handle) : LobbyRepository {
             .bind("grid_size", gridSize)
             .bind("winning_length", winningLength)
             .bind("opening", opening)
+            .bind("overflow", overflow)
             .bind("min_rating", minRating)
             .bind("max_rating", maxRating)
             .mapTo<Int>()

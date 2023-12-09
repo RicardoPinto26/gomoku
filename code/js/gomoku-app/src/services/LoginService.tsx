@@ -1,4 +1,4 @@
-const apiUrl = 'http://localhost:8080/api';
+export const apiUrl = 'http://localhost:8080/api';
 
 //TODO: Use siren hypermedia to get the url
 export async function register(email: String, username: String, password: String) {
@@ -24,9 +24,9 @@ export async function login(username: String, password: String) {
         headers: {
             'Content-Type': 'application/json'
         },
+        credentials: "include",
         body: JSON.stringify({"username": username, "password": password})
     })
-
     if (!response.ok)
         throw await response.json();
 

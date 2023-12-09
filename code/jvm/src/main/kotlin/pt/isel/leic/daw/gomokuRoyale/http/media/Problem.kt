@@ -171,6 +171,13 @@ class Problem(
             "You're already in a lobby. Please leave that lobby to join another."
         )
 
+        val userAlreadyInAGame = Problem(
+            "userAlreadyInAGame",
+            "User is already in a Game",
+            409,
+            "You're already in a game. Please leave or finish that game to join another."
+        )
+
         val invalidPosition = Problem(
             "invalidPosition.com",
             "The position is not valid",

@@ -46,6 +46,12 @@ data class PublicUserExternalInfo(
     val rating: Int
 )
 
+fun User.toPublicExternalInfo() = PublicUserExternalInfo(
+    username = username,
+    gamesPlayed = nrGamesPlayed,
+    rating = rating.toInt()
+)
+
 sealed class GetUserStatsError : UserServicesError {
     object NoSuchUser : GetUserStatsError()
 }

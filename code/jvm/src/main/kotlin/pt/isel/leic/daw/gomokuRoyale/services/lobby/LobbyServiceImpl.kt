@@ -99,11 +99,15 @@ class LobbyServiceImpl(
     ): LobbySeekResult {
         return transactionManager.run {
             val lobbyRepo = it.lobbyRepository
+            val gameRepo = it.gameRepository
 
-            if (lobbyRepo.getUserLobbys(user.id).any { lobby -> !lobby.isGameFinished() }
-            ) {
-                return@run failure(LobbySeekError.UserAlreadyInALobby)
+            lobbyRepo.getUserLobbys(user.id).forEach { lobby ->
+                when {
+                    !lobby.isLobbyStarted() -> return@run failure(LobbySeekError.UserAlreadyInALobby)
+                    !lobby.isGameFinished() -> return@run failure(LobbySeekError.UserAlreadyInAGame)
+                }
             }
+
 
             val userRating = user.rating.toInt()
             val lobbyID: Int? = lobbyRepo.seekLobbyID(
@@ -118,8 +122,24 @@ class LobbyServiceImpl(
             if (lobbyID != null) {
                 lobbyRepo.joinLobby(user.id, lobbyID)
                 val lobby = lobbyRepo.getLobbyById(lobbyID)!!
-                return@run success(LobbyExternalInfo(lobby))
+
+                val newGame = Game(
+                    lobby.name,
+                    lobby.user1,
+                    user,
+                    lobby.settings
+                )
+
+                val gameId = gameRepo.createGame(
+                    lobby.id,
+                    (newGame.board as BoardRun).turn.user.id,
+                    lobby.user1.id,
+                    lobby.user2!!.id,
+                    newGame.board.internalBoard.serializeToJsonString()
+                )
+                return@run success(LobbySeekExternalInfo(lobby, gameId))
             }
+
             val createdLobbyID = lobbyRepo.createLobby(
                 "Seeked Lobby",
                 user.id,
@@ -129,7 +149,18 @@ class LobbyServiceImpl(
                 pointsMargin,
                 overflow
             )
-            return@run success(LobbyExternalInfo(lobbyRepo.getLobbyById(createdLobbyID)!!))
+            return@run success(
+                LobbySeekExternalInfo(
+                    usernameCreator = user.username,
+                    usernameJoin = null,
+                    lobbyId = createdLobbyID,
+                    gridSize = gridSize,
+                    opening = opening,
+                    winningLength = winningLength,
+                    pointsMargin = pointsMargin,
+                    overflow = overflow
+                )
+            )
         }
     }
 
@@ -137,7 +168,7 @@ class LobbyServiceImpl(
         return transactionManager.run {
             val lobbyRepo = it.lobbyRepository
             val lobbies = lobbyRepo.getAvailableLobbies()
-            return@run success(LobbiesAvailableExternalInfo(lobbies.map { lobby -> LobbyExternalInfo(lobby) }))
+            return@run success(LobbiesAvailableExternalInfo(lobbies.map { lobby -> PublicLobbyExternalInfo(lobby) }))
         }
     }
 
@@ -147,7 +178,7 @@ class LobbyServiceImpl(
 
             val lobby = lobbyRepo.getLobbyById(lobbyId) ?: return@run failure(LobbyDetailsError.LobbyNotFound)
 
-            return@run success(LobbyExternalInfo(lobby))
+            return@run success(PublicLobbyExternalInfo(lobby))
         }
     }
 }

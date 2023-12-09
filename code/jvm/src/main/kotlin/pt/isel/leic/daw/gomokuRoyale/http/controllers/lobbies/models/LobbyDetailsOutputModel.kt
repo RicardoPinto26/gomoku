@@ -2,6 +2,8 @@ package pt.isel.leic.daw.gomokuRoyale.http.controllers.lobbies.models
 
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbyExternalInfo
+import pt.isel.leic.daw.gomokuRoyale.services.lobby.PublicLobbyExternalInfo
+import pt.isel.leic.daw.gomokuRoyale.services.users.PublicUserExternalInfo
 
 /**
  * Lobby join output information
@@ -12,15 +14,15 @@ import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbyExternalInfo
  */
 data class LobbyDetailsOutputModel(
     val id: Int, // lobbyId
-    val user1: User,
-    val user2: User? = null,
+    val user1: PublicUserExternalInfo,
+    val user2: PublicUserExternalInfo? = null,
     val gridSize: Int,
     val opening: String,
     val winningLength: Int,
     val pointsMargin: Int,
-    val overflow: Boolean
+    val overflow: Boolean,
 ) {
-    constructor(lei: LobbyExternalInfo) : this(
+    constructor(lei: PublicLobbyExternalInfo) : this(
         lei.id,
         lei.user1,
         lei.user2,

@@ -21,7 +21,7 @@ const val MAX_POINTS_MARGIN = Int.MAX_VALUE
 data class Lobby(
     val name: String,
     val id: Int,
-    private val game: Game? = null,
+    val game: Game? = null,
     val user1: User,
     val user2: User?,
     val pointsMargin: Int = MAX_POINTS_MARGIN, // a 1400 point player creates a lobby with 400 point margin, he can match with a 1000 to 1800 point player

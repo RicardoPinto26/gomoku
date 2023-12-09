@@ -11,6 +11,7 @@ import pt.isel.leic.daw.gomokuRoyale.domain.AuthenticatedUser
 import pt.isel.leic.daw.gomokuRoyale.http.Links
 import pt.isel.leic.daw.gomokuRoyale.http.Rels
 import pt.isel.leic.daw.gomokuRoyale.http.Uris
+import pt.isel.leic.daw.gomokuRoyale.http.controllers.games.models.GameCreateOutputModel
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.lobbies.models.LobbyCreateInputModel
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.lobbies.models.LobbyCreateOutputModel
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.lobbies.models.LobbyDetailsOutputModel
@@ -134,16 +135,27 @@ class LobbyController(
         ) {
             is Success -> {
                 logger.info("Successful Request")
-                val lobbyEI = res.value
-                ResponseEntity.status(if (lobbyEI.user2 == null) 201 else 200)
+                val lobbySEI = res.value
+                ResponseEntity.status(if (lobbySEI.usernameJoin == null) 201 else 200)
                     .body(
-                        SirenEntity(
-                            `class` = listOf(Rels.SEEK_LOBBY),
-                            properties = LobbySeekOutputModel(lobbyEI),
-                            entities = listOf(
-                                // TODO: SUBENTITY DO GAME
+                        if (lobbySEI.usernameJoin == null) {
+                            SirenEntity(
+                                `class` = listOf(Rels.SEEK_LOBBY),
+                                properties = LobbySeekOutputModel(lobbySEI)
                             )
-                        )
+                        } else {
+                            SirenEntity(
+                                `class` = listOf(Rels.SEEK_LOBBY),
+                                properties = LobbySeekOutputModel(lobbySEI),
+                                entities = listOf(
+                                    SubEntity.EmbeddedLink(
+                                        `class` = listOf(Rels.GAME),
+                                        rel = listOf(Rels.ITEM, Rels.GAME),
+                                        href = Uris.Game.byId(lobbySEI.lobbyId,lobbySEI.gameId!!)
+                                    )
+                                )
+                            )
+                        }
                     )
             }
 
@@ -205,10 +217,14 @@ class LobbyController(
                                 Links.self(Uris.Lobby.byId(res.value.id))
                             ),
                             entities = listOf(
-                                // TODO: SUBENTITY DO GAME
+                                /*SubEntity.EmbeddedLink(
+                                    `class` = listOf(Rels.GAME),
+                                    rel = listOf(Rels.ITEM, Rels.GAME),
+                                    href = Uris.Game.byId(res.value.,lobbySEI.gameId!!)
+                                    )*/
+                                )
                             )
                         )
-                    )
             }
 
             is Failure -> {
@@ -218,7 +234,29 @@ class LobbyController(
         }
     }
 
+    /**
+     * if (lobbySEI.usernameJoin == null) {
+     *                             SirenEntity(
+     *                                 `class` = listOf(Rels.SEEK_LOBBY),
+     *                                 properties = LobbySeekOutputModel(lobbySEI)
+     *                             )
+     *                         } else {
+     *                             SirenEntity(
+     *                                 `class` = listOf(Rels.SEEK_LOBBY),
+     *                                 properties = LobbySeekOutputModel(lobbySEI),
+     *                                 entities = listOf(
+     *                                     SubEntity.EmbeddedLink(
+     *                                         `class` = listOf(Rels.GAME),
+     *                                         rel = listOf(Rels.ITEM, Rels.GAME),
+     *                                         href = Uris.Game.byId(lobbySEI.lobbyId,lobbySEI.gameId!!)
+     *                                     )
+     *                                 )
+     *                             )
+     *                         }
+     */
+
     companion object {
         private val logger = LoggerFactory.getLogger(UserController::class.java)
     }
 }
+

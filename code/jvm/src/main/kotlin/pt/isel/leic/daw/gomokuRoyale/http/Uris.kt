@@ -47,5 +47,7 @@ object Uris {
         const val FORFEIT_GAME = "$PREFIX/lobby/{lobbyId}/game/{gameId}/forfeit"
         const val PLAY_GAME = "$PREFIX/lobby/{lobbyId}/game/{gameId}/play"
         const val GET_GAME = "$PREFIX/lobby/{lobbyId}/game/{gameId}"
+
+        fun byId(lobbyId: Int, gameId: Int) = UriTemplate(GET_GAME).expand(lobbyId,gameId)
     }
 }

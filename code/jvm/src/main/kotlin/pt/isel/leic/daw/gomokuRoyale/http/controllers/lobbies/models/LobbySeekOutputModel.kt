@@ -3,6 +3,7 @@ package pt.isel.leic.daw.gomokuRoyale.http.controllers.lobbies.models
 import pt.isel.leic.daw.gomokuRoyale.domain.Opening
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbyExternalInfo
+import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbySeekExternalInfo
 
 /**
  * Lobby seek output information
@@ -15,17 +16,21 @@ import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbyExternalInfo
  * @property pointsMargin allowed ratings margin each [User]
  */
 class LobbySeekOutputModel(
-    val id: Int,
-    val name: String,
+    val usernameCreator: String, // user1
+    val usernameJoin: String? = null, // user2
+    val lobbyId: Int,
+    val gameId: Int? = null,
     val gridSize: Int,
     val opening: String,
     val winningLength: Int,
     val pointsMargin: Int,
     val overflow: Boolean
 ) {
-    constructor(lei: LobbyExternalInfo) : this(
-        lei.id,
-        "Lobby ${lei.id}",
+    constructor(lei: LobbySeekExternalInfo) :this(
+        lei.usernameCreator,
+        lei.usernameJoin,
+        lei.lobbyId,
+        lei.gameId,
         lei.gridSize,
         lei.opening,
         lei.winningLength,

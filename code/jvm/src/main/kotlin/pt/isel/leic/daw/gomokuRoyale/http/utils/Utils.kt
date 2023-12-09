@@ -66,6 +66,9 @@ fun LobbyServicesError.toResponse() = when (this) {
     is LobbySeekError -> when (this) {
         LobbySeekError.UserAlreadyInALobby ->
             Problem.response(Problem.userAlreadyInALobby)
+
+        LobbySeekError.UserAlreadyInAGame ->
+            Problem.response(Problem.userAlreadyInAGame)
     }
 
     is GetLobbiesError -> when (this) {
