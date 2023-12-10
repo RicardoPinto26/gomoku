@@ -1,8 +1,8 @@
 import * as React from "react";
-import {useSetUser} from "../Authn";
+import {useSetUser} from "../../utils/Authn";
 import {Navigate, useLocation, useNavigate} from "react-router-dom";
 import reduce from "./utils/Reduce"
-import {register} from "../../services/users/LoginService";
+import {register} from "../../services/users/UserServices";
 import Page from "../common/Page";
 import Button from "@mui/material/Button";
 

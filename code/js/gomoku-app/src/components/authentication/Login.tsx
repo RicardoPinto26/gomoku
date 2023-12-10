@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Navigate, useLocation, useNavigate} from 'react-router-dom';
-import {useSetUser} from '../Authn';
-import {login} from "../../services/LoginService";
+import {useSetUser} from '../../utils/Authn';
+import {login} from "../../services/users/UserServices";
 import reduce from "./utils/Reduce";
 import Page from '../common/Page';
 import Button from "@mui/material/Button";
@@ -39,7 +39,6 @@ export function Login() {
             .then(res => {
                 if (res) {
                     console.log(`setUser(${res})`);
-                    //setUser(res);
                     setUser(username);
                     dispatch({type: 'success'});
                 } else {

@@ -1,4 +1,4 @@
-export const apiUrl = 'http://localhost:8080/api';
+import {apiUrl} from "../../utils/configs";
 
 //TODO: Use siren hypermedia to get the url
 export async function register(email: String, username: String, password: String) {

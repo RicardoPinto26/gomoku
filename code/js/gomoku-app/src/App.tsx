@@ -16,15 +16,15 @@ import About from "./components/About";
 import ABOUT = Uris.ABOUT;
 import RANKING = Uris.RANKING;
 import Ranking from "./components/Ranking";
-import {PlayMenu} from "./components/playMenu/PlayMenu";
+import {PlayMenu} from "./components/game/playMenu/PlayMenu";
 import GAMEPLAY = Uris.PLAY_MENU;
 import MATCHMAKE = Uris.MATCHMAKE;
 import CREATE_GAME = Uris.CREATE_GAME;
 import JOIN_LOBBY = Uris.JOIN_LOBBY;
-import {Matchmake} from "./components/matchmake/Matchmake";
+import {Matchmake} from "./components/game/matchmake/Matchmake";
 import MATCHMAKE_CONFIG = Uris.MATCHMAKE_CONFIG;
-import MatchmakingConfig from "./components/matchmake/MatchmakeConfig";
-import {MatchmakingSettingsProvider} from "./components/matchmake/MatchmaingSettings";
+import MatchmakingConfig from "./components/game/matchmake/MatchmakeConfig";
+import {MatchmakingSettingsProvider} from "./components/game/matchmake/MatchmakingSettings";
 
 
 export default function App() {

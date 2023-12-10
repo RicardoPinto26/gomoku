@@ -11,7 +11,7 @@ import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import {useNavigate} from "react-router-dom";
 import {ReactComponent as GomokuLogo} from '../../logo.svg';
-import {useCurrentUser, useUserManager} from "../Authn";
+import {useCurrentUser, useUserManager} from "../../utils/Authn";
 import {Avatar, ListItemIcon, Tooltip} from "@mui/material";
 import VideogameAssetIcon from '@mui/icons-material/VideogameAsset';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';

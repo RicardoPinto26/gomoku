@@ -1,8 +1,7 @@
 import {useNavigate} from "react-router-dom";
-import React, {useState} from "react";
-import Page from "../common/Page";
+import Page from "../../common/Page";
 
-import {Uris} from "../../utils/navigation/Uris";
+import {Uris} from "../../../utils/navigation/Uris";
 import {MatchmakingButtons} from "./MatchmakingButtons";
 import MenuButton from "./MenuButtons";
 import Box from "@mui/material/Box";

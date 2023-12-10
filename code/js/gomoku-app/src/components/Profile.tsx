@@ -1,5 +1,5 @@
 import React from "react";
-import {useCurrentUser} from "./Authn";
+import {useCurrentUser} from "../utils/Authn";
 
 function Profile() {
     const currentUser = useCurrentUser()

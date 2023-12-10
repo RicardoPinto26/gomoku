@@ -4,7 +4,6 @@ import pt.isel.leic.daw.gomokuRoyale.domain.Lobby
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 import pt.isel.leic.daw.gomokuRoyale.services.ServicesError
 import pt.isel.leic.daw.gomokuRoyale.services.users.PublicUserExternalInfo
-import pt.isel.leic.daw.gomokuRoyale.services.users.toExternalInfo
 import pt.isel.leic.daw.gomokuRoyale.services.users.toPublicExternalInfo
 import pt.isel.leic.daw.gomokuRoyale.utils.Either
 
@@ -98,12 +97,10 @@ sealed class GetLobbiesError : LobbyServicesError {
 
 typealias LobbiesAvailableResult = Either<GetLobbiesError, LobbiesAvailableExternalInfo>
 
-
-
 // Get Lobby Details
 data class PublicLobbyExternalInfo(
     val id: Int,
-    //val gameId: Int? = null,
+    // val gameId: Int? = null,
     val user1: PublicUserExternalInfo,
     val user2: PublicUserExternalInfo? = null,
     val gridSize: Int,
@@ -115,7 +112,7 @@ data class PublicLobbyExternalInfo(
 ) {
     constructor(lobby: Lobby) : this(
         lobby.id,
-        //lobby.game,
+        // lobby.game,
         lobby.user1.toPublicExternalInfo(),
         lobby.user2?.toPublicExternalInfo(),
         lobby.settings.boardSize,
@@ -125,7 +122,6 @@ data class PublicLobbyExternalInfo(
         lobby.settings.overflowAllowed
     )
 }
-
 
 sealed class LobbyDetailsError : LobbyServicesError {
     object LobbyNotFound : LobbyDetailsError()

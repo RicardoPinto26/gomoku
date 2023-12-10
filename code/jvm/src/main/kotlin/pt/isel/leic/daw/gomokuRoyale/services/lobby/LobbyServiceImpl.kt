@@ -108,7 +108,6 @@ class LobbyServiceImpl(
                 }
             }
 
-
             val userRating = user.rating.toInt()
             val lobbyID: Int? = lobbyRepo.seekLobbyID(
                 userRating,

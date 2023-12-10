@@ -5,7 +5,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import {useNavigate} from "react-router-dom";
 import Page from "./common/Page";
-import {useCurrentUser} from "./Authn";
+import {useCurrentUser} from "../utils/Authn";
 
 /**
  * Home page component

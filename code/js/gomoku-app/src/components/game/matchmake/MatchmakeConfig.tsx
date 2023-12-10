@@ -8,7 +8,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import {Box, Typography} from "@mui/material";
-import {useMatchmakingSettings} from "./MatchmaingSettings";
+import {useMatchmakingSettings} from "./MatchmakingSettings";
 import {useNavigate} from "react-router-dom";
 
 function MatchmakingConfig() {

@@ -1,19 +1,17 @@
 import React, {useEffect} from "react";
 
-import {useCurrentUser} from "../Authn";
-import Page from "../common/Page";
-import LoadingSpinner from "../common/LoadingSpinner";
-import {apiUrl} from "../../services/LoginService";
-import {MatchmakingSettings, useMatchmakingSettings} from "./MatchmaingSettings";
+import Page from "../../common/Page";
+import LoadingSpinner from "../../common/LoadingSpinner";
+import {MatchmakingSettings, useMatchmakingSettings} from "./MatchmakingSettings";
 import Typography from "@mui/material/Typography";
 import {useNavigate} from "react-router-dom";
+import {apiUrl} from "../../../utils/configs";
 
 
 export function Matchmake() {
     const {settings} = useMatchmakingSettings();
     const [inLobbyAlready, setInLobbyAlready] = React.useState(false);
     const [inGameAlready, setInGameAlready] = React.useState(false);
-    const [error, setError] = React.useState("");
     const [lobbyId, setLobbyId] = React.useState(-1);
     const [waitingForOpponent, setWaitingForOpponent] = React.useState(false);
 

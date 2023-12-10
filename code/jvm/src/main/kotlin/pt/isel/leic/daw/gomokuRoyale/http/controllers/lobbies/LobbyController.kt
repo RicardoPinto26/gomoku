@@ -11,7 +11,6 @@ import pt.isel.leic.daw.gomokuRoyale.domain.AuthenticatedUser
 import pt.isel.leic.daw.gomokuRoyale.http.Links
 import pt.isel.leic.daw.gomokuRoyale.http.Rels
 import pt.isel.leic.daw.gomokuRoyale.http.Uris
-import pt.isel.leic.daw.gomokuRoyale.http.controllers.games.models.GameCreateOutputModel
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.lobbies.models.LobbyCreateInputModel
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.lobbies.models.LobbyCreateOutputModel
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.lobbies.models.LobbyDetailsOutputModel
@@ -151,7 +150,7 @@ class LobbyController(
                                     SubEntity.EmbeddedLink(
                                         `class` = listOf(Rels.GAME),
                                         rel = listOf(Rels.ITEM, Rels.GAME),
-                                        href = Uris.Game.byId(lobbySEI.lobbyId,lobbySEI.gameId!!)
+                                        href = Uris.Game.byId(lobbySEI.lobbyId, lobbySEI.gameId!!)
                                     )
                                 )
                             )
@@ -222,9 +221,9 @@ class LobbyController(
                                     rel = listOf(Rels.ITEM, Rels.GAME),
                                     href = Uris.Game.byId(res.value.,lobbySEI.gameId!!)
                                     )*/
-                                )
                             )
                         )
+                    )
             }
 
             is Failure -> {
@@ -259,4 +258,3 @@ class LobbyController(
         private val logger = LoggerFactory.getLogger(UserController::class.java)
     }
 }
-

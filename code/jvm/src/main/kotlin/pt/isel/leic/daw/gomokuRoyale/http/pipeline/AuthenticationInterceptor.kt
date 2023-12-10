@@ -21,8 +21,8 @@ class AuthenticationInterceptor(
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
         if (handler is HandlerMethod && handler.methodParameters.any {
-                it.parameterType == AuthenticatedUser::class.java
-            }
+            it.parameterType == AuthenticatedUser::class.java
+        }
         ) {
             val authHeader = request.getHeader(NAME_AUTHORIZATION_HEADER)
             val tokenCookie = request.cookies?.firstOrNull { logger.info(it.name); it.name == "token" }
