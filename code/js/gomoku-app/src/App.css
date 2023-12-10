@@ -28,12 +28,16 @@
     color: #61dafb;
 }
 
+.App-content {
+    padding-bottom: 200px;
+}
+
 footer {
     position: fixed;
     left: 0;
     bottom: 0;
     width: 100%;
-    background-color: #f8f9fa;
+    background-color: #e3e2e2;
     color: black;
     text-align: center;
 }
