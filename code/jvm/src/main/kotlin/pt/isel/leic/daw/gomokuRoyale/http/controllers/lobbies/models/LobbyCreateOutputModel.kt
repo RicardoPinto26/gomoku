@@ -14,6 +14,7 @@ import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbyExternalInfo
  * @property winningLenght name of the variant to be played
  */
 data class LobbyCreateOutputModel(
+    val id: Int,
     val username: String,
     val pointsMargin: Int,
     val gridSize: Int,
@@ -22,6 +23,7 @@ data class LobbyCreateOutputModel(
     val overflow: Boolean
 ) {
     constructor(lei: LobbyExternalInfo) : this(
+        lei.id,
         lei.user1.username,
         lei.pointsMargin,
         lei.gridSize,

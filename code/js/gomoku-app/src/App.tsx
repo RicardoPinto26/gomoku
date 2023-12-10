@@ -24,7 +24,9 @@ import JOIN_LOBBY = Uris.JOIN_LOBBY;
 import {Matchmake} from "./components/game/matchmake/Matchmake";
 import MATCHMAKE_CONFIG = Uris.MATCHMAKE_CONFIG;
 import MatchmakingConfig from "./components/game/matchmake/MatchmakeConfig";
-import {MatchmakingSettingsProvider} from "./components/game/matchmake/MatchmakingSettings";
+import {CreateGameConfigProvider, MatchmakeConfigProvider} from "./components/game/matchmake/GameSettings";
+import {JoinLobby} from "./components/game/joinLobby/JoinLobby";
+import {CreateLobby} from "./components/game/createLobby/CreateLobby";
 
 
 export default function App() {
@@ -44,14 +46,24 @@ export default function App() {
                     <Route path={RANKING} element={<Ranking/>}/>
 
                     <Route path={GAMEPLAY} element={<PlayMenu/>}/>
-                    <Route path={CREATE_GAME} element={<PlayMenu/>}/>
-                    <Route path={JOIN_LOBBY} element={<PlayMenu/>}/>
-                    <Route path={MATCHMAKE} element={<MatchmakingSettingsProvider>
-                        <Matchmake/>
-                    </MatchmakingSettingsProvider>}/>
-                    <Route path={MATCHMAKE_CONFIG} element={<MatchmakingSettingsProvider>
-                        <MatchmakingConfig/>
-                    </MatchmakingSettingsProvider>}/>
+                    <Route path={CREATE_GAME}
+                           element={
+                               <CreateGameConfigProvider>
+                                   <CreateLobby/>
+                               </CreateGameConfigProvider>}/>
+
+                    <Route path={JOIN_LOBBY} element={<JoinLobby/>}/>
+                    <Route path={MATCHMAKE}
+                           element={
+                               <MatchmakeConfigProvider>
+                                   <Matchmake/>
+                               </MatchmakeConfigProvider>}/>
+                    <Route path={MATCHMAKE_CONFIG}
+                           element={
+                               <MatchmakeConfigProvider>
+                                   <MatchmakingConfig/>
+                               </MatchmakeConfigProvider>}/>
+
                     <Route path={"*"} element={<div>404</div>}/>
                 </Routes>
             </div>

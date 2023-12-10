@@ -53,7 +53,7 @@ class LobbyController(
         logger.info("Request from user ${user.user.username} to create lobby received")
         logger.info("${body.gridSize}")
         logger.info(body.opening)
-        logger.info(body.winningLenght.toString())
+        logger.info(body.winningLength.toString())
         logger.info("${body.pointsMargin}")
         return when (
             val res = lobbyService.createLobby(
@@ -61,7 +61,7 @@ class LobbyController(
                 body.name,
                 body.gridSize,
                 body.opening,
-                body.winningLenght,
+                body.winningLength,
                 body.pointsMargin,
                 body.overflow
             )
@@ -69,9 +69,13 @@ class LobbyController(
             is Success -> {
                 logger.info("Successful Request")
                 ResponseEntity.status(201)
-                    .body(LobbyCreateOutputModel(res.value))
+                    .body(
+                        SirenEntity(
+                            `class` = listOf(Rels.CREATE_LOBBY),
+                            properties = LobbyCreateOutputModel(res.value)
+                        )
+                    )
             }
-
             is Failure -> {
                 logger.info("Failed Request")
                 res.value.toResponse()
@@ -87,8 +91,7 @@ class LobbyController(
      *
      * @return the response to the request with the [LobbyJoinOutputModel] in the body or an error value
      */
-    // TODO: SIREN
-    // TODO: DO WE EVEN NEED TO ALLOW JOIN/CREATE LOBBY? ISN'T MATCHMAKING ENOUGH?
+
     @PostMapping(Uris.Lobby.JOIN_LOBBY)
     fun joinLobby(
         user: AuthenticatedUser,
@@ -99,7 +102,19 @@ class LobbyController(
             is Success -> {
                 logger.info("Successful Request")
                 ResponseEntity.status(200)
-                    .body(LobbyJoinOutputModel(res.value))
+                    .body(
+                        SirenEntity(
+                            `class` = listOf(Rels.JOIN_LOBBY),
+                            properties = LobbyJoinOutputModel(res.value),
+                            entities = listOf(
+                                SubEntity.EmbeddedLink(
+                                    `class` = listOf(Rels.GAME),
+                                    rel = listOf(Rels.ITEM, Rels.GAME),
+                                    href = Uris.Game.byId(res.value.lobbyId, res.value.gameId)
+                                )
+                            )
+                        )
+                    )
             }
 
             is Failure -> {

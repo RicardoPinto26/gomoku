@@ -8,12 +8,12 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import {Box, Typography} from "@mui/material";
-import {useMatchmakingSettings} from "./MatchmakingSettings";
+import {useMatchmakingConfig} from "./GameSettings";
 import {useNavigate} from "react-router-dom";
 
 function MatchmakingConfig() {
     const navigate = useNavigate();
-    const { settings, setSettings } = useMatchmakingSettings();
+    const {settings, setSettings} = useMatchmakingConfig();
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         navigate("/play")
@@ -87,7 +87,7 @@ function MatchmakingConfig() {
                         control={
                             <Checkbox
                                 checked={settings.overflow}
-                                onChange={(e) => setSettings({ ...settings, overflow: e.target.checked })}
+                                onChange={(e) => setSettings({...settings, overflow: e.target.checked})}
                             />
                         }
                         label="Overflow"

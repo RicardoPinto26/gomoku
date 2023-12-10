@@ -9,15 +9,15 @@ import pt.isel.leic.daw.gomokuRoyale.domain.user.User
  * @property name name of the lobby
  * @property gridSize size of the board where the game will take place
  * @property opening name of the [Opening]
- * @property winningLenght name of the variant to be played
+ * @property winningLength name of the variant to be played
  * @property pointsMargin allowed ratings margin each [User]
  *
  */
 data class LobbyCreateInputModel(
     val name: String,
     val gridSize: Int,
+    val winningLength: Int,
     val opening: String,
-    val winningLenght: Int,
     val pointsMargin: Int,
     val overflow: Boolean
 )

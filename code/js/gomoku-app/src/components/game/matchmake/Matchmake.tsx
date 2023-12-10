@@ -2,14 +2,15 @@ import React, {useEffect} from "react";
 
 import Page from "../../common/Page";
 import LoadingSpinner from "../../common/LoadingSpinner";
-import {MatchmakingSettings, useMatchmakingSettings} from "./MatchmakingSettings";
+import {GameSettings, useMatchmakingConfig} from "./GameSettings";
 import Typography from "@mui/material/Typography";
 import {useNavigate} from "react-router-dom";
 import {apiUrl} from "../../../utils/configs";
+import {getLobbyState} from "../../../services/lobby/LobbyServices";
 
 
 export function Matchmake() {
-    const {settings} = useMatchmakingSettings();
+    const {settings} = useMatchmakingConfig();
     const [inLobbyAlready, setInLobbyAlready] = React.useState(false);
     const [inGameAlready, setInGameAlready] = React.useState(false);
     const [lobbyId, setLobbyId] = React.useState(-1);
@@ -55,7 +56,7 @@ export function Matchmake() {
         return () => clearInterval(interval);
     }, [lobbyId, waitingForOpponent]);
 
-    async function matchMake(settings: MatchmakingSettings): Promise<{ status: number, response: any }> {
+    async function matchMake(settings: GameSettings): Promise<{ status: number, response: any }> {
         const res = await fetch(`${apiUrl}/lobby/seek`, {
             method: "POST",
             headers: {
@@ -83,20 +84,6 @@ export function Matchmake() {
         } catch (error) {
             console.log("Error in checkIfOpponentJoined:", error);
         }
-    }
-
-
-    async function getLobbyState(lobby: number) {
-        let res = await (await fetch(`${apiUrl}/lobby/${lobby}`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            credentials: "include",
-        })).json();
-        console.log("Entrou getLobbyState: ");
-        console.log(res);
-        return res;
     }
 
 

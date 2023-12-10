@@ -13,6 +13,8 @@ object Rels {
     const val USER = "user"
 
     const val SEEK_LOBBY = "seek-lobby"
+    const val CREATE_LOBBY = "create-lobby"
+    const val JOIN_LOBBY = "join-lobby"
     const val LIST_LOBBIES = "list-lobbies"
     const val LOBBY = "lobby"
 
