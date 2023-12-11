@@ -7,9 +7,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import pt.isel.leic.daw.gomokuRoyale.domain.AuthenticatedUser
-import pt.isel.leic.daw.gomokuRoyale.http.Actions
-import pt.isel.leic.daw.gomokuRoyale.http.Rels
-import pt.isel.leic.daw.gomokuRoyale.http.Uris
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.games.models.GameCreateOutputModel
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.games.models.GameDetailsOutputModel
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.games.models.GameForfeitOutputModel
@@ -17,6 +14,9 @@ import pt.isel.leic.daw.gomokuRoyale.http.controllers.games.models.GamePlayInput
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.games.models.GamePlayOutputModel
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.games.models.convertInputModelToGameAction
 import pt.isel.leic.daw.gomokuRoyale.http.media.siren.SirenEntity
+import pt.isel.leic.daw.gomokuRoyale.http.utils.Actions
+import pt.isel.leic.daw.gomokuRoyale.http.utils.Rels
+import pt.isel.leic.daw.gomokuRoyale.http.utils.Uris
 import pt.isel.leic.daw.gomokuRoyale.http.utils.toResponse
 import pt.isel.leic.daw.gomokuRoyale.services.game.GameService
 import pt.isel.leic.daw.gomokuRoyale.utils.Failure

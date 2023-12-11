@@ -1,4 +1,4 @@
-package pt.isel.leic.daw.gomokuRoyale.http
+package pt.isel.leic.daw.gomokuRoyale.http.utils
 
 import org.springframework.web.util.UriTemplate
 import java.net.URI

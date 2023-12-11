@@ -8,9 +8,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 import pt.isel.leic.daw.gomokuRoyale.domain.AuthenticatedUser
-import pt.isel.leic.daw.gomokuRoyale.http.Links
-import pt.isel.leic.daw.gomokuRoyale.http.Rels
-import pt.isel.leic.daw.gomokuRoyale.http.Uris
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.lobbies.models.LobbyCreateInputModel
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.lobbies.models.LobbyCreateOutputModel
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.lobbies.models.LobbyDetailsOutputModel
@@ -20,6 +17,9 @@ import pt.isel.leic.daw.gomokuRoyale.http.controllers.lobbies.models.LobbySeekOu
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.users.UserController
 import pt.isel.leic.daw.gomokuRoyale.http.media.siren.SirenEntity
 import pt.isel.leic.daw.gomokuRoyale.http.media.siren.SubEntity
+import pt.isel.leic.daw.gomokuRoyale.http.utils.Links
+import pt.isel.leic.daw.gomokuRoyale.http.utils.Rels
+import pt.isel.leic.daw.gomokuRoyale.http.utils.Uris
 import pt.isel.leic.daw.gomokuRoyale.http.utils.toResponse
 import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbyService
 import pt.isel.leic.daw.gomokuRoyale.utils.Failure

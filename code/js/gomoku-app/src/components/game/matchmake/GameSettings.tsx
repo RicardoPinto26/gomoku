@@ -1,6 +1,7 @@
 import React, {createContext, useContext, useEffect, useState} from "react";
 
 export type GameSettings = {
+    name:string
     gridSize: number;
     winningLength: number;
     opening: string;
@@ -9,6 +10,7 @@ export type GameSettings = {
 };
 
 const defaultSettings: GameSettings = {
+    name: "Unnamed",
     gridSize: 15,
     winningLength: 5,
     opening: "FREESTYLE",

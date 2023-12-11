@@ -1,4 +1,4 @@
-package pt.isel.leic.daw.gomokuRoyale.http
+package pt.isel.leic.daw.gomokuRoyale.http.utils
 
 import pt.isel.leic.daw.gomokuRoyale.http.media.siren.Action
 import pt.isel.leic.daw.gomokuRoyale.http.media.siren.Method

@@ -1,4 +1,4 @@
-package pt.isel.leic.daw.gomokuRoyale.http
+package pt.isel.leic.daw.gomokuRoyale.http.utils
 
 import pt.isel.leic.daw.gomokuRoyale.http.media.siren.Link
 import java.net.URI

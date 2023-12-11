@@ -2,13 +2,13 @@ package pt.isel.leic.daw.gomokuRoyale.http.controllers.home
 
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
-import pt.isel.leic.daw.gomokuRoyale.http.Actions
-import pt.isel.leic.daw.gomokuRoyale.http.Links
-import pt.isel.leic.daw.gomokuRoyale.http.Rels
-import pt.isel.leic.daw.gomokuRoyale.http.Uris
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.home.models.AuthorModel
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.home.models.HomeOutputModel
 import pt.isel.leic.daw.gomokuRoyale.http.media.siren.SirenEntity
+import pt.isel.leic.daw.gomokuRoyale.http.utils.Actions
+import pt.isel.leic.daw.gomokuRoyale.http.utils.Links
+import pt.isel.leic.daw.gomokuRoyale.http.utils.Rels
+import pt.isel.leic.daw.gomokuRoyale.http.utils.Uris
 
 @RestController
 class HomeController {

@@ -12,17 +12,17 @@ import {GameSettings, useCreateLobbyConfig, useMatchmakingConfig} from "../match
 import {useNavigate} from "react-router-dom";
 import {CreateLobbyInputModel, createLobbyServices, getLobbyState} from "../../../services/lobby/LobbyServices";
 import LoadingSpinner from "../../common/LoadingSpinner";
+import {useCurrentUser} from "../../../utils/Authn";
 
 
 export function CreateLobby() {
-
+    const user=useCurrentUser()
     const {settings, setSettings} = useCreateLobbyConfig()
-    const [lobbyName, setLobbyName] = React.useState("Lobby Unamed")
+    const [lobbyName, setLobbyName] = React.useState(user + " Lobby")
     const navigate = useNavigate();
     const [isLobbyCreated, setIsLobbyCreated] = React.useState(false);
     const [lobbyId, setLobbyId] = React.useState(-1);
     const [isWaitingForOpponent, setIsWaitingForOpponent] = React.useState(false);
-
 
 
     useEffect(() => {
@@ -98,10 +98,10 @@ export function CreateLobby() {
                     <Box sx={{mb: 2}}>
                         <TextField
                             label="Name"
-                            defaultValue={"Lobby Unamed"}
+                            defaultValue={"Lobby Unnamed"}
                             type="string"
                             value={lobbyName}
-                            onChange={handleChange('gridSize')}
+                            onChange={handleChange('name')}
                             sx={fixedWidth}
                         />
                     </Box>

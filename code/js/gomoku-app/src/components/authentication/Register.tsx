@@ -43,7 +43,7 @@ export default function Register() {
             .then(res => {
                 if (res) {
                     console.log(`setUser(${res})`);
-                    setUser(res);
+                    setUser(username);
                     dispatch({type: 'success'});
                 } else {
                     dispatch({type: 'error', message: 'Invalid username, email or password'});

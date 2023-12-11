@@ -1,4 +1,4 @@
-package pt.isel.leic.daw.gomokuRoyale.http
+package pt.isel.leic.daw.gomokuRoyale.http.utils
 
 object Rels {
     const val SELF = "self"

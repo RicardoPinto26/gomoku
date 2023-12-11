@@ -11,10 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import pt.isel.leic.daw.gomokuRoyale.domain.AuthenticatedUser
-import pt.isel.leic.daw.gomokuRoyale.http.Actions
-import pt.isel.leic.daw.gomokuRoyale.http.Links
-import pt.isel.leic.daw.gomokuRoyale.http.Rels
-import pt.isel.leic.daw.gomokuRoyale.http.Uris
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.users.models.UserCreateInputModel
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.users.models.UserCreateOutputModel
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.users.models.UserCreateTokenInputModel
@@ -22,6 +18,10 @@ import pt.isel.leic.daw.gomokuRoyale.http.controllers.users.models.UserCreateTok
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.users.models.UserGetStatisticsOutputModel
 import pt.isel.leic.daw.gomokuRoyale.http.media.siren.SirenEntity
 import pt.isel.leic.daw.gomokuRoyale.http.media.siren.SubEntity
+import pt.isel.leic.daw.gomokuRoyale.http.utils.Actions
+import pt.isel.leic.daw.gomokuRoyale.http.utils.Links
+import pt.isel.leic.daw.gomokuRoyale.http.utils.Rels
+import pt.isel.leic.daw.gomokuRoyale.http.utils.Uris
 import pt.isel.leic.daw.gomokuRoyale.http.utils.toResponse
 import pt.isel.leic.daw.gomokuRoyale.services.users.UserService
 import pt.isel.leic.daw.gomokuRoyale.utils.Failure
