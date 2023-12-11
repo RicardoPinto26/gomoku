@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import pt.isel.leic.daw.gomokuRoyale.domain.AuthenticatedUser
+import pt.isel.leic.daw.gomokuRoyale.domain.user.UserDomain
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.users.models.UserCreateInputModel
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.users.models.UserCreateOutputModel
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.users.models.UserCreateTokenInputModel
@@ -26,6 +27,7 @@ import pt.isel.leic.daw.gomokuRoyale.http.utils.toResponse
 import pt.isel.leic.daw.gomokuRoyale.services.users.UserService
 import pt.isel.leic.daw.gomokuRoyale.utils.Failure
 import pt.isel.leic.daw.gomokuRoyale.utils.Success
+import kotlin.time.DurationUnit
 
 /**
  * Controller that handles the requests to the /users endpoint
@@ -34,7 +36,8 @@ import pt.isel.leic.daw.gomokuRoyale.utils.Success
  */
 @RestController
 class UserController(
-    private val userService: UserService
+    private val userService: UserService,
+    private val userDomain: UserDomain
 ) {
     @GetMapping(Uris.Users.HOME)
     fun getUserHome(): SirenEntity<Unit> {
@@ -209,7 +212,7 @@ class UserController(
         cookie.path = "/"
         cookie.isHttpOnly = true
         cookie.setAttribute("SameSite", "Strict")
-        cookie.maxAge = 8 * 60 * 60 /*TODO:HARDCODED 8 HOURS*/
+        cookie.maxAge = userDomain.config.tokenTtl.toInt(DurationUnit.SECONDS)
         response.addCookie(cookie)
     }
 

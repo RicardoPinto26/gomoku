@@ -17,6 +17,7 @@ import pt.isel.leic.daw.gomokuRoyale.http.controllers.lobbies.models.LobbySeekOu
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.users.UserController
 import pt.isel.leic.daw.gomokuRoyale.http.media.siren.SirenEntity
 import pt.isel.leic.daw.gomokuRoyale.http.media.siren.SubEntity
+import pt.isel.leic.daw.gomokuRoyale.http.utils.Actions
 import pt.isel.leic.daw.gomokuRoyale.http.utils.Links
 import pt.isel.leic.daw.gomokuRoyale.http.utils.Rels
 import pt.isel.leic.daw.gomokuRoyale.http.utils.Uris
@@ -150,9 +151,9 @@ class LobbyController(
             is Success -> {
                 logger.info("Successful Request")
                 val lobbySEI = res.value
-                ResponseEntity.status(if (lobbySEI.usernameJoin == null) 201 else 200)
+                ResponseEntity.status(if (lobbySEI.user2 == null) 201 else 200)
                     .body(
-                        if (lobbySEI.usernameJoin == null) {
+                        if (lobbySEI.user2 == null) {
                             SirenEntity(
                                 `class` = listOf(Rels.SEEK_LOBBY),
                                 properties = LobbySeekOutputModel(lobbySEI)
@@ -161,13 +162,21 @@ class LobbyController(
                             SirenEntity(
                                 `class` = listOf(Rels.SEEK_LOBBY),
                                 properties = LobbySeekOutputModel(lobbySEI),
-                                entities = listOf(
-                                    SubEntity.EmbeddedLink(
-                                        `class` = listOf(Rels.GAME),
-                                        rel = listOf(Rels.ITEM, Rels.GAME),
-                                        href = Uris.Game.byId(lobbySEI.lobbyId, lobbySEI.gameId!!)
+                                entities = if (res.value.game == null) {
+                                    null
+                                } else {
+                                    listOf(
+                                        SubEntity.EmbeddedSubEntity(
+                                            `class` = listOf(Rels.GAME),
+                                            rel = listOf(Rels.ITEM, Rels.GAME),
+                                            properties = res.value.game,
+                                            actions = listOf(
+                                                Actions.play,
+                                                Actions.forfeitGame
+                                            )
+                                        )
                                     )
-                                )
+                                }
                             )
                         }
                     )
@@ -198,9 +207,21 @@ class LobbyController(
                                     links = listOf(
                                         Links.self(Uris.Lobby.byId(it.id))
                                     ),
-                                    entities = listOf(
-                                        // TODO: SUBENTITY DO GAME
-                                    )
+                                    entities = if (it.game == null) {
+                                        null
+                                    } else {
+                                        listOf(
+                                            SubEntity.EmbeddedSubEntity(
+                                                `class` = listOf(Rels.GAME),
+                                                rel = listOf(Rels.ITEM, Rels.GAME),
+                                                properties = it.game,
+                                                actions = listOf(
+                                                    Actions.play,
+                                                    Actions.forfeitGame
+                                                )
+                                            )
+                                        )
+                                    }
                                 )
                             }
                         )
@@ -230,13 +251,21 @@ class LobbyController(
                             links = listOf(
                                 Links.self(Uris.Lobby.byId(res.value.id))
                             ),
-                            entities = listOf(
-                                /*SubEntity.EmbeddedLink(
-                                    `class` = listOf(Rels.GAME),
-                                    rel = listOf(Rels.ITEM, Rels.GAME),
-                                    href = Uris.Game.byId(res.value.,lobbySEI.gameId!!)
-                                    )*/
-                            )
+                            entities = if (res.value.game == null) {
+                                null
+                            } else {
+                                listOf(
+                                    SubEntity.EmbeddedSubEntity(
+                                        `class` = listOf(Rels.GAME),
+                                        rel = listOf(Rels.ITEM, Rels.GAME),
+                                        properties = res.value.game,
+                                        actions = listOf(
+                                            Actions.play,
+                                            Actions.forfeitGame
+                                        )
+                                    )
+                                )
+                            }
                         )
                     )
             }

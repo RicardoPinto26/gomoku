@@ -15,10 +15,16 @@ class LobbyMapper : RowMapper<Lobby> {
     }
 
     override fun map(rs: ResultSet, ctx: StatementContext): Lobby {
+        logger.info("Started Mapping lobby")
+        logger.info("mapping name")
         val name = rs.getString("name")
+        logger.info("mapping id")
         val id = rs.getInt("id")
+        logger.info("mapping join_user_id")
         val joinUserId = rs.getInt("join_user_id")
+        logger.info("mapping grid_size")
         val gridSize = rs.getInt("grid_size")
+        logger.info("mapping opening")
         val opening = Opening.from(rs.getString("opening")) ?: throw Exception("Invalid opening")
         val winningLenght = rs.getInt("winning_lenght")
         val overflow = rs.getBoolean("overflow")

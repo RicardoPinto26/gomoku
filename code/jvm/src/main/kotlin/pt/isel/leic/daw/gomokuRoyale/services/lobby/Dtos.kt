@@ -3,6 +3,7 @@ package pt.isel.leic.daw.gomokuRoyale.services.lobby
 import pt.isel.leic.daw.gomokuRoyale.domain.Lobby
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 import pt.isel.leic.daw.gomokuRoyale.services.ServicesError
+import pt.isel.leic.daw.gomokuRoyale.services.game.GameExternalInfo
 import pt.isel.leic.daw.gomokuRoyale.services.users.PublicUserExternalInfo
 import pt.isel.leic.daw.gomokuRoyale.services.users.toPublicExternalInfo
 import pt.isel.leic.daw.gomokuRoyale.utils.Either
@@ -54,37 +55,14 @@ data class LobbyJoinExternalInfo(
 
 typealias LobbyJoinResult = Either<LobbyJoinError, LobbyJoinExternalInfo>
 
-// Lobby Seek
-data class LobbySeekExternalInfo(
-    val usernameCreator: String, // user1
-    val usernameJoin: String? = null, // user2
-    val lobbyId: Int,
-    val gameId: Int? = null,
-    val gridSize: Int,
-    val opening: String,
-    val winningLength: Int,
-    val pointsMargin: Int,
-    val overflow: Boolean
-) {
-    constructor(lobby: Lobby, gameId: Int?) : this(
-        lobby.user1.username,
-        lobby.user2?.username,
-        lobby.id,
-        gameId,
-        lobby.settings.boardSize,
-        lobby.settings.opening.toString(),
-        lobby.settings.winningLength,
-        lobby.pointsMargin,
-        lobby.settings.overflowAllowed
-    )
-}
+// Lobby See
 
 sealed class LobbySeekError : LobbyServicesError {
     object UserAlreadyInALobby : LobbySeekError()
     object UserAlreadyInAGame : LobbySeekError()
 }
 
-typealias LobbySeekResult = Either<LobbySeekError, LobbySeekExternalInfo>
+typealias LobbySeekResult = Either<LobbySeekError, PublicLobbyExternalInfo>
 
 // Get Lobbies
 data class LobbiesAvailableExternalInfo(
@@ -100,17 +78,17 @@ typealias LobbiesAvailableResult = Either<GetLobbiesError, LobbiesAvailableExter
 // Get Lobby Details
 data class PublicLobbyExternalInfo(
     val id: Int,
-    // val gameId: Int? = null,
     val user1: PublicUserExternalInfo,
     val user2: PublicUserExternalInfo? = null,
     val gridSize: Int,
     val opening: String,
     val winningLength: Int,
     val pointsMargin: Int,
-    val overflow: Boolean
+    val overflow: Boolean,
+    val game: GameExternalInfo?
 
 ) {
-    constructor(lobby: Lobby) : this(
+    constructor(lobby: Lobby, game: GameExternalInfo? = null) : this(
         lobby.id,
         // lobby.game,
         lobby.user1.toPublicExternalInfo(),
@@ -119,7 +97,8 @@ data class PublicLobbyExternalInfo(
         lobby.settings.opening.toString(),
         lobby.settings.winningLength,
         lobby.pointsMargin,
-        lobby.settings.overflowAllowed
+        lobby.settings.overflowAllowed,
+        game
     )
 }
 

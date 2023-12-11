@@ -2,7 +2,7 @@ package pt.isel.leic.daw.gomokuRoyale.http.controllers.lobbies.models
 
 import pt.isel.leic.daw.gomokuRoyale.domain.Opening
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
-import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbySeekExternalInfo
+import pt.isel.leic.daw.gomokuRoyale.services.lobby.PublicLobbyExternalInfo
 
 /**
  * Lobby seek output information
@@ -25,15 +25,15 @@ class LobbySeekOutputModel(
     val pointsMargin: Int,
     val overflow: Boolean
 ) {
-    constructor(lei: LobbySeekExternalInfo) : this(
-        lei.usernameCreator,
-        lei.usernameJoin,
-        lei.lobbyId,
-        lei.gameId,
-        lei.gridSize,
-        lei.opening,
-        lei.winningLength,
-        lei.pointsMargin,
-        lei.overflow
+    constructor(plei: PublicLobbyExternalInfo) : this(
+        plei.user1.username,
+        plei.user2?.username,
+        plei.id,
+        plei.game?.id,
+        plei.gridSize,
+        plei.opening,
+        plei.winningLength,
+        plei.pointsMargin,
+        plei.overflow
     )
 }

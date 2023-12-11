@@ -21,10 +21,15 @@ class GameMapper : RowMapper<Game> {
     }
 
     override fun map(rs: ResultSet, ctx: StatementContext): Game? {
-        val lobby = LobbyMapper().map(rs, ctx)
+        logger.info("Started Mapping game")
+
+        logger.info("Mapping game_name")
         val name = rs.getString("game_name")
+        logger.info("Mapping lobby")
+        val lobby = LobbyMapper().map(rs, ctx)
         val user1 = lobby.user1
         val user2 = lobby.user2 ?: return null
+        logger.info("mapping opening variant")
         val openingVariant = rs.getString("game_opening_variant")
         val settings = GameSettings(
             lobby.settings.boardSize,
@@ -32,6 +37,7 @@ class GameMapper : RowMapper<Game> {
             if (openingVariant == null) lobby.settings.opening else Opening.valueOf(openingVariant),
             lobby.settings.overflowAllowed
         )
+        logger.info("mapping gameboard")
         val boardJson = rs.getObject("game_board").toString()
         val currentOpeningIndex = rs.getInt("game_opening_index")
         val gameState = rs.getString("game_state")

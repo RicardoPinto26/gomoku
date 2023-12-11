@@ -8,6 +8,8 @@ import pt.isel.leic.daw.gomokuRoyale.domain.Lobby
 import pt.isel.leic.daw.gomokuRoyale.domain.serializeToJsonString
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 import pt.isel.leic.daw.gomokuRoyale.repository.TransactionManager
+import pt.isel.leic.daw.gomokuRoyale.services.game.toExternalInfo
+import pt.isel.leic.daw.gomokuRoyale.services.users.toPublicExternalInfo
 import pt.isel.leic.daw.gomokuRoyale.utils.failure
 import pt.isel.leic.daw.gomokuRoyale.utils.success
 
@@ -136,7 +138,7 @@ class LobbyServiceImpl(
                     lobby.user2!!.id,
                     newGame.board.internalBoard.serializeToJsonString()
                 )
-                return@run success(LobbySeekExternalInfo(lobby, gameId))
+                return@run success(PublicLobbyExternalInfo(lobby, gameRepo.getGameById(gameId)?.toExternalInfo(gameId, lobby.id)))
             }
 
             val createdLobbyID = lobbyRepo.createLobby(
@@ -149,15 +151,16 @@ class LobbyServiceImpl(
                 overflow
             )
             return@run success(
-                LobbySeekExternalInfo(
-                    usernameCreator = user.username,
-                    usernameJoin = null,
-                    lobbyId = createdLobbyID,
-                    gridSize = gridSize,
-                    opening = opening,
-                    winningLength = winningLength,
-                    pointsMargin = pointsMargin,
-                    overflow = overflow
+                PublicLobbyExternalInfo(
+                    createdLobbyID,
+                    user.toPublicExternalInfo(),
+                    null,
+                    gridSize,
+                    opening,
+                    winningLength,
+                    pointsMargin,
+                    overflow,
+                    null
                 )
             )
         }
@@ -174,10 +177,11 @@ class LobbyServiceImpl(
     override fun getLobbyDetails(user: User, lobbyId: Int): LobbyDetailsResult {
         return transactionManager.run {
             val lobbyRepo = it.lobbyRepository
+            val gameRepo = it.gameRepository
 
             val lobby = lobbyRepo.getLobbyById(lobbyId) ?: return@run failure(LobbyDetailsError.LobbyNotFound)
-
-            return@run success(PublicLobbyExternalInfo(lobby))
+            val game = gameRepo.getGameByLobbyId(lobby.id)
+            return@run success(PublicLobbyExternalInfo(lobby, game?.toExternalInfo(-1, lobby.id)))
         }
     }
 }
