@@ -1,6 +1,7 @@
 package pt.isel.leic.daw.gomokuRoyale.repository.game
 
 import pt.isel.leic.daw.gomokuRoyale.domain.Game
+import pt.isel.leic.daw.gomokuRoyale.domain.user.GameDTO
 
 interface GameRepository {
 
@@ -8,7 +9,7 @@ interface GameRepository {
 
     fun getGameById(gameId: Int): Game?
 
-    fun getGameByLobbyId(lobbyId: Int): Game?
+    fun getGameByLobbyId(lobbyId: Int): GameDTO?
 
     fun updateGameDraw(gameId: Int, board: String): Int
 

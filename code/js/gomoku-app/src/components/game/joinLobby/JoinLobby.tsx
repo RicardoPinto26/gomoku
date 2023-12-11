@@ -28,10 +28,11 @@ export function JoinLobby() {
     }
 
     async function handleJoinClick(lobbyId: number) {
+        console.log(`Joining lobby ${lobbyId}`)
         const response = await joinLobby(lobbyId);
         if (response.joinned) {
             console.log("Joined lobby");
-            console.log(response.response);
+            console.log(response.response.entities[0]);
             const gameLink = response.response.entities[0].href
             console.log(gameLink);
             nav(gameLink)

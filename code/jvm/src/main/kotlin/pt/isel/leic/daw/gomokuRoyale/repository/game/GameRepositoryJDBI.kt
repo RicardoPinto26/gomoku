@@ -2,7 +2,9 @@ package pt.isel.leic.daw.gomokuRoyale.repository.game
 
 import org.jdbi.v3.core.Handle
 import org.jdbi.v3.core.kotlin.mapTo
+import org.slf4j.LoggerFactory
 import pt.isel.leic.daw.gomokuRoyale.domain.Game
+import pt.isel.leic.daw.gomokuRoyale.domain.user.GameDTO
 
 class GameRepositoryJDBI(private val handle: Handle) : GameRepository {
     override fun createGame(lobbyId: Int, turn: Int, blackPlayer: Int, whitePlayer: Int, board: String): Int =
@@ -118,9 +120,14 @@ class GameRepositoryJDBI(private val handle: Handle) : GameRepository {
             .bind("board", board)
             .execute()
 
-    override fun getGameByLobbyId(lobbyId: Int): Game? =
-        handle.createQuery("select * from games where lobby_id = :lobbyId")
+    override fun getGameByLobbyId(lobbyId: Int): GameDTO? {
+        return handle.createQuery("select * from games where lobby_id = :lobbyId AND state <> 'FINISHED'")
             .bind("lobbyId", lobbyId)
-            .mapTo<Game>()
+            .mapTo<GameDTO>()
             .firstOrNull()
+    }
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(GameRepositoryJDBI::class.java)
+    }
 }

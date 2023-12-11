@@ -1,10 +1,7 @@
 package pt.isel.leic.daw.gomokuRoyale.services.game
 
-import pt.isel.leic.daw.gomokuRoyale.domain.BoardDraw
-import pt.isel.leic.daw.gomokuRoyale.domain.BoardRun
-import pt.isel.leic.daw.gomokuRoyale.domain.BoardWin
-import pt.isel.leic.daw.gomokuRoyale.domain.Game
-import pt.isel.leic.daw.gomokuRoyale.domain.serializeToJsonString
+import pt.isel.leic.daw.gomokuRoyale.domain.*
+import pt.isel.leic.daw.gomokuRoyale.domain.user.GameDTO
 import pt.isel.leic.daw.gomokuRoyale.services.ServicesError
 import pt.isel.leic.daw.gomokuRoyale.services.users.UserExternalInfo
 import pt.isel.leic.daw.gomokuRoyale.services.users.toExternalInfo
@@ -81,6 +78,21 @@ fun Game.toExternalInfo(id: Int, lobbyID: Int) = GameExternalInfo(
         is BoardWin -> "WON"
     },
     if (board is BoardWin) board.winner.user.toExternalInfo() else null
+)
+
+fun GameDTO.toExternalInfo(lobby: Lobby) = GameExternalInfo(
+    id,
+    lobbyId,
+    lobby.user1.toExternalInfo(),
+    lobby.user2!!.toExternalInfo(),
+    board,
+    turn.toString(),
+    state,
+    when (winner) {
+        lobby.user1.id -> lobby.user1.toExternalInfo()
+        lobby.user2.id -> lobby.user2.toExternalInfo()
+        else -> null
+    }
 )
 
 typealias GamePlayResult = Either<GamePlayError, GameExternalInfo>

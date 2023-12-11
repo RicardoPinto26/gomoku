@@ -252,19 +252,29 @@ class LobbyController(
                                 Links.self(Uris.Lobby.byId(res.value.id))
                             ),
                             entities = if (res.value.game == null) {
+                                logger.info("game == null in getLobbyDetails")
                                 null
                             } else {
-                                listOf(
-                                    SubEntity.EmbeddedSubEntity(
-                                        `class` = listOf(Rels.GAME),
-                                        rel = listOf(Rels.ITEM, Rels.GAME),
-                                        properties = res.value.game,
-                                        actions = listOf(
-                                            Actions.play,
-                                            Actions.forfeitGame
+                                logger.info("game not null   in getLobbyDetails")
+                                try {
+                                    listOf(
+                                        SubEntity.EmbeddedSubEntity(
+                                            `class` = listOf(Rels.GAME),
+                                            rel = listOf(Rels.ITEM, Rels.GAME),
+                                            properties = res.value.game,
+                                            /*actions = listOf(
+                                                Actions.play,
+                                                Actions.forfeitGame
+                                            )*/ // TAVA  A DAR EXCEPTION SEM MOTIVO
+                                            links = listOf(
+                                                Links.self(Uris.Game.byId(res.value.id, res.value.game.id))
+                                            )
                                         )
                                     )
-                                )
+                                } catch (e: Exception) {
+                                    logger.info("Exception in getLobbyDetails $e")
+                                    null
+                                }
                             }
                         )
                     )

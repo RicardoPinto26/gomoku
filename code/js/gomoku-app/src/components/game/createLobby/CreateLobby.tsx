@@ -55,10 +55,10 @@ export function CreateLobby() {
             const lobby = await getLobbyState(lobbyId);
             if (lobby.properties.user2 != null) {
                 setIsWaitingForOpponent(false);
-                const gameId = lobby.properties.gameId;
+                const gameId = lobby.entities[0].links[0].href;
                 console.log("Opponent joined, navigating to game");
                 console.log(gameId);
-                navigate(`/game/${gameId}}`);
+                navigate(`${gameId}`);
             }
         } catch (error) {
             console.log("Error in checkIfOpponentJoined:", error);

@@ -90,7 +90,6 @@ data class PublicLobbyExternalInfo(
 ) {
     constructor(lobby: Lobby, game: GameExternalInfo? = null) : this(
         lobby.id,
-        // lobby.game,
         lobby.user1.toPublicExternalInfo(),
         lobby.user2?.toPublicExternalInfo(),
         lobby.settings.boardSize,
@@ -100,6 +99,8 @@ data class PublicLobbyExternalInfo(
         lobby.settings.overflowAllowed,
         game
     )
+
+    fun isLobbyStarted() = game != null && user2 != null
 }
 
 sealed class LobbyDetailsError : LobbyServicesError {
