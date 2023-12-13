@@ -5,7 +5,7 @@ import pt.isel.leic.daw.gomokuRoyale.domain.user.GameDTO
 
 interface GameRepository {
 
-    fun createGame(lobbyId: Int, turn: Int, blackPlayer: Int, whitePlayer: Int, board: String): Int
+    fun createGame(lobbyId: Int, turn: Int, blackPlayer: Int, whitePlayer: Int, openingIndex: Int, board: String): Int
 
     fun getGameById(gameId: Int): Game?
 

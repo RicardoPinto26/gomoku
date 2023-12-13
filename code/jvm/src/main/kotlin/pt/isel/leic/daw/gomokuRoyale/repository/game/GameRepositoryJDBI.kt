@@ -7,17 +7,18 @@ import pt.isel.leic.daw.gomokuRoyale.domain.Game
 import pt.isel.leic.daw.gomokuRoyale.domain.user.GameDTO
 
 class GameRepositoryJDBI(private val handle: Handle) : GameRepository {
-    override fun createGame(lobbyId: Int, turn: Int, blackPlayer: Int, whitePlayer: Int, board: String): Int =
+    override fun createGame(lobbyId: Int, turn: Int, blackPlayer: Int, whitePlayer: Int, openingIndex: Int, board: String): Int =
         handle.createUpdate(
             """
-            INSERT INTO games (lobby_id, turn, black_player, white_player, board) 
-            VALUES (:lobbyId, :turn, :blackPlayer, :whitePlayer, CAST(:board AS jsonb))
+            INSERT INTO games (lobby_id, turn, black_player, white_player, board, opening_index) 
+            VALUES (:lobbyId, :turn, :blackPlayer, :whitePlayer, CAST(:board AS jsonb), :openingIndex)
         """
         )
             .bind("lobbyId", lobbyId)
             .bind("turn", turn)
             .bind("blackPlayer", blackPlayer)
             .bind("whitePlayer", whitePlayer)
+            .bind("openingIndex", openingIndex)
             .bind("board", board)
             .executeAndReturnGeneratedKeys()
             .mapTo<Int>()

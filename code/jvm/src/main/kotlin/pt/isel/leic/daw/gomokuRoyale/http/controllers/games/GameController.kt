@@ -1,5 +1,6 @@
 package pt.isel.leic.daw.gomokuRoyale.http.controllers.games
 
+import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -19,6 +20,7 @@ import pt.isel.leic.daw.gomokuRoyale.http.utils.Rels
 import pt.isel.leic.daw.gomokuRoyale.http.utils.Uris
 import pt.isel.leic.daw.gomokuRoyale.http.utils.toResponse
 import pt.isel.leic.daw.gomokuRoyale.services.game.GameService
+import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbyServiceImpl
 import pt.isel.leic.daw.gomokuRoyale.utils.Failure
 import pt.isel.leic.daw.gomokuRoyale.utils.Success
 
@@ -31,6 +33,9 @@ import pt.isel.leic.daw.gomokuRoyale.utils.Success
 class GameController(
     val gameService: GameService
 ) {
+    companion object {
+        private val logger = LoggerFactory.getLogger(GameController::class.java)
+    }
 
     /**
      * Handles the request to create a game.
@@ -124,20 +129,25 @@ class GameController(
      */
     @GetMapping(Uris.Game.GET_GAME)
     fun getGameById(@PathVariable gameId: Int, @PathVariable lobbyId: Int): ResponseEntity<*> {
-        return when (val res = gameService.getGameById(gameId, lobbyId)) {
-            is Success -> ResponseEntity.status(200)
-                .body(
-                    SirenEntity(
-                        `class` = listOf(Rels.GAME),
-                        properties = GameDetailsOutputModel(res.value),
-                        actions = listOf(
-                            Actions.play,
-                            Actions.forfeitGame
+        try {
+            return when (val res = gameService.getGameById(gameId, lobbyId)) {
+                is Success -> ResponseEntity.status(200)
+                    .body(
+                        SirenEntity(
+                            `class` = listOf(Rels.GAME),
+                            properties = GameDetailsOutputModel(res.value),
+                            /*actions = listOf(
+                                Actions.play,
+                                Actions.forfeitGame
+                            )*/
                         )
                     )
-                )
 
-            is Failure -> res.value.toResponse()
+                is Failure -> res.value.toResponse()
+            }
+        } catch (e: Exception) {
+            logger.info("Error getting game by id", e)
+            return ResponseEntity.status(500).body(e.message)
         }
     }
 }

@@ -73,6 +73,7 @@ class LobbyServiceImpl(
                 (newGame.board as BoardRun).turn.user.id,
                 newLobby.user1.id,
                 newLobby.user2!!.id,
+                newGame.currentOpeningIndex,
                 newGame.board.internalBoard.serializeToJsonString()
             )
 
@@ -136,6 +137,7 @@ class LobbyServiceImpl(
                     (newGame.board as BoardRun).turn.user.id,
                     lobby.user1.id,
                     lobby.user2!!.id,
+                    newGame.currentOpeningIndex,
                     newGame.board.internalBoard.serializeToJsonString()
                 )
                 return@run success(

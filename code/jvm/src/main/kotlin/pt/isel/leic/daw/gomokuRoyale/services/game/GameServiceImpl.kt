@@ -46,6 +46,7 @@ class GameServiceImpl(
                     (newGame.board as BoardRun).turn.user.id,
                     lobby.user1.id,
                     lobby.user2.id,
+                    newGame.currentOpeningIndex,
                     newGame.board.internalBoard.serializeToJsonString()
                 )
                 return@run success(
