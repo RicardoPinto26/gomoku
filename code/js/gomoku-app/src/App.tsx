@@ -12,13 +12,15 @@ import HOME = Uris.HOME;
 import LOGIN = Uris.LOGIN;
 import REGISTER = Uris.REGISTER;
 import PROFILE = Uris.PROFILE;
+import GAMETEST = Uris.GAMETEST
 import About from "./components/About";
 import ABOUT = Uris.ABOUT;
 import RANKING = Uris.RANKING;
 import Ranking from "./components/Ranking";
 import {PlayMenu} from "./components/game/playMenu/PlayMenu";
-import GAMEPLAY = Uris.PLAY_MENU;
 import MATCHMAKE = Uris.MATCHMAKE;
+import PLAY_MENU = Uris.PLAY_MENU;
+import GAMEPLAY = Uris.GAMEPLAY;
 import CREATE_GAME = Uris.CREATE_GAME;
 import JOIN_LOBBY = Uris.JOIN_LOBBY;
 import {Matchmake} from "./components/game/matchmake/Matchmake";
@@ -27,6 +29,7 @@ import MatchmakingConfig from "./components/game/matchmake/MatchmakeConfig";
 import {CreateGameConfigProvider, MatchmakeConfigProvider} from "./components/game/matchmake/GameSettings";
 import {JoinLobby} from "./components/game/joinLobby/JoinLobby";
 import {CreateLobby} from "./components/game/createLobby/CreateLobby";
+import Gameplay from "./components/game/gameplay/Gameplay";
 
 
 export default function App() {
@@ -45,29 +48,35 @@ export default function App() {
 
                     <Route path={RANKING} element={<Ranking/>}/>
 
-                    <Route path={GAMEPLAY} element={<PlayMenu/>}/>
+                    <Route path={PLAY_MENU} element={<PlayMenu/>}/>
                     <Route path={CREATE_GAME}
                            element={
                                <CreateGameConfigProvider>
                                    <CreateLobby/>
-                               </CreateGameConfigProvider>}/>
+                               </CreateGameConfigProvider>}
+                    />
 
                     <Route path={JOIN_LOBBY} element={<JoinLobby/>}/>
                     <Route path={MATCHMAKE}
                            element={
                                <MatchmakeConfigProvider>
                                    <Matchmake/>
-                               </MatchmakeConfigProvider>}/>
+                               </MatchmakeConfigProvider>}
+                    />
                     <Route path={MATCHMAKE_CONFIG}
                            element={
                                <MatchmakeConfigProvider>
                                    <MatchmakingConfig/>
-                               </MatchmakeConfigProvider>}/>
+                               </MatchmakeConfigProvider>}
+                    />
+                    <Route path={GAMETEST} element={<Gameplay/>}/>
+                    <Route path={GAMEPLAY} element={<Gameplay/>}/>
+
 
                     <Route path={"*"} element={<div>404</div>}/>
                 </Routes>
             </div>
-            <Footer></Footer>
         </div>
     );
+    //<Footer></Footer>
 }

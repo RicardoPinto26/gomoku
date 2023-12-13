@@ -14,4 +14,7 @@ export namespace Uris {
     export const MATCHMAKE_CONFIG= "/matchmake-config"
     export const CREATE_GAME = "/create-game"
     export const JOIN_LOBBY = "/join-lobby"
+    export const GAMETEST = "/gameTest"
+    export const GAME = "/lobby/:lobbyId/game/:gameId"
+    export const GAMEPLAY = "/lobby/:lobbyId/game/:gameId"
 }

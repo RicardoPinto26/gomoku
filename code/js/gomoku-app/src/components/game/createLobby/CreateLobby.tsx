@@ -8,7 +8,7 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Button from "@mui/material/Button";
-import {GameSettings, useCreateLobbyConfig, useMatchmakingConfig} from "../matchmake/GameSettings";
+import { useCreateLobbyConfig} from "../matchmake/GameSettings";
 import {useNavigate} from "react-router-dom";
 import {CreateLobbyInputModel, createLobbyServices, getLobbyState} from "../../../services/lobby/LobbyServices";
 import LoadingSpinner from "../../common/LoadingSpinner";
@@ -55,7 +55,7 @@ export function CreateLobby() {
             const lobby = await getLobbyState(lobbyId);
             if (lobby.properties.user2 != null) {
                 setIsWaitingForOpponent(false);
-                const gameId = lobby.entities[0].links[0].href;
+                const gameId = lobby.entities[0].links[0].href.replace("/api", "");
                 console.log("Opponent joined, navigating to game");
                 console.log(gameId);
                 navigate(`${gameId}`);

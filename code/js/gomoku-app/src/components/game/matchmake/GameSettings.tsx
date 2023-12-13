@@ -9,7 +9,7 @@ export type GameSettings = {
     overflow: boolean;
 };
 
-const defaultSettings: GameSettings = {
+export const defaultSettings: GameSettings = {
     name: "Unnamed",
     gridSize: 15,
     winningLength: 5,

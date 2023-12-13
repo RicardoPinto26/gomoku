@@ -1,4 +1,3 @@
-import Button from "@mui/material/Button";
 import {getLobbies, joinLobby} from "../../../services/lobby/LobbyServices";
 import React, {useEffect} from "react";
 import Page from "../../common/Page";
@@ -33,7 +32,7 @@ export function JoinLobby() {
         if (response.joinned) {
             console.log("Joined lobby");
             console.log(response.response.entities[0]);
-            const gameLink = response.response.entities[0].href
+            const gameLink = response.response.entities[0].href.replace("/api", "");
             console.log(gameLink);
             nav(gameLink)
         } else {
