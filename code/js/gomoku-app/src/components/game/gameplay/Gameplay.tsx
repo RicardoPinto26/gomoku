@@ -21,12 +21,18 @@ export default function Gameplay() {
     //martelo
     async function fetchGame() {
         const res = await (GameServices.getGame(parseInt(lobbyId!), parseInt(gameId!)))
+        // Board hardcoded for now
         const board = new Board(15, Board.convertJsonToBoard(res.properties.board))
         const turn = res.properties.turn
         const status = res.properties.status
-        const user1 = new User(res.properties.user1.username, res.properties.user1.gamesPlayed, res.properties.user1.rating)
-        const user2 = new User(res.properties.user2.username, res.properties.user2.gamesPlayed, res.properties.user2.rating)
+        let { username: username1, gamesPlayed: gamesPlayed1, rating: rating1 } = res.properties.user1;
+        let { username: username2, gamesPlayed: gamesPlayed2, rating: rating2 } = res.properties.user2;
+
+        const user1 = new User(username1, gamesPlayed1, rating1);
+        const user2 = new User(username2, gamesPlayed2, rating2);
+
         const game = new Game(parseInt(gameId!), board, status, user1, user2, turn, null)
+        console.log(game)
         setGame(game)
         setGameLoaded(true)
     }
@@ -34,7 +40,7 @@ export default function Gameplay() {
     if (gameLoaded)
         return <GameBoard game={game!} params={{lId: parseInt(lobbyId!)!, gId: parseInt(gameId!)}}></GameBoard>
     else {
-        return (
+        return (// test
             <div>
                 <h1>Gomoku Gameplay</h1>
                 <p>Lobby ID: {lobbyId}</p>
