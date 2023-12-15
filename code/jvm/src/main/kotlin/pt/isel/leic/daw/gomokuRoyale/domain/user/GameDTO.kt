@@ -6,10 +6,9 @@ class GameDTO(
     val turn: Int,
     val blackPlayer: Int,
     val whitePlayer: Int,
-    val winner: Int,
+    val winner: Int?,
     val openingIndex: Int,
     val openingVariant: String?,
     val state: String,
-    // val board: List<List<Piece?>>,
     val board: String
 )

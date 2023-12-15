@@ -94,7 +94,7 @@ class GameServiceImpl(
             val lobbyRepo = it.lobbyRepository
             var game = gameRepo.getGameById(gameId) ?: return@run failure(GamePlayError.GameDoesNotExist)
             if (game.checkGameEnd()) return@run failure(GamePlayError.GameAlreadyEnded)
-            val lobbyId = lobbyRepo.getLobbyByGameId(gameId)?.id ?: return@run failure(GamePlayError.GameDoesNotExist)
+            val lobby = lobbyRepo.getLobbyByGameId(gameId) ?: return@run failure(GamePlayError.GameDoesNotExist)
             val user = game.checkUserInGame(userId) ?: return@run failure(GamePlayError.UserNotInGame)
             if ((game.board as BoardRun).turn.user != user) return@run failure(GamePlayError.WrongTurn)
 
@@ -164,6 +164,9 @@ class GameServiceImpl(
                         return@run failure(GamePlayError.GameAlreadyEnded)
                     }
                 }
+                val gameUpdated = gameRepo.getGameDTOById(gameId) ?: return@run failure(GamePlayError.GameDoesNotExist)
+                return@run success(gameUpdated.toDTOExternalInfo(lobby))
+
             } catch (e: Exception) {
                 when (e) {
                     is UserNotInGame -> return@run failure(GamePlayError.UserNotInGame)
@@ -175,18 +178,20 @@ class GameServiceImpl(
                     else -> throw e
                 }
             }
-            return@run success(game.toExternalInfo(gameId, lobbyId))
         }
     }
 
     override fun getGameById(gameId: Int, lobbyId: Int): GameIdentificationResult {
         return transactionManager.run {
             val gameRepository = it.gameRepository
+            val lobbyRepository = it.lobbyRepository
 
+            val lobby =
+                lobbyRepository.getLobbyById(lobbyId) ?: return@run failure(GameIdentificationError.LobbyDoesNotExist)
             val game =
-                gameRepository.getGameById(gameId) ?: return@run failure(GameIdentificationError.GameDoesNotExist)
+                gameRepository.getGameDTOById(gameId) ?: return@run failure(GameIdentificationError.GameDoesNotExist)
 
-            return@run success(game.toExternalInfo(gameId, lobbyId))
+            return@run success(game.toDTOExternalInfo(lobby))
         }
     }
 

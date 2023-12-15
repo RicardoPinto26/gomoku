@@ -1,30 +1,30 @@
+
+type BoardCell = 'BLACK' | 'WHITE' | null;
 export class Board {
     private size: number;
-    grid: Array<Array<'BLACK' | 'WHITE' | null>>;
+    grid: Array<Array<BoardCell>>;
 
-    constructor(size: number, grid: Array<Array<'BLACK' | 'WHITE' | null>>) {
+    constructor(size: number, grid: Array<Array<BoardCell>>) {
         this.size = size;
         this.grid = grid;
     }
 
-    static convertJsonToBoard(json: string): Array<Array<'BLACK' | 'WHITE' | null>> {
-        const data = JSON.parse(json);
 
-        const board: Array<Array<'BLACK' | 'WHITE' | null>> = [];
+}
 
-        for (let i = 0; i < data.length; i++) {
-            const row = data[i];
-            const boardRow: Array<'BLACK' | 'WHITE' | null> = [];
+export function  initializeBoard(size: number): Array<Array<BoardCell>> {
+    return Array<Array<BoardCell>>(size).fill(Array<BoardCell>(size).fill(null));
+}
+export function convertJsonToBoard(json: string): Array<Array<BoardCell>> {
+    const parsedArray: Array<Array<BoardCell>> = JSON.parse(json);
 
-            for (let j = 0; j < row.length; j++) {
-                const cellData = row[j];
+    console.log(parsedArray)
 
-                boardRow.push(cellData);
-            }
-
-            board.push(boardRow);
+    return parsedArray.map(row => row.map(cell => {
+        if (cell === 'BLACK' || cell === 'WHITE' || cell === null) {
+            return cell;
+        } else {
+            throw new Error('Invalid cell value');
         }
-
-        return board;
-    }
+    }));
 }

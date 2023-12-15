@@ -48,6 +48,13 @@ class GameRepositoryJDBI(private val handle: Handle) : GameRepository {
             .firstOrNull()
     }
 
+    override fun getGameDTOById(gameId: Int): GameDTO? =
+        handle.createQuery("select * from games where id = :gameId")
+            .bind("gameId", gameId)
+            .mapTo<GameDTO>()
+            .firstOrNull()
+
+
     override fun updateGameWinner(gameId: Int, winner: Int, board: String): Int =
         handle.createUpdate(
             """

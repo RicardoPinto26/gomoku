@@ -9,6 +9,8 @@ interface GameRepository {
 
     fun getGameById(gameId: Int): Game?
 
+    fun getGameDTOById(gameId: Int): GameDTO?
+
     fun getGameByLobbyId(lobbyId: Int): GameDTO?
 
     fun updateGameDraw(gameId: Int, board: String): Int

@@ -110,5 +110,6 @@ fun GameServicesError.toResponse() = when (this) {
 
     is GameIdentificationError -> when (this) {
         GameIdentificationError.GameDoesNotExist -> Problem.response(Problem.gameDoesNotExist)
+        GameIdentificationError.LobbyDoesNotExist -> Problem.response(Problem.lobbyDoesNotExist)
     }
 }

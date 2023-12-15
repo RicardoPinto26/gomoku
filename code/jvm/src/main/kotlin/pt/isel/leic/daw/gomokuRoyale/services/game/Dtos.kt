@@ -95,14 +95,63 @@ fun GameDTO.toExternalInfo(lobby: Lobby) = GameExternalInfo(
     }
 )
 
-typealias GamePlayResult = Either<GamePlayError, GameExternalInfo>
+typealias GamePlayResult = Either<GamePlayError, GameDTOExternalInfo>
 
 /**
 --------------------------------------------------------------------------
  */
 
+data class GameDTOExternalInfo(
+    val id: Int,
+    val lobbyID: Int,
+    val blackPlayer: UserExternalInfo,
+    val whitePlayer: UserExternalInfo,
+    val board: String,
+    val turn: UserExternalInfo,
+    val openingIndex: Int,
+    val openingVariant: String?,
+    val status: String,
+    val winner: UserExternalInfo? = null
+)
+
+fun GameDTO.toDTOExternalInfo(lobby: Lobby) = GameDTOExternalInfo(
+    id,
+    lobbyId,
+    when(blackPlayer) {
+        lobby.user1.id -> lobby.user1.toExternalInfo()
+        lobby.user2!!.id -> lobby.user2.toExternalInfo()
+        else -> {
+            throw Exception("Invalid black player")
+        }
+    },
+    when(whitePlayer) {
+        lobby.user1.id -> lobby.user1.toExternalInfo()
+        lobby.user2!!.id -> lobby.user2.toExternalInfo()
+        else -> {
+            throw Exception("Invalid black player")
+        }
+    },
+    board,
+    when(turn){
+        lobby.user1.id -> lobby.user1.toExternalInfo()
+        lobby.user2!!.id -> lobby.user2.toExternalInfo()
+        else -> {
+            throw Exception("Invalid turn player")
+        }
+    },
+    openingIndex,
+    openingVariant,
+    state,
+    when (winner) {
+        lobby.user1.id -> lobby.user1.toExternalInfo()
+        lobby.user2!!.id -> lobby.user2.toExternalInfo()
+        else -> null
+    }
+)
+
 sealed class GameIdentificationError : GameServicesError {
     object GameDoesNotExist : GameIdentificationError()
+    object LobbyDoesNotExist : GameIdentificationError()
 }
 
-typealias GameIdentificationResult = Either<GameIdentificationError, GameExternalInfo>
+typealias GameIdentificationResult = Either<GameIdentificationError, GameDTOExternalInfo>

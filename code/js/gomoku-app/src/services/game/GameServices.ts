@@ -20,8 +20,6 @@ export class GameServices {
     }
 
     static async makeMove(lobbyId: number, gameId: number, move: GamePlayInputModel) {
-        console.log("lobbyId: " + lobbyId)
-        console.log("gameId: " + gameId)
         console.log("move: " + JSON.stringify(move))
         const response = await fetch(`${apiUrl}/lobby/${lobbyId}/game/${gameId}/play`, {
             method: "POST",
