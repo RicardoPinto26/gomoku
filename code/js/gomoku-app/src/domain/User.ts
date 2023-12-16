@@ -10,6 +10,4 @@ export class User {
         this.gamesPlayed = gamesPlayed
         this.rating = rating
     }
-
-
 }

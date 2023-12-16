@@ -6,6 +6,8 @@ import {Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, Tabl
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import {amber, brown, grey} from "@mui/material/colors";
 import LoadingSpinner from "./common/LoadingSpinner";
+import { getUsers } from "../services/users/UserServices";
+import { Problem } from "../http/media/Problem";
 
 const prizes = [
     <EmojiEventsIcon style={{color: amber[500], fontSize: '25'}}/>,
@@ -23,10 +25,18 @@ export default function Ranking() {
     }, [])
 
     async function fetchRanking() {
+        const res = await getUsers()
 
-        const res = await (await fetch("http://localhost:8080/api/users")).json()
+        if(res instanceof (Problem)){
+            //TODO : handleProblem()
+            return
+        }
 
-        const users = res.entities.map((entity: EmbeddedSubEntity<User>) => (entity as EmbeddedSubEntity<User>).properties as User)
+        if(res.entities === undefined){
+            throw new Error("Entities are undefined")
+        }
+
+        const users = res.entities.map(entity => (entity as EmbeddedSubEntity<User>).properties as User)
         setRanking(users)
         setIsLoading(false)
 

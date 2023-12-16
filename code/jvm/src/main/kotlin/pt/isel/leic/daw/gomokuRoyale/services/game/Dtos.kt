@@ -1,6 +1,11 @@
 package pt.isel.leic.daw.gomokuRoyale.services.game
 
-import pt.isel.leic.daw.gomokuRoyale.domain.*
+import pt.isel.leic.daw.gomokuRoyale.domain.BoardDraw
+import pt.isel.leic.daw.gomokuRoyale.domain.BoardRun
+import pt.isel.leic.daw.gomokuRoyale.domain.BoardWin
+import pt.isel.leic.daw.gomokuRoyale.domain.Game
+import pt.isel.leic.daw.gomokuRoyale.domain.Lobby
+import pt.isel.leic.daw.gomokuRoyale.domain.serializeToJsonString
 import pt.isel.leic.daw.gomokuRoyale.domain.user.GameDTO
 import pt.isel.leic.daw.gomokuRoyale.services.ServicesError
 import pt.isel.leic.daw.gomokuRoyale.services.users.UserExternalInfo
@@ -117,14 +122,14 @@ data class GameDTOExternalInfo(
 fun GameDTO.toDTOExternalInfo(lobby: Lobby) = GameDTOExternalInfo(
     id,
     lobbyId,
-    when(blackPlayer) {
+    when (blackPlayer) {
         lobby.user1.id -> lobby.user1.toExternalInfo()
         lobby.user2!!.id -> lobby.user2.toExternalInfo()
         else -> {
             throw Exception("Invalid black player")
         }
     },
-    when(whitePlayer) {
+    when (whitePlayer) {
         lobby.user1.id -> lobby.user1.toExternalInfo()
         lobby.user2!!.id -> lobby.user2.toExternalInfo()
         else -> {
@@ -132,7 +137,7 @@ fun GameDTO.toDTOExternalInfo(lobby: Lobby) = GameDTOExternalInfo(
         }
     },
     board,
-    when(turn){
+    when (turn) {
         lobby.user1.id -> lobby.user1.toExternalInfo()
         lobby.user2!!.id -> lobby.user2.toExternalInfo()
         else -> {

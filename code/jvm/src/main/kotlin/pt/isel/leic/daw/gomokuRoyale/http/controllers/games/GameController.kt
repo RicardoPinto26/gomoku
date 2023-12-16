@@ -15,12 +15,10 @@ import pt.isel.leic.daw.gomokuRoyale.http.controllers.games.models.GamePlayInput
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.games.models.GamePlayOutputModel
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.games.models.convertInputModelToGameAction
 import pt.isel.leic.daw.gomokuRoyale.http.media.siren.SirenEntity
-import pt.isel.leic.daw.gomokuRoyale.http.utils.Actions
 import pt.isel.leic.daw.gomokuRoyale.http.utils.Rels
 import pt.isel.leic.daw.gomokuRoyale.http.utils.Uris
 import pt.isel.leic.daw.gomokuRoyale.http.utils.toResponse
 import pt.isel.leic.daw.gomokuRoyale.services.game.GameService
-import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbyServiceImpl
 import pt.isel.leic.daw.gomokuRoyale.utils.Failure
 import pt.isel.leic.daw.gomokuRoyale.utils.Success
 
@@ -135,7 +133,7 @@ class GameController(
                     .body(
                         SirenEntity(
                             `class` = listOf(Rels.GAME),
-                            properties = GameDetailsOutputModel(res.value),
+                            properties = GameDetailsOutputModel(res.value)
                             /*actions = listOf(
                                 Actions.play,
                                 Actions.forfeitGame

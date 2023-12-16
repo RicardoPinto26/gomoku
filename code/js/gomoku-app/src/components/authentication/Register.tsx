@@ -6,14 +6,6 @@ import {register} from "../../services/users/UserServices";
 import Page from "../common/Page";
 import Button from "@mui/material/Button";
 
-async function registerUser(email: String, username: string, password: string): Promise<string | undefined> {
-    console.log(`registerUser(${username}, ${password})`)
-    const user = await register(email, username, password);
-    console.log(`registerUser(${username}, ${password}) => ${user}`);
-    return user;
-
-}
-
 export default function Register() {
     const navigate = useNavigate()
     console.log('Register');
@@ -39,10 +31,9 @@ export default function Register() {
         const email = state.inputs.email;
         const username = state.inputs.username;
         const password = state.inputs.password;
-        registerUser(email, username, password)
+        register(email, username, password)
             .then(res => {
                 if (res) {
-                    console.log(`setUser(${res})`);
                     setUser(username);
                     dispatch({type: 'success'});
                 } else {

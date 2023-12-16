@@ -166,7 +166,6 @@ class GameServiceImpl(
                 }
                 val gameUpdated = gameRepo.getGameDTOById(gameId) ?: return@run failure(GamePlayError.GameDoesNotExist)
                 return@run success(gameUpdated.toDTOExternalInfo(lobby))
-
             } catch (e: Exception) {
                 when (e) {
                     is UserNotInGame -> return@run failure(GamePlayError.UserNotInGame)

@@ -54,7 +54,6 @@ class GameRepositoryJDBI(private val handle: Handle) : GameRepository {
             .mapTo<GameDTO>()
             .firstOrNull()
 
-
     override fun updateGameWinner(gameId: Int, winner: Int, board: String): Int =
         handle.createUpdate(
             """

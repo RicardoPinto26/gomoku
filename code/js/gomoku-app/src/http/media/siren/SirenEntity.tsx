@@ -2,6 +2,16 @@ import {SubEntity} from "./SubEntity";
 import Link from "./Link";
 import Action from "./Action";
 
+export interface SirenEntityProps<T>{
+    class?: string[]
+    properties?: T
+    entities?: SubEntity[]
+    links?: Link[]
+    actions?: Action[]
+    title?: string
+}
+
+
 /**
  * Siren Entity
  *
@@ -14,12 +24,23 @@ import Action from "./Action";
  * @property actions A collection of [Action] objects, represented in JSON Siren as an array such as { "actions": [{ ... }] }.Optional
  * @property title the title of the siren entity. Optional
  */
-export class SirenEntity<T>{
+export class SirenEntity<T> implements SirenEntityProps<T>{
+
     class?: string[]
     properties?: T
     entities?: SubEntity[]
     links?: Link[]
     actions?: Action[]
     title?: string
+
+    constructor( props : SirenEntityProps<T>) {
+        this.class = props.class
+        this.properties = props.properties
+        this.entities = props.entities
+        this.links = props.links
+        this.actions = props.actions
+        this.title = props.title
+    }
 }
 
+export const sirenMediaType = "application/vnd.siren+json"

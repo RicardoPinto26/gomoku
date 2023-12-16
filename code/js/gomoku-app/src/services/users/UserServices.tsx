@@ -1,49 +1,40 @@
-import {apiUrl} from "../../utils/configs";
+import {get, post} from "../utils/fetchSiren";
+import {SirenEntity} from "../../http/media/siren/SirenEntity";
+import {User} from "../../domain/User";
+import {Problem} from "../../http/media/Problem";
+import {LoginOutputModel} from "./models/LoginOutput";
+import {RegisterOutputModel} from "./models/RegisterOutput";
 
 //TODO: Use siren hypermedia to get the url
-export async function register(email: String, username: String, password: String) {
-    console.log(`register(${email}, ${username}, ${password})`)
-    const response = await fetch(`${apiUrl}/users`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({"email": email, "username": username, "password": password})
-    })
-
-    if (!response.ok)
-        throw await response.json();
-
-    return await response.json()
+export async function register(
+    email: String,
+    username: String,
+    password: String
+):Promise<SirenEntity<RegisterOutputModel>> {
+    return post(
+        '/users',
+        JSON.stringify({"email": email, "username": username, "password": password})
+    )
 }
 
 
-export async function login(username: String, password: String) {
-    const response = await fetch(`${apiUrl}/users/token`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        credentials: "include",
-        body: JSON.stringify({"username": username, "password": password})
-    })
-    if (!response.ok)
-        throw await response.json();
-
-    return await response.json()
+export async function login(
+    username: String,
+    password: String
+) :Promise<SirenEntity<LoginOutputModel>> {
+    return await post(
+        '/users/token',
+        JSON.stringify({"username": username, "password": password})
+    )
 }
 
 export async function logout() {
-    const response = await fetch(`${apiUrl}/users/logout`, {
-        method: 'POST',
-        credentials: 'include',
-        body: JSON.stringify({"ola": "another thing", "adeus": "another another thing"})
-    })
+    return await post(
+        '/users/logout',
+        JSON.stringify({"ola": "another thing", "adeus": "another another thing"})
+    )
+}
 
-    if (!response.ok) {
-        throw await response.json();
-    }
-
-
-    return await response.json()
+export async function getUsers(): Promise<SirenEntity<User> | Problem> {
+    return await get('/users')
 }

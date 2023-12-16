@@ -6,16 +6,8 @@ import reduce from "./utils/Reduce";
 import Page from '../common/Page';
 import Button from "@mui/material/Button";
 
-export async function authenticate(username: string, password: string): Promise<string | undefined> {
-    const user = await login(username, password);
-    console.log(`authenticate(${username}, ${password}) => ${user}`);
-    console.log(user.properties.token)
-    return user;
-}
-
 export function Login() {
     const navigate = useNavigate()
-    console.log('Login');
     const [state, dispatch] = React.useReducer(reduce, {tag: 'editing', inputs: {username: '', email: '', password: ''}});
     const setUser = useSetUser();
     const location = useLocation();
@@ -35,10 +27,10 @@ export function Login() {
         dispatch({type: 'submit'});
         const username = state.inputs.username;
         const password = state.inputs.password;
-        authenticate(username, password)
+        login(username, password)
             .then(res => {
                 if (res) {
-                    console.log(`setUser(${res})`);
+                    console.log(`setUser(${res.properties?.token})`);
                     setUser(username);
                     dispatch({type: 'success'});
                 } else {

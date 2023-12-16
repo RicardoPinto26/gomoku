@@ -76,7 +76,7 @@ export default function App() {
                     <Route path={"*"} element={<div>404</div>}/>
                 </Routes>
             </div>
+            <Footer></Footer>
         </div>
     );
-    //<Footer></Footer>
 }

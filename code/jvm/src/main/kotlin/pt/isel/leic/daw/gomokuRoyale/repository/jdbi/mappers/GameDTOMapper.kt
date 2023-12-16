@@ -3,7 +3,6 @@ package pt.isel.leic.daw.gomokuRoyale.repository.jdbi.mappers
 import org.jdbi.v3.core.mapper.RowMapper
 import org.jdbi.v3.core.statement.StatementContext
 import org.slf4j.LoggerFactory
-import pt.isel.leic.daw.gomokuRoyale.domain.*
 import pt.isel.leic.daw.gomokuRoyale.domain.user.GameDTO
 import java.sql.ResultSet
 

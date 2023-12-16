@@ -1,7 +1,6 @@
 package pt.isel.leic.daw.gomokuRoyale.http.controllers.games.models
 
 import pt.isel.leic.daw.gomokuRoyale.services.game.GameDTOExternalInfo
-import pt.isel.leic.daw.gomokuRoyale.services.game.GameExternalInfo
 import pt.isel.leic.daw.gomokuRoyale.services.users.UserExternalInfo
 
 /**
