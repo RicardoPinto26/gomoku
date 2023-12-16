@@ -1,4 +1,8 @@
 import {User} from "./User";
+import {GameDetailsOutputModel} from "../services/game/models/GameDetailsOutputModel";
+import {Board, convertJsonToBoard} from "./game/Board";
+import {defaultSettings} from "../components/game/matchmake/GameSettings";
+import {LobbyDetailsOutputModel} from "../services/lobby/models/LobbyDetailsOutputModel";
 
 export interface Lobby {
     id: number;
@@ -9,11 +13,11 @@ export interface Lobby {
     winningLength: number;
     pointsMargin: number;
     overflow: boolean;
-    gameId?: number
+    gameId?: number | null;
 }
 
 export class Lobby {
-    constructor(
+    /*constructor(
         id: number,
         user1: User,
         user2: User | null,
@@ -33,5 +37,16 @@ export class Lobby {
         this.pointsMargin = pointsMargin;
         this.winningLength = winningLength;
         this.gameId = gameId;
+    }*/
+    constructor(lobbyDetails: LobbyDetailsOutputModel) {
+        this.id = lobbyDetails.id;
+        this.user1 = lobbyDetails.user1;
+        this.user2 = lobbyDetails.user2;
+        this.gridSize = lobbyDetails.gridSize;
+        this.opening = lobbyDetails.opening;
+        this.overflow = lobbyDetails.overflow;
+        this.pointsMargin = lobbyDetails.pointsMargin;
+        this.winningLength = lobbyDetails.winningLength;
+        this.gameId = null;
     }
 }

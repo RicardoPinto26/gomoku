@@ -10,9 +10,10 @@ import Checkbox from "@mui/material/Checkbox";
 import Button from "@mui/material/Button";
 import { useCreateLobbyConfig} from "../matchmake/GameSettings";
 import {useNavigate} from "react-router-dom";
-import {CreateLobbyInputModel, createLobbyServices, getLobbyState} from "../../../services/lobby/LobbyServices";
+import { createLobbyServices, getLobbyState} from "../../../services/lobby/LobbyServices";
 import LoadingSpinner from "../../common/LoadingSpinner";
 import {useCurrentUser} from "../../../utils/Authn";
+import {CreateLobbyInputModel} from "../../../services/lobby/models/CreateLobbyInputModel";
 
 
 export function CreateLobby() {

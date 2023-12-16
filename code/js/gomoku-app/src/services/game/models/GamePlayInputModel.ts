@@ -7,7 +7,7 @@ export interface GamePlayInputModel {
 }
 
 export class GamePlayInputModel {
-    constructor(actionType: ActionType, positionX: number, positionY: number, moveChoice: string | null, color: string | null) {
+    constructor(actionType: ActionType, positionX: number | null, positionY: number | null, moveChoice: string | null, color: string | null) {
         this.actionType = actionType;
         this.positionX = positionX;
         this.positionY = positionY;

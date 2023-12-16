@@ -81,10 +81,6 @@ class GameServiceImpl(
             success(
                 newGame.toExternalInfo(gameId, lobbyId)
             )
-
-            /**
-             * Falta atualizar o lobby para n deixar criar mais jogas com o msm lobbyId; o lobby tem sempre game = null
-             */
         }
     }
 

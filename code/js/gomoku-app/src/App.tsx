@@ -29,7 +29,7 @@ import MatchmakingConfig from "./components/game/matchmake/MatchmakeConfig";
 import {CreateGameConfigProvider, MatchmakeConfigProvider} from "./components/game/matchmake/GameSettings";
 import {JoinLobby} from "./components/game/joinLobby/JoinLobby";
 import {CreateLobby} from "./components/game/createLobby/CreateLobby";
-import Gameplay from "./components/game/gameplay/Gameplay";
+import GameFetch from "./components/game/gameplay/GameFetch";
 
 
 export default function App() {
@@ -69,14 +69,11 @@ export default function App() {
                                    <MatchmakingConfig/>
                                </MatchmakeConfigProvider>}
                     />
-                    <Route path={GAMETEST} element={<Gameplay/>}/>
-                    <Route path={GAMEPLAY} element={<Gameplay/>}/>
-
-
+                    <Route path={GAMEPLAY} element={<GameFetch/>}/>
                     <Route path={"*"} element={<div>404</div>}/>
                 </Routes>
             </div>
-            <Footer></Footer>
         </div>
     );
 }
+            //<Footer></Footer>

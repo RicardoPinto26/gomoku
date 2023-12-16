@@ -38,3 +38,12 @@ export function post<T>(
 ): Promise<SirenEntity<T>> {
     return fetchSiren<T>(apiUrl + input, 'POST', body)
 }
+
+export async function handleRequest<T, E = Error>(promise: Promise<T>): Promise<[E, null] | [null, T]> {
+    try {
+        const res: T = await promise;
+        return [null, res];
+    } catch (err) {
+        return [err as E, null];
+    }
+}

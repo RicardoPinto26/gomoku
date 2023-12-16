@@ -1,39 +1,200 @@
-import {useParams} from "react-router-dom";
+import React, {useEffect, useState} from 'react';
+import {BoardView} from './BoardView';
+import {Game} from "../../../domain/game/Game";
 import {GameServices} from "../../../services/game/GameServices";
-import React, {useEffect} from "react";
-import {Game, GameDetailsOutputModel} from "../../../domain/game/Game";
-import {GameBoard} from "./Game";
-import LoadingSpinner from "../../common/LoadingSpinner";
+import {ActionType, GamePlayInputModel} from "../../../services/game/models/GamePlayInputModel";
+import {useCurrentUser} from "../../../utils/Authn";
+import {initializeBoard} from "../../../domain/game/Board";
+import {handleRequest} from "../../../services/utils/fetchSiren";
+import {handleError} from "../../../services/utils/errorUtils";
+import {useNavigate} from "react-router-dom";
+import {GameBarStatus} from "./GameBarStatus";
+import {Opening, OpeningMove} from "../../../domain/game/Opening";
+import {NextMoveDialog} from "./utils/NextMoveDialog";
+import {ChooseColor} from "./utils/ChooseColorDialog";
+import RefreshIcon from "@mui/icons-material/Refresh";
+import IconButton from "@mui/material/IconButton";
+import {ForfeitButton} from "./utils/ForfeitGame";
+import {Typography} from "@mui/material";
 
-export default function Gameplay() {
-    const {lobbyId, gameId} = useParams()
-    const [gameLoaded, setGameLoaded] = React.useState(false);
-    const [game, setGame] = React.useState<Game | null>(null);
+interface GameProps {
+    game: Game
+    params: { lId: number, gId: number }
+    setGame: (game: Game) => void
+}
+
+export function GameBoard(game: GameProps) {
+    const navigate = useNavigate()
+    const user = useCurrentUser()
+
+    const boardSize = game.game.board.grid.length;
+    const initialBoard = initializeBoard(boardSize)
+    const [board, setBoard] = useState(initialBoard);
+    const [turn, setTurn] = useState(game.game.turn.username)
+    const [error, setError] = useState<string | null>(null)
+
+    const [lobbyOpening, setLobbyOpening] = useState<string>(game.game.config.opening)
+    const [currentMoveType, setCurrentMoveType] = useState<OpeningMove | null>(null)
+    const [currentOpeningIndex, setCurrentOpeningIndex] = useState<number>(game.game.openingIndex)
+
+
+    const [choosedOpening, setChoosedOpening] = useState<string | null>(game.game.openingVariant)
+    const [choosedColor, setChoosedColor] = useState<string | null>(null)
+
+    const [isMoveDialogOpen, setIsMoveDialogOpen] = useState(false);
+    const [isColorDialogOpen, setIsColorDialogOpen] = useState(false);
+
 
     useEffect(() => {
-        if (!gameLoaded) {
-            fetchGame()
+        if (user == turn) {
+            const newMoveType = Opening.getCurrentMoveType(Opening.from(choosedOpening ? choosedOpening : lobbyOpening!)!, currentOpeningIndex)
+            console.log(`New move type: ${newMoveType} - index: ${currentOpeningIndex}; movesList: ${Opening.from(lobbyOpening)!.movesList}}`)
+            switch (newMoveType) {
+                case OpeningMove.CHOOSE_NEXT_MOVE:
+                    console.log("Choose next move type")
+                    handleOpenMoveDialog()
+                    break
+                case OpeningMove.CHOOSE_COLOR:
+                    console.log("Choose next color type")
+                    handleOpenColorDialog()
+                    break
+            }
+            setCurrentMoveType(newMoveType)
         }
-    }, [gameLoaded])
+
+        const interval = setInterval(() => {
+            if (user != turn) {
+                refreshGame().then(r => console.log("refreshing..."))
+            }
+        }, 2000);
+        return () => clearInterval(interval)
+    }, [board, turn])
 
 
-    //martelo
-    async function fetchGame() {
-        if (lobbyId === undefined || gameId === undefined) {
-            throw new Error("Lobby ID or Game ID is undefined")
+
+
+
+    async function  chooseNextMove (move: Opening){
+        const openingName= Opening.toName(move)
+        setChoosedOpening(openingName)
+        handleCloseMoveDialog();
+        console.log(`Choosed opening: ${openingName}`)
+        const modal = new GamePlayInputModel(ActionType.ChooseMove, null, null, openingName, null)
+        const [error, res] = await handleRequest(GameServices.play(game.params.lId, game.params.gId, modal))
+
+        if (error) {
+            handleError(error, setError, navigate)
+            return
         }
-        const res = await (GameServices.getGame(parseInt(lobbyId!), parseInt(gameId!)))
-        const game = new Game(res.properties as GameDetailsOutputModel)
-
-        setGame(game)
-        setGameLoaded(true)
+        console.log(res)
+        const newGame = new Game(res.properties!, game.game.config)
+        game.setGame(newGame)
+        setTurn(newGame.turn.username)
     }
 
-    if (gameLoaded)
-        return <GameBoard game={game!} params={{lId: parseInt(lobbyId!)!, gId: parseInt(gameId!)}} setGame={setGame}></GameBoard>
-    else {
-        return (
-            <LoadingSpinner text={"Loading Game..."}/>
-        )
+
+    async function chooseColor(color: string) {
+        handleCloseColorDialog()
+        setChoosedColor(color)
+        const modal = new GamePlayInputModel(ActionType.ChooseColor, null, null, null, color)
+        const [error, res] = await handleRequest(GameServices.play(game.params.lId, game.params.gId, modal))
+
+        if (error) {
+            handleError(error, setError, navigate)
+            return
+        }
+        console.log(res)
+        const newGame = new Game(res.properties!, game.game.config)
+        game.setGame(newGame)
+        setTurn(newGame.turn.username)
+        setCurrentOpeningIndex(newGame.openingIndex)
     }
+
+    async function playMove(row: number, column: number) {
+        const modal = new GamePlayInputModel(ActionType.PlacePiece, row, column, null, null)
+        const [error, res] = await handleRequest(GameServices.play(game.params.lId, game.params.gId, modal))
+        if (error) {
+            handleError(error, setError, navigate)
+            return
+        }
+        console.log(res)
+        const newGame = new Game(res.properties!, game.game.config)
+        setBoard(newGame.board.grid)
+        setTurn(newGame.turn.username)
+        setCurrentOpeningIndex(newGame.openingIndex)
+    }
+
+    async function refreshGame() {
+        const [error, res] = await handleRequest((GameServices.getGame(game.params.lId, game.params.gId)))
+        if (error) {
+            handleError(error, setError, navigate)
+            return
+        }
+        const refreshedGame = new Game(res.properties!, game.game.config)
+        setBoard(refreshedGame.board.grid)
+        setTurn(refreshedGame.turn.username)
+        setCurrentOpeningIndex(refreshedGame.openingIndex)
+        setChoosedOpening(refreshedGame.openingVariant)
+    }
+
+
+    function handlePiecePlaced(row: number, column: number) {
+        if (user != turn) {
+            console.log(`Not your turn '${user}' ---> '${turn}'`) // Diaolog box no ecra
+            return
+        }
+
+        if (board[row][column] === null) {
+            playMove(row, column)
+        }
+    }
+
+    // Dialogs
+
+    const handleOpenMoveDialog = () => {
+        setIsMoveDialogOpen(true);
+    };
+    const handleCloseMoveDialog = () => {
+        setIsMoveDialogOpen(false);
+    };
+    const handleOpenColorDialog = () => {
+        setIsColorDialogOpen(true);
+    };
+    const handleCloseColorDialog = () => {
+        setIsColorDialogOpen(false);
+    };
+
+
+    return (
+        <div>
+            <h1>Gomoku Game</h1>
+            <GameBarStatus
+                currentPlayer={turn}
+                gameState={choosedOpening ? choosedOpening : lobbyOpening}
+                player={user!} onRefresh={refreshGame}/>
+
+            <NextMoveDialog
+                opening={Opening.from(lobbyOpening)!}
+                open={isMoveDialogOpen}
+                onClose={handleCloseMoveDialog}
+                onMoveSelect={chooseNextMove}
+            />
+
+            <ChooseColor
+                open={isColorDialogOpen}
+                onClose={handleCloseMoveDialog}
+                onColorSelected={chooseColor}
+            />
+
+            <BoardView board={board} onPiecePlaced={handlePiecePlaced}/>
+            <ForfeitButton gameId={ game.params.gId } lobbyId={ game.params.lId }/>
+            <Typography variant="h6"> FREESTYLE, SWAP2, SWAP 100% a funcionar</Typography>
+            <Typography variant="h6"> PRO E LONG PRO precisamos de avisar o user onde pode jogar (dar highlight na board) </Typography>
+            <Typography variant="h6"> (BLACK - 1º jogada - centro, 2º jogada a 3/4 casas da primeira jogada) </Typography>
+            <Typography variant="h6"> ... </Typography>
+            <Typography variant="h6"> TODO() Ver quando o jogo já acabou e se o outro player deu forfit </Typography>
+        </div>
+    )
 }
+
+

@@ -1,7 +1,10 @@
 import {apiUrl} from "../../utils/configs";
 import {EmbeddedSubEntity} from "../../http/media/siren/SubEntity";
 import {Lobby} from "../../domain/Lobby";
-import {GameSettings} from "../../components/game/matchmake/GameSettings";
+import {get} from "../utils/fetchSiren";
+import {CreateLobbyInputModel} from "./models/CreateLobbyInputModel";
+import {LobbyDetailsOutputModel} from "./models/LobbyDetailsOutputModel";
+import {SirenEntity} from "../../http/media/siren/SirenEntity";
 
 
 export async function createLobbyServices(settings: CreateLobbyInputModel): Promise<{ status: number, response: any }> {
@@ -20,6 +23,10 @@ export async function createLobbyServices(settings: CreateLobbyInputModel): Prom
 
     const body = await response.json();
     return {status: response.status, response: body}
+}
+
+export async function getLobby(lobbyId: number): Promise<SirenEntity<LobbyDetailsOutputModel>> {
+    return get(`/lobby/${lobbyId}`)
 }
 
 export async function getLobbies() {
@@ -60,22 +67,3 @@ export async function getLobbyState(lobby: number) {
     return res;
 }
 
-export interface CreateLobbyInputModel {
-    name: string,
-    gridSize: number;
-    winningLength: number;
-    opening: string;
-    pointsMargin: number;
-    overflow: boolean;
-}
-
-export class CreateLobbyInputModel {
-    constructor(name: string, settings: GameSettings) {
-        this.name = name
-        this.gridSize = settings.gridSize
-        this.winningLength = settings.winningLength
-        this.opening = settings.opening
-        this.pointsMargin = settings.pointsMargin
-        this.overflow = settings.overflow
-    }
-}

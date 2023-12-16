@@ -2,6 +2,8 @@ import {Board, convertJsonToBoard} from "./Board";
 import {defaultSettings, GameSettings} from "../../components/game/matchmake/GameSettings";
 import {User} from "../User";
 import {State} from "./Cell";
+import {GameDetailsOutputModel} from "../../services/game/models/GameDetailsOutputModel";
+import {Lobby} from "../Lobby";
 
 export class Game {
     private id: number
@@ -13,8 +15,8 @@ export class Game {
     openingVariant: string | null
     private state: string
     private winner: null | User
-    private config: GameSettings = defaultSettings
-    constructor(gameDetails: GameDetailsOutputModel) {
+    config: GameSettings = defaultSettings
+    constructor(gameDetails: GameDetailsOutputModel, gameSettings: GameSettings) {
         this.id = gameDetails.id;
         this.blackPlayer = gameDetails.blackPlayer;
         this.whitePlayer = gameDetails.whitePlayer;
@@ -24,20 +26,9 @@ export class Game {
         this.openingVariant = gameDetails.openingVariant;
         this.state = gameDetails.state;
         this.winner = gameDetails.winner;
-        this.config = defaultSettings; // Hardcoded
+        this.config = gameSettings
     }
 
 }
 
 
-export interface GameDetailsOutputModel {
-    id: number;
-    blackPlayer: User;
-    whitePlayer: User;
-    board: string;
-    turn: User;
-    openingIndex: number;
-    openingVariant: string | null;
-    state: string;
-    winner: User | null;
-}

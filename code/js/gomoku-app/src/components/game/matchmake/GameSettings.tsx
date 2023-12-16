@@ -1,19 +1,33 @@
 import React, {createContext, useContext, useEffect, useState} from "react";
+import {Lobby} from "../../../domain/Lobby";
 
-export type GameSettings = {
-    name:string
+export interface GameSettings {
+    name: string
     gridSize: number;
     winningLength: number;
     opening: string;
     pointsMargin: number;
     overflow: boolean;
-};
+}
+
+
+export function from(lobby: Lobby): GameSettings {
+    return {
+        name: "unknown",
+        gridSize: lobby.gridSize,
+        winningLength: lobby.winningLength,
+        opening: lobby.opening,
+        pointsMargin: lobby.pointsMargin,
+        overflow: lobby.overflow
+    };
+}
+
 
 export const defaultSettings: GameSettings = {
     name: "Unnamed",
     gridSize: 15,
     winningLength: 5,
-    opening: "FREESTYLE",
+    opening: "SWAP2",
     pointsMargin: 200,
     overflow: true,
 };
@@ -31,7 +45,6 @@ export const useMatchmakingConfig = () => useContext(GameSettingsContext);
 export const useCreateLobbyConfig = () => useContext(GameSettingsContext);
 
 
-
 export function CreateGameConfigProvider({children}: { children: React.ReactNode }) {
     const [settings, setSettings] = useState<GameSettings>(() => {
         const localData = localStorage.getItem('createGameSettings')
@@ -43,7 +56,7 @@ export function CreateGameConfigProvider({children}: { children: React.ReactNode
     }, [settings])
 
     return (
-        <GameSettingsContext.Provider value={{ settings: settings, setSettings }}>
+        <GameSettingsContext.Provider value={{settings: settings, setSettings}}>
             {children}
         </GameSettingsContext.Provider>
     );
@@ -61,7 +74,7 @@ export function MatchmakeConfigProvider({children}: { children: React.ReactNode 
     }, [settings])
 
     return (
-        <GameSettingsContext.Provider value={{ settings: settings, setSettings }}>
+        <GameSettingsContext.Provider value={{settings: settings, setSettings}}>
             {children}
         </GameSettingsContext.Provider>
     );

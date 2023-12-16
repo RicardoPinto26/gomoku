@@ -18,8 +18,6 @@ export function  initializeBoard(size: number): Array<Array<BoardCell>> {
 export function convertJsonToBoard(json: string): Array<Array<BoardCell>> {
     const parsedArray: Array<Array<BoardCell>> = JSON.parse(json);
 
-    console.log(parsedArray)
-
     return parsedArray.map(row => row.map(cell => {
         if (cell === 'BLACK' || cell === 'WHITE' || cell === null) {
             return cell;
