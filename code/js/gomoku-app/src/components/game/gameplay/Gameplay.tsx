@@ -4,18 +4,17 @@ import {Game} from "../../../domain/game/Game";
 import {GameServices} from "../../../services/game/GameServices";
 import {ActionType, GamePlayInputModel} from "../../../services/game/models/GamePlayInputModel";
 import {useCurrentUser} from "../../../utils/Authn";
-import {initializeBoard} from "../../../domain/game/Board";
+import {initializeBoard, Position} from "../../../domain/game/Board";
 import {handleRequest} from "../../../services/utils/fetchSiren";
 import {handleError} from "../../../services/utils/errorUtils";
 import {useNavigate} from "react-router-dom";
 import {GameBarStatus} from "./GameBarStatus";
 import {Opening, OpeningMove} from "../../../domain/game/Opening";
 import {NextMoveDialog} from "./utils/NextMoveDialog";
-import {ChooseColor} from "./utils/ChooseColorDialog";
-import RefreshIcon from "@mui/icons-material/Refresh";
-import IconButton from "@mui/material/IconButton";
+import {ChooseColorDialog} from "./utils/ChooseColorDialog";
 import {ForfeitButton} from "./utils/ForfeitGame";
 import {Typography} from "@mui/material";
+import {WinnerDialog} from "./utils/WinnerDialog";
 
 interface GameProps {
     game: Game
@@ -31,6 +30,7 @@ export function GameBoard(game: GameProps) {
     const initialBoard = initializeBoard(boardSize)
     const [board, setBoard] = useState(initialBoard);
     const [turn, setTurn] = useState(game.game.turn.username)
+    const [winner, setWinner] = useState<string | null>(null)
     const [error, setError] = useState<string | null>(null)
 
     const [lobbyOpening, setLobbyOpening] = useState<string>(game.game.config.opening)
@@ -43,6 +43,7 @@ export function GameBoard(game: GameProps) {
 
     const [isMoveDialogOpen, setIsMoveDialogOpen] = useState(false);
     const [isColorDialogOpen, setIsColorDialogOpen] = useState(false);
+    const [isWinnerDialogOpen, setIsWinnerDialogOpen] = useState(false);
 
 
     useEffect(() => {
@@ -64,18 +65,21 @@ export function GameBoard(game: GameProps) {
 
         const interval = setInterval(() => {
             if (user != turn) {
-                refreshGame().then(r => console.log("refreshing..."))
+                refreshGame()
+                    .then(r => {
+                        console.log("refreshing...")
+                        if(winner){
+                            handleOpenWinnerDialog()
+                        }
+                    })
             }
         }, 2000);
         return () => clearInterval(interval)
     }, [board, turn])
 
 
-
-
-
-    async function  chooseNextMove (move: Opening){
-        const openingName= Opening.toName(move)
+    async function chooseNextMove(move: Opening) {
+        const openingName = Opening.toName(move)
         setChoosedOpening(openingName)
         handleCloseMoveDialog();
         console.log(`Choosed opening: ${openingName}`)
@@ -122,6 +126,7 @@ export function GameBoard(game: GameProps) {
         setBoard(newGame.board.grid)
         setTurn(newGame.turn.username)
         setCurrentOpeningIndex(newGame.openingIndex)
+        setWinner(newGame.winner ? newGame.winner.username : null)
     }
 
     async function refreshGame() {
@@ -135,6 +140,7 @@ export function GameBoard(game: GameProps) {
         setTurn(refreshedGame.turn.username)
         setCurrentOpeningIndex(refreshedGame.openingIndex)
         setChoosedOpening(refreshedGame.openingVariant)
+        setWinner(refreshedGame.winner ? refreshedGame.winner.username : null)
     }
 
 
@@ -145,7 +151,11 @@ export function GameBoard(game: GameProps) {
         }
 
         if (board[row][column] === null) {
-            playMove(row, column)
+            playMove(row, column).then(r => {
+                if (winner != null) {
+                    handleOpenWinnerDialog()
+                }
+            })
         }
     }
 
@@ -164,6 +174,13 @@ export function GameBoard(game: GameProps) {
         setIsColorDialogOpen(false);
     };
 
+    const handleOpenWinnerDialog = () => {
+        setIsWinnerDialogOpen(true);
+    };
+    const handleCloseWinnerDialog = () => {
+        setIsWinnerDialogOpen(false);
+    };
+
 
     return (
         <div>
@@ -180,17 +197,27 @@ export function GameBoard(game: GameProps) {
                 onMoveSelect={chooseNextMove}
             />
 
-            <ChooseColor
+            <ChooseColorDialog
                 open={isColorDialogOpen}
                 onClose={handleCloseMoveDialog}
                 onColorSelected={chooseColor}
             />
 
+            <WinnerDialog
+                open={isWinnerDialogOpen}
+                onClose={handleCloseWinnerDialog}
+                onReturnToMenu={() => navigate("/")}
+                winner={winner == user}
+            />
+
+
             <BoardView board={board} onPiecePlaced={handlePiecePlaced}/>
-            <ForfeitButton gameId={ game.params.gId } lobbyId={ game.params.lId }/>
+            <ForfeitButton gameId={game.params.gId} lobbyId={game.params.lId} isYourTurn={turn == user}/>
             <Typography variant="h6"> FREESTYLE, SWAP2, SWAP 100% a funcionar</Typography>
-            <Typography variant="h6"> PRO E LONG PRO precisamos de avisar o user onde pode jogar (dar highlight na board) </Typography>
-            <Typography variant="h6"> (BLACK - 1º jogada - centro, 2º jogada a 3/4 casas da primeira jogada) </Typography>
+            <Typography variant="h6"> PRO E LONG PRO precisamos de avisar o user onde pode jogar (dar highlight na
+                board) </Typography>
+            <Typography variant="h6"> (BLACK - 1º jogada - centro, 2º jogada a 3/4 casas da primeira
+                jogada) </Typography>
             <Typography variant="h6"> ... </Typography>
             <Typography variant="h6"> TODO() Ver quando o jogo já acabou e se o outro player deu forfit </Typography>
         </div>

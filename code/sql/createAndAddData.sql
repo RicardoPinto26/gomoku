@@ -60,7 +60,7 @@ create table moves
     move_x  INT                       NOT NULL,
     move_y  INT                       NOT NULL
     --move_time  TIMESTAMP                 NOT NULL
-)
+);
 
 
 INSERT INTO users (username, email, password)

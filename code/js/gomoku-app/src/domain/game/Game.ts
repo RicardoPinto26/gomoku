@@ -14,7 +14,7 @@ export class Game {
     openingIndex: number
     openingVariant: string | null
     private state: string
-    private winner: null | User
+    winner: null | User
     config: GameSettings = defaultSettings
     constructor(gameDetails: GameDetailsOutputModel, gameSettings: GameSettings) {
         this.id = gameDetails.id;

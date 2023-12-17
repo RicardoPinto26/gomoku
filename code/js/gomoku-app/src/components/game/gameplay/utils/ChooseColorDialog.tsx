@@ -8,7 +8,7 @@ export interface NextColorDialogProps{
     onColorSelected: (color : string) => void
 }
 
-export function ChooseColor ({open, onClose, onColorSelected}: NextColorDialogProps) {
+export function ChooseColorDialog ({open, onClose, onColorSelected}: NextColorDialogProps) {
     return (
         <Dialog open={open} onClose={onClose}>
             <DialogTitle>Choose your pieces color for the rest of the Game</DialogTitle>

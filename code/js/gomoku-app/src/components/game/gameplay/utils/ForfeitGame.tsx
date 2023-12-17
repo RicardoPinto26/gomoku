@@ -10,6 +10,7 @@ import {ForfeitDialog} from "./ForfeitButtonDialog";
 export interface ForfeitGameProps {
     gameId: number
     lobbyId: number
+    isYourTurn: boolean
 }
 
 export function ForfeitButton(props : ForfeitGameProps) {
@@ -37,7 +38,7 @@ export function ForfeitButton(props : ForfeitGameProps) {
 
     return (
         <div>
-            <Button onClick={handleForfeitDialog}> Leave Game
+            <Button onClick={handleForfeitDialog} disabled={!props.isYourTurn}> Leave Game
                 <ExitToAppIcon/>
             </Button>
 

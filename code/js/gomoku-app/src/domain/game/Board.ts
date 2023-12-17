@@ -1,7 +1,7 @@
 
-type BoardCell = 'BLACK' | 'WHITE' | null;
+export type BoardCell = 'BLACK' | 'WHITE' | null;
 export class Board {
-    private size: number;
+    size: number;
     grid: Array<Array<BoardCell>>;
 
     constructor(size: number, grid: Array<Array<BoardCell>>) {
@@ -9,7 +9,16 @@ export class Board {
         this.grid = grid;
     }
 
+}
 
+export class Position {
+    row: number;
+    column: number;
+
+    constructor(row: number, column: number) {
+        this.row = row;
+        this.column = column;
+    }
 }
 
 export function  initializeBoard(size: number): Array<Array<BoardCell>> {
