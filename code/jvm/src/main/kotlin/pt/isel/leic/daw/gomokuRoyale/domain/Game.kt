@@ -178,7 +178,9 @@ data class Game internal constructor(
         if (board !is BoardRun) throw BoardWrongType("Board type must be BoardRun")
         val winner = if (board.turn.user == user1) user2 else user1
         val newBoard = BoardWin(board.internalBoard, board.userToPlayer(winner))
-        return copy(board = newBoard)
+        val newUser1 = calculateUser(user1, newBoard, user2)
+        val newUser2 = calculateUser(user2, newBoard, user1)
+        return copy(board = newBoard, user1 = newUser1, user2 = newUser2)
     }
 
     fun checkGameEnd(): Boolean {

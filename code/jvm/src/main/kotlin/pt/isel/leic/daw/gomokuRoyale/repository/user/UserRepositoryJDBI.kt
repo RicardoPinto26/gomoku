@@ -137,6 +137,19 @@ class UserRepositoryJDBI(private val handle: Handle) : UserRepository {
             .singleOrNull()
     }
 
+    override fun changeUserRating(id: Int, newRating: Int): Boolean {
+        return handle.createUpdate(
+            """
+                update users
+                set rating = :points
+                where id = :id
+            """.trimIndent()
+        )
+            .bind("points", newRating)
+            .bind("id", id)
+            .execute() == 1
+    }
+
     private data class UserAndTokenModel(
         val id: Int,
         val username: String,

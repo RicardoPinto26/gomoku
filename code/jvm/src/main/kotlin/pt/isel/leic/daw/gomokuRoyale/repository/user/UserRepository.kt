@@ -30,9 +30,13 @@ interface UserRepository {
 
     fun getUserByTokenValidationInfo(tokenValidationInfo: TokenValidationInfo): User?
 
-    /*
-          fun loginUserByUsername(username: String, password: String): User
-
-          fun loginUserByEmail(email: String, password: String): User
+    /**
+     * Changes user rating
+     * @param id id of the user
+     * @param rating new rating of the user
+     *
+     * @return true if the rating was changed, false if not
      */
+
+    fun changeUserRating(id: Int, newRating: Int): Boolean
 }

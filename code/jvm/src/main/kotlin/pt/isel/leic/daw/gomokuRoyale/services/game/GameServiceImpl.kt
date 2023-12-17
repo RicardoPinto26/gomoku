@@ -62,6 +62,7 @@ class GameServiceImpl(
         return transactionManager.run {
             val gameRepo = it.gameRepository
             val lobbyRepo = it.lobbyRepository
+            val userRepo = it.userRepository
             val game = gameRepo.getGameById(gameId) ?: return@run failure(GameForfeitError.GameDoesNotExist)
             val lobbyId =
                 lobbyRepo.getLobbyByGameId(gameId)?.id ?: return@run failure(GameForfeitError.GameDoesNotExist)
@@ -78,6 +79,10 @@ class GameServiceImpl(
                 (newGame.board as BoardWin).winner.user.id,
                 game.board.internalBoard.serializeToJsonString()
             )
+
+            userRepo.changeUserRating(newGame.user1.id, newGame.user1.rating.toInt())
+            userRepo.changeUserRating(newGame.user2.id, newGame.user2.rating.toInt())
+
             success(
                 newGame.toExternalInfo(gameId, lobbyId)
             )
@@ -88,6 +93,7 @@ class GameServiceImpl(
         return transactionManager.run {
             val gameRepo = it.gameRepository
             val lobbyRepo = it.lobbyRepository
+            val userRepo = it.userRepository
             var game = gameRepo.getGameById(gameId) ?: return@run failure(GamePlayError.GameDoesNotExist)
             if (game.checkGameEnd()) return@run failure(GamePlayError.GameAlreadyEnded)
             val lobby = lobbyRepo.getLobbyByGameId(gameId) ?: return@run failure(GamePlayError.GameDoesNotExist)
@@ -148,11 +154,15 @@ class GameServiceImpl(
                                 game.currentOpeningIndex
                             )
 
-                            is BoardWin -> gameRepo.updateGameWinner(
-                                gameId,
-                                (game.board as BoardWin).winner.user.id,
-                                board
-                            )
+                            is BoardWin -> {
+                                gameRepo.updateGameWinner(
+                                    gameId,
+                                    (game.board as BoardWin).winner.user.id,
+                                    board
+                                )
+                                userRepo.changeUserRating(game.user1.id, game.user1.rating.toInt())
+                                userRepo.changeUserRating(game.user2.id, game.user2.rating.toInt())
+                            }
                         }
                     }
 
