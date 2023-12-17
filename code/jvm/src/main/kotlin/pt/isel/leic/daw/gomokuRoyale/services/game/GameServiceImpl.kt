@@ -162,6 +162,8 @@ class GameServiceImpl(
                                 )
                                 userRepo.changeUserRating(game.user1.id, game.user1.rating.toInt())
                                 userRepo.changeUserRating(game.user2.id, game.user2.rating.toInt())
+                                userRepo.increaseGamesPlayed(game.user1.id, 1)
+                                userRepo.increaseGamesPlayed(game.user2.id, 1)
                             }
                         }
                     }

@@ -33,10 +33,12 @@ interface UserRepository {
     /**
      * Changes user rating
      * @param id id of the user
-     * @param rating new rating of the user
+     * @param newRating new rating of the user
      *
      * @return true if the rating was changed, false if not
      */
 
     fun changeUserRating(id: Int, newRating: Int): Boolean
+
+    fun increaseGamesPlayed(id: Int, value: Int): Boolean
 }

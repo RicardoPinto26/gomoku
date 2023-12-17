@@ -150,6 +150,19 @@ class UserRepositoryJDBI(private val handle: Handle) : UserRepository {
             .execute() == 1
     }
 
+    override fun increaseGamesPlayed(id: Int, value: Int): Boolean {
+        return handle.createUpdate(
+            """
+                update users
+                set nr_games_played = nr_games_played + :value
+                where id = :id
+            """.trimIndent()
+        )
+            .bind("value", value)
+            .bind("id", id)
+            .execute() == 1
+    }
+
     private data class UserAndTokenModel(
         val id: Int,
         val username: String,
