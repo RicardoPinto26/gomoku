@@ -104,12 +104,13 @@ class LobbyServiceImpl(
             val lobbyRepo = it.lobbyRepository
             val gameRepo = it.gameRepository
 
-            lobbyRepo.getUserLobbys(user.id).forEach { lobby ->
+            // So para na demo n dar porcaria
+            /*lobbyRepo.getUserLobbys(user.id).forEach { lobby ->
                 when {
-                    !lobby.isLobbyStarted() -> return@run failure(LobbySeekError.UserAlreadyInALobby)
-                    !lobby.isGameFinished() -> return@run failure(LobbySeekError.UserAlreadyInAGame)
+                    //!lobby.isLobbyStarted() -> return@run failure(LobbySeekError.UserAlreadyInALobby)
+                    //lobby.isGameFinished() -> return@run failure(LobbySeekError.UserAlreadyInAGame)
                 }
-            }
+            }*/
 
             val userRating = user.rating.toInt()
             val lobbyID: Int? = lobbyRepo.seekLobbyID(
@@ -144,6 +145,7 @@ class LobbyServiceImpl(
                     PublicLobbyExternalInfo(
                         lobby,
                         gameRepo.getGameById(gameId)?.toExternalInfo(gameId, lobby.id)
+                        //newGame.toExternalInfo(gameId, lobby.id)
                     )
                 )
             }

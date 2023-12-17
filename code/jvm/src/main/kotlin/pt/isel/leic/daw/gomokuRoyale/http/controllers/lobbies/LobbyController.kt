@@ -170,9 +170,12 @@ class LobbyController(
                                             `class` = listOf(Rels.GAME),
                                             rel = listOf(Rels.ITEM, Rels.GAME),
                                             properties = res.value.game,
-                                            actions = listOf(
+                                            /*actions = listOf(
                                                 Actions.play,
                                                 Actions.forfeitGame
+                                            )*/
+                                            links = listOf(
+                                                Links.self(Uris.Game.byId(res.value.id, res.value.game.id))
                                             )
                                         )
                                     )
@@ -215,10 +218,10 @@ class LobbyController(
                                                 `class` = listOf(Rels.GAME),
                                                 rel = listOf(Rels.ITEM, Rels.GAME),
                                                 properties = it.game,
-                                                actions = listOf(
+                                                /*actions = listOf(
                                                     Actions.play,
                                                     Actions.forfeitGame
-                                                )
+                                                )*/
                                             )
                                         )
                                     }

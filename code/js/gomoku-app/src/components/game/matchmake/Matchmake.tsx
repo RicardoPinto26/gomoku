@@ -2,11 +2,11 @@ import React, {useEffect} from "react";
 
 import Page from "../../common/Page";
 import LoadingSpinner from "../../common/LoadingSpinner";
-import {GameSettings, useMatchmakingConfig} from "./GameSettings";
+import {useMatchmakingConfig} from "./GameSettings";
 import Typography from "@mui/material/Typography";
 import {useNavigate} from "react-router-dom";
-import {apiUrl} from "../../../utils/configs";
-import {getLobbyState} from "../../../services/lobby/LobbyServices";
+import {getLobbyState, matchMake} from "../../../services/lobby/LobbyServices";
+import Button from "@mui/material/Button";
 
 
 export function Matchmake() {
@@ -18,9 +18,9 @@ export function Matchmake() {
 
     const navigate = useNavigate();
 
-    // HAMMER
+    // TODO usar SerinEntity dps da discussao xD
     useEffect(() => {
-        console.log("MatchMake");
+        console.log("MatchMake")
         matchMake(settings).then(r => {
             console.log(r);
             if (r.status == 409) {
@@ -42,7 +42,8 @@ export function Matchmake() {
             }
             if (r.status == 200) {
                 console.log("Matchmake success - joined lobby");
-                navigate(`/game/${r.response.properties.gameId}`);
+                navigate(r.response.entities[0].links[0].href.replace("/api", ""))
+
             }
             setWaitingForOpponent(true);
 
@@ -56,18 +57,6 @@ export function Matchmake() {
         return () => clearInterval(interval);
     }, [lobbyId, waitingForOpponent]);
 
-    async function matchMake(settings: GameSettings): Promise<{ status: number, response: any }> {
-        const res = await fetch(`${apiUrl}/lobby/seek`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            credentials: "include",
-            body: JSON.stringify(settings)
-        });
-        const body = await res.json();
-        return {response: body, status: res.status};
-    }
 
     async function checkIfOpponentJoined() {
         if (!waitingForOpponent || lobbyId == -1) return;
@@ -76,10 +65,10 @@ export function Matchmake() {
             const lobby = await getLobbyState(lobbyId);
             if (lobby.properties.user2 != null) {
                 setWaitingForOpponent(false);
-                const gameId = lobby.properties.gameId;
+                const gameId = lobby.entities[0].links[0].href.replace("/api", "");
                 console.log("Opponent joined, navigating to game");
                 console.log(gameId);
-                navigate(`/game/${gameId}}`);
+                navigate(`${gameId}`);
             }
         } catch (error) {
             console.log("Error in checkIfOpponentJoined:", error);
@@ -94,6 +83,7 @@ export function Matchmake() {
                 <Typography variant="h6" gutterBottom>
                     {"Already in lobby... Waiting for opponent"}
                 </Typography>
+                <Button>Leave Lobby</Button>
             </Page>
         );
     }
@@ -104,6 +94,7 @@ export function Matchmake() {
                 <Typography variant="h6" gutterBottom>
                     {"Already in game... Leave or finish your game first!"}
                 </Typography>
+                <Button>Go to Game</Button>
             </Page>
         );
     } else {
