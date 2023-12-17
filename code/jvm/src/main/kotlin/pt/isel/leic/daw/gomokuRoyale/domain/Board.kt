@@ -3,6 +3,8 @@ package pt.isel.leic.daw.gomokuRoyale.domain
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import kotlin.math.max
+import kotlin.math.min
 import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.BoardIsBoardDraw
 import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.BoardIsBoardWin
 import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.InvalidPosition
@@ -10,8 +12,6 @@ import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.NotYourTurn
 import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.PositionAlreadyPlayed
 import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.UserNotInBoard
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
-import kotlin.math.max
-import kotlin.math.min
 
 sealed interface Board {
     val internalBoard: List<List<Piece?>>
@@ -177,8 +177,8 @@ class BoardRun internal constructor(
      */
     private fun checkWin(board: List<List<Piece?>>, piece: Piece, position: Position): Boolean =
         checkVerticalWin(board, piece, position) ||
-            checkHorizontalWin(board, piece, position) ||
-            checkSlashAndBackslashWin(board, piece, position)
+                checkHorizontalWin(board, piece, position) ||
+                checkSlashAndBackslashWin(board, piece, position)
 
     /**
      * Checks if vertical line from a given [Position] creates a win
@@ -252,6 +252,7 @@ class BoardRun internal constructor(
                 column += direction
             }
             if (overflowAllowed && winningPieces >= winningLength || winningPieces == winningLength) return true
+            winningPieces = 0
         }
         return false
     }
