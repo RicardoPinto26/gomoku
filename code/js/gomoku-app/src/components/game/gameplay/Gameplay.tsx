@@ -4,7 +4,7 @@ import {Game} from "../../../domain/game/Game";
 import {GameServices} from "../../../services/game/GameServices";
 import {ActionType, GamePlayInputModel} from "../../../services/game/models/GamePlayInputModel";
 import {useCurrentUser} from "../../../utils/Authn";
-import {initializeBoard, Position} from "../../../domain/game/Board";
+import {initializeBoard} from "../../../domain/game/Board";
 import {handleRequest} from "../../../services/utils/fetchSiren";
 import {handleError} from "../../../services/utils/errorUtils";
 import {useNavigate} from "react-router-dom";
@@ -68,7 +68,7 @@ export function GameBoard(game: GameProps) {
                 refreshGame()
                     .then(r => {
                         console.log("refreshing...")
-                        if(winner){
+                        if (winner) {
                             handleOpenWinnerDialog()
                         }
                     })
@@ -119,7 +119,7 @@ export function GameBoard(game: GameProps) {
         const [error, res] = await handleRequest(GameServices.play(game.params.lId, game.params.gId, modal))
         if (error) {
             handleError(error, setError, navigate)
-            return
+            return null
         }
         console.log(res)
         const newGame = new Game(res.properties!, game.game.config)
@@ -127,6 +127,7 @@ export function GameBoard(game: GameProps) {
         setTurn(newGame.turn.username)
         setCurrentOpeningIndex(newGame.openingIndex)
         setWinner(newGame.winner ? newGame.winner.username : null)
+        return newGame.winner ? newGame.winner.username : null
     }
 
     async function refreshGame() {
@@ -152,7 +153,7 @@ export function GameBoard(game: GameProps) {
 
         if (board[row][column] === null) {
             playMove(row, column).then(r => {
-                if (winner != null) {
+                if (r != null) {
                     handleOpenWinnerDialog()
                 }
             })
