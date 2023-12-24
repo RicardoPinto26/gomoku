@@ -57,7 +57,7 @@ class LobbyServiceImpl(
             val lobby = lobbyRepo.getLobbyById(lobbyId) ?: return@run failure(LobbyJoinError.LobbyNotFound)
             if (lobby.compareUsers(user.id)) return@run failure(LobbyJoinError.UserAlreadyInLobby)
             if (lobby.isLobbyFull()) return@run failure(LobbyJoinError.LobbyFull)
-            val id = lobbyRepo.joinLobby(user.id, lobbyId)
+            lobbyRepo.joinLobby(user.id, lobbyId)
 
             val newLobby = lobbyRepo.getLobbyById(lobbyId) ?: return@run failure(LobbyJoinError.LobbyNotFound)
 
@@ -145,7 +145,7 @@ class LobbyServiceImpl(
                     PublicLobbyExternalInfo(
                         lobby,
                         gameRepo.getGameById(gameId)?.toExternalInfo(gameId, lobby.id)
-                        //newGame.toExternalInfo(gameId, lobby.id)
+                        // newGame.toExternalInfo(gameId, lobby.id)
                     )
                 )
             }
@@ -162,6 +162,7 @@ class LobbyServiceImpl(
             return@run success(
                 PublicLobbyExternalInfo(
                     createdLobbyID,
+                    "Seeked Lobby",
                     user.toPublicExternalInfo(),
                     null,
                     gridSize,

@@ -37,7 +37,6 @@ object Uris {
         const val GET_LOBBY_DETAILS = "$PREFIX/lobby/{lobbyId}"
         const val SEEK_LOBBY = "$PREFIX/lobby/seek"
         const val GET_AVAILABLE_LOBBIES = "$PREFIX/lobby/available"
-        const val GET_LOBBY_STATE = "$PREFIX/lobby/{lobbyId}/state"
 
         fun byId(id: Int) = UriTemplate(GET_LOBBY_DETAILS).expand(id)
     }
