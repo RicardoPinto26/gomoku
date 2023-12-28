@@ -3,6 +3,7 @@ package pt.isel.leic.daw.gomokuRoyale.http.controllers.lobbies.models
 import pt.isel.leic.daw.gomokuRoyale.domain.Opening
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 import pt.isel.leic.daw.gomokuRoyale.services.lobby.PublicLobbyExternalInfo
+import pt.isel.leic.daw.gomokuRoyale.services.users.PublicUserExternalInfo
 
 /**
  * Lobby seek output information
@@ -15,8 +16,8 @@ import pt.isel.leic.daw.gomokuRoyale.services.lobby.PublicLobbyExternalInfo
  * @property pointsMargin allowed ratings margin each [User]
  */
 class LobbySeekOutputModel(
-    val usernameCreator: String, // user1
-    val usernameJoin: String? = null, // user2
+    val user1: PublicUserExternalInfo, // user1
+    val user2: PublicUserExternalInfo? = null, // user2
     val lobbyId: Int,
     val gameId: Int? = null,
     val gridSize: Int,
@@ -26,8 +27,8 @@ class LobbySeekOutputModel(
     val overflow: Boolean
 ) {
     constructor(plei: PublicLobbyExternalInfo) : this(
-        plei.user1.username,
-        plei.user2?.username,
+        plei.user1,
+        plei.user2,
         plei.id,
         plei.game?.id,
         plei.gridSize,

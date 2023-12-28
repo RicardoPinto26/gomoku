@@ -78,6 +78,7 @@ typealias LobbiesAvailableResult = Either<GetLobbiesError, LobbiesAvailableExter
 // Get Lobby Details
 data class PublicLobbyExternalInfo(
     val id: Int,
+    val name: String,
     val user1: PublicUserExternalInfo,
     val user2: PublicUserExternalInfo? = null,
     val gridSize: Int,
@@ -90,6 +91,7 @@ data class PublicLobbyExternalInfo(
 ) {
     constructor(lobby: Lobby, game: GameExternalInfo? = null) : this(
         lobby.id,
+        lobby.name,
         lobby.user1.toPublicExternalInfo(),
         lobby.user2?.toPublicExternalInfo(),
         lobby.settings.boardSize,

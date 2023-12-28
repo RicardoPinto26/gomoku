@@ -1,10 +1,11 @@
 import {apiUrl} from "../../utils/configs";
 import {EmbeddedSubEntity} from "../../http/media/siren/SubEntity";
 import {Lobby} from "../../domain/Lobby";
-import {get} from "../utils/fetchSiren";
+import {get, post} from "../utils/fetchSiren";
 import {CreateLobbyInputModel} from "./models/CreateLobbyInputModel";
 import {LobbyDetailsOutputModel} from "./models/LobbyDetailsOutputModel";
 import {SirenEntity} from "../../http/media/siren/SirenEntity";
+import {GameSettings} from "../../components/game/matchmake/GameSettings";
 
 
 export async function createLobbyServices(settings: CreateLobbyInputModel): Promise<{ status: number, response: any }> {
@@ -62,8 +63,21 @@ export async function getLobbyState(lobby: number) {
         },
         credentials: "include",
     })).json();
-    console.log("Entrou getLobbyState: ");
     console.log(res);
     return res;
+}
+
+export async function matchMake(settings: GameSettings): Promise<{ status: number, response: any }> {
+    //return post(`/lobby/seek`, JSON.stringify(settings))
+    const res = await fetch(`${apiUrl}/lobby/seek`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(settings)
+    });
+    const body = await res.json();
+    return {response: body, status: res.status};
 }
 
