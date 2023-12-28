@@ -18,11 +18,20 @@ class Problem(
 
 ) {
     companion object {
-        private const val MEDIA_TYPE = "application/problem+json"
+        const val MEDIA_TYPE = "application/problem+json"
         fun response(problem: Problem) = ResponseEntity
             .status(problem.status)
             .header("Content-Type", MEDIA_TYPE)
             .body<Any>(problem)
+
+        val notAuthenticatedString = """
+            {
+                "type": "notAuthenticated.com",
+                "title": "Not authenticated",
+                "status": 401,
+                "detail": "You need to provide authentication credentials to access this resource"
+            }
+        """.trimIndent()
 
         val userAlreadyExists = Problem(
             "userAlreadyExists.com",

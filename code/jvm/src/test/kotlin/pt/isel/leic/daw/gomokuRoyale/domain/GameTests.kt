@@ -11,6 +11,7 @@ import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.UserNotInGame
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
 import kotlin.test.Test
 import kotlin.test.assertIs
+import kotlin.test.assertNotEquals
 
 class GameTests {
     private lateinit var user1: User
@@ -54,8 +55,8 @@ class GameTests {
     fun `forfeitGame should update board and user ratings correctly`() {
         val newGame = game.forfeitGame()
         assertIs<BoardWin>(newGame.board)
-        assertEquals(user1.rating, newGame.user1.rating) // user1's rating should not change
-        assertEquals(user2.rating, newGame.user2.rating) // user2's rating should not change
+        assertNotEquals(user1.rating, newGame.user1.rating) // user1's rating should change
+        assertNotEquals(user2.rating, newGame.user2.rating) // user2's rating should change
     }
 
     @Test

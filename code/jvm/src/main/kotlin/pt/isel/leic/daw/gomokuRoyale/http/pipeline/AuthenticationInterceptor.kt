@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component
 import org.springframework.web.method.HandlerMethod
 import org.springframework.web.servlet.HandlerInterceptor
 import pt.isel.leic.daw.gomokuRoyale.domain.AuthenticatedUser
+import pt.isel.leic.daw.gomokuRoyale.http.media.Problem
 
 /**
  * Custom [HandlerInterceptor] for requests that need user authentication.
@@ -32,6 +33,10 @@ class AuthenticationInterceptor(
             return if (user == null) {
                 response.status = 401
                 response.addHeader(NAME_WWW_AUTHENTICATE_HEADER, RequestTokenProcessor.SCHEME)
+                response.contentType = Problem.MEDIA_TYPE
+                response.writer.write(
+                    Problem.notAuthenticatedString
+                )
                 false
             } else {
                 AuthenticatedUserArgumentResolver.addUserTo(user, request)
