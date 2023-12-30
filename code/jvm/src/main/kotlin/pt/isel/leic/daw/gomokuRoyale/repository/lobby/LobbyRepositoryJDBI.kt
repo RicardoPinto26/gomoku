@@ -69,15 +69,15 @@ class LobbyRepositoryJDBI(private val handle: Handle) : LobbyRepository {
     override fun getUserLobbys(userId: Int): List<Lobby> =
         handle.createQuery(
             """
-            select
+            SELECT 
                 l.name as game_name, g.opening_index as game_index, g.board as game_board, g.turn as game_turn, g.winner as game_winner, g.state as game_state,
-                g.black_player as game_black_player, g.white_player as game_white_player, g.opening_variant as game_opening_variant,
+                g.id as game_id, g.black_player as game_black_player, g.white_player as game_white_player, g.opening_variant as game_opening_variant,
                 l.*,
                 user1.id as user1_id, user1.username as user1_username, user1.email as user1_email,
                 user1.password as user1_password, user1.rating as user1_rating, user1.nr_games_played as user1_nr_games_played,
                 user2.id as user2_id, user2.username as user2_username, user2.email as user2_email,
                 user2.password as user2_password, user2.rating as user2_rating, user2.nr_games_played as user2_nr_games_played
-            from lobbys as l
+            FROM lobbys l
             LEFT JOIN users as user1 ON l.creator_user_id = user1.id
             LEFT JOIN users as user2 ON l.join_user_id = user2.id
             LEFT JOIN games g on l.id = g.lobby_id
@@ -96,7 +96,10 @@ class LobbyRepositoryJDBI(private val handle: Handle) : LobbyRepository {
 
     override fun getLobbyByGameId(gameId: Int): Lobby? =
         handle.createQuery(
-            """select
+            """
+                SELECT 
+                l.name as game_name, g.opening_index as game_index, g.board as game_board, g.turn as game_turn, g.winner as game_winner, g.state as game_state,
+                g.id as game_id, g.black_player as game_black_player, g.white_player as game_white_player, g.opening_variant as game_opening_variant,
                 l.*,
                 user1.id as user1_id, user1.username as user1_username, user1.email as user1_email,
                 user1.password as user1_password, user1.rating as user1_rating, user1.nr_games_played as user1_nr_games_played,
@@ -105,7 +108,7 @@ class LobbyRepositoryJDBI(private val handle: Handle) : LobbyRepository {
             FROM lobbys l
             LEFT JOIN users as user1 ON l.creator_user_id = user1.id
             LEFT JOIN users as user2 ON l.join_user_id = user2.id
-            join games as g on l.id = g.lobby_id
+            LEFT JOIN games g on l.id = g.lobby_id
             where g.id = :game_id
             """.trimIndent()
         )
@@ -124,11 +127,20 @@ class LobbyRepositoryJDBI(private val handle: Handle) : LobbyRepository {
     ): Int? =
         handle.createQuery(
             """
-            select l.id
-            from lobbys as l
-            join users as u on l.creator_user_id = u.id
+            SELECT 
+                l.name as game_name, g.opening_index as game_index, g.board as game_board, g.turn as game_turn, g.winner as game_winner, g.state as game_state,
+                g.id as game_id, g.black_player as game_black_player, g.white_player as game_white_player, g.opening_variant as game_opening_variant,
+                l.*,
+                user1.id as user1_id, user1.username as user1_username, user1.email as user1_email,
+                user1.password as user1_password, user1.rating as user1_rating, user1.nr_games_played as user1_nr_games_played,
+                user2.id as user2_id, user2.username as user2_username, user2.email as user2_email,
+                user2.password as user2_password, user2.rating as user2_rating, user2.nr_games_played as user2_nr_games_played
+            FROM lobbys l
+            LEFT JOIN users as user1 ON l.creator_user_id = user1.id
+            LEFT JOIN users as user2 ON l.join_user_id = user2.id
+            LEFT JOIN games g on l.id = g.lobby_id
             where l.join_user_id is null and l.grid_size = :grid_size and l.opening = :opening and l.winning_lenght = :winning_length and l.overflow = :overflow
-            AND u.rating between :min_rating and :max_rating
+            AND user1.rating between :min_rating and :max_rating
             """.trimIndent()
         )
             .bind("grid_size", gridSize)
@@ -143,9 +155,9 @@ class LobbyRepositoryJDBI(private val handle: Handle) : LobbyRepository {
     override fun getAvailableLobbies(): List<Lobby> =
         handle.createQuery(
             """
-            select
+            SELECT 
                 l.name as game_name, g.opening_index as game_index, g.board as game_board, g.turn as game_turn, g.winner as game_winner, g.state as game_state,
-                g.black_player as game_black_player, g.white_player as game_white_player, g.opening_variant as game_opening_variant,
+                g.id as game_id, g.black_player as game_black_player, g.white_player as game_white_player, g.opening_variant as game_opening_variant,
                 l.*,
                 user1.id as user1_id, user1.username as user1_username, user1.email as user1_email,
                 user1.password as user1_password, user1.rating as user1_rating, user1.nr_games_played as user1_nr_games_played,
