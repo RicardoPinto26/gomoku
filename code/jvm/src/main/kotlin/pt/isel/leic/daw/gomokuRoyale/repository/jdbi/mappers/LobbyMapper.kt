@@ -40,10 +40,11 @@ class LobbyMapper : RowMapper<Lobby> {
         val createdAt = rs.getTimestamp("created_at").toInstant()
 
         val user1 = UserMapper().map(rs, "user1_")
+        logger.info("lobby[$id]: joinUserId > 0 = $joinUserId > 0 = ${joinUserId > 0}")
         val user2 = if (joinUserId > 0) UserMapper().map(rs, "user2_") else null
-
-        logger.info("LobbyMapper: $id, $joinUserId, $gridSize, $pointsMargin, $createdAt")
-        if(user2 != null) {
+        val gameID = rs.getInt("game_id")
+        logger.info("LobbyMapper: $id, $joinUserId ($user2), $gridSize, $pointsMargin, $createdAt")
+        if(user2 != null && gameID != 0) {
             val gameIndex = rs.getInt("game_index")
             val gameState = rs.getString("game_state")
             val winner = rs.getInt("game_winner")
@@ -124,7 +125,7 @@ class LobbyMapper : RowMapper<Lobby> {
                 id,
                 null,
                 user1,
-                null,
+                user2,
                 pointsMargin,
                 Date.from(createdAt),
                 settings
