@@ -9,7 +9,7 @@ interface LobbyService {
         name: String,
         gridSize: Int,
         opening: String,
-        winningLenght: Int,
+        winningLength: Int,
         pointsMargin: Int,
         overflow: Boolean
     ): LobbyCreationResult

@@ -47,6 +47,8 @@ fun LobbyServicesError.toResponse() = when (this) {
     is LobbyCreationError -> when (this) {
         LobbyCreationError.UserNotFound ->
             Problem.response(Problem.userWithUsernameNotFound)
+        is LobbyCreationError.UserAlreadyInALobby ->
+            Problem.response(Problem.userAlreadyInALobby(this.lobbyID))
     }
 
     is LobbyJoinError -> when (this) {
@@ -61,14 +63,13 @@ fun LobbyServicesError.toResponse() = when (this) {
 
         LobbyJoinError.UserAlreadyInLobby ->
             Problem.response(Problem.userAlreadyInLobby)
+        is LobbyJoinError.UserAlreadyInALobby ->
+            Problem.response(Problem.userAlreadyInALobby(this.lobbyID))
     }
 
     is LobbySeekError -> when (this) {
-        LobbySeekError.UserAlreadyInALobby ->
-            Problem.response(Problem.userAlreadyInALobby)
-
-        LobbySeekError.UserAlreadyInAGame ->
-            Problem.response(Problem.userAlreadyInAGame)
+        is LobbySeekError.UserAlreadyInALobby ->
+            Problem.response(Problem.userAlreadyInALobby(this.lobbyID))
     }
 
     is GetLobbiesError -> when (this) {

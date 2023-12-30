@@ -10,12 +10,11 @@ import org.springframework.http.ResponseEntity
  * @property status the HTTP status code of the problem
  * @property detail a more thorough description of the problem
  */
-class Problem(
+open class Problem(
     val type: String,
     val title: String,
     val status: Int,
     val detail: String
-
 ) {
     companion object {
         const val MEDIA_TYPE = "application/problem+json"
@@ -138,13 +137,6 @@ class Problem(
             "The lobby already has a game"
         )
 
-        val noLobbiesAvailable = Problem(
-            "noLobbiesAvailable.com",
-            "No lobbies available",
-            404,
-            "No lobbies available"
-        )
-
         val userNotInLobby = Problem(
             "userNotInLobby.com",
             "You don't have access to that lobby",
@@ -173,19 +165,24 @@ class Problem(
             "You don't have access to that game"
         )
 
-        val userAlreadyInALobby = Problem(
-            "userAlreadyInALobby",
-            "User is already in a Lobby",
-            409,
-            "You're already in a lobby. Please leave that lobby to join another."
-        )
+        @Suppress("unused")
+        class UserAlreadyInALobbyProblem(
+            type: String,
+            title: String,
+            status: Int,
+            detail: String,
+            val lobbyID: Int
+        ) : Problem(type, title, status, detail)
 
-        val userAlreadyInAGame = Problem(
-            "userAlreadyInAGame",
-            "User is already in a Game",
-            409,
-            "You're already in a game. Please leave or finish that game to join another."
-        )
+        val userAlreadyInALobby = { lobbyID: Int ->
+            UserAlreadyInALobbyProblem(
+                "userAlreadyInALobby",
+                "User is already in a Lobby",
+                409,
+                "You're already in a lobby. Please finish that game to join another.",
+                lobbyID
+            )
+        }
 
         val invalidPosition = Problem(
             "invalidPosition.com",
