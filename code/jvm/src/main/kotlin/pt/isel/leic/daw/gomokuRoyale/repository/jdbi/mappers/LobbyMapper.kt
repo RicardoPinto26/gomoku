@@ -1,13 +1,21 @@
 package pt.isel.leic.daw.gomokuRoyale.repository.jdbi.mappers
 
+import java.sql.Date
+import java.sql.ResultSet
 import org.jdbi.v3.core.mapper.RowMapper
 import org.jdbi.v3.core.statement.StatementContext
 import org.slf4j.LoggerFactory
+import pt.isel.leic.daw.gomokuRoyale.domain.BlackPlayer
+import pt.isel.leic.daw.gomokuRoyale.domain.BoardDraw
+import pt.isel.leic.daw.gomokuRoyale.domain.BoardRun
+import pt.isel.leic.daw.gomokuRoyale.domain.BoardWin
+import pt.isel.leic.daw.gomokuRoyale.domain.Game
 import pt.isel.leic.daw.gomokuRoyale.domain.GameSettings
 import pt.isel.leic.daw.gomokuRoyale.domain.Lobby
 import pt.isel.leic.daw.gomokuRoyale.domain.Opening
-import java.sql.Date
-import java.sql.ResultSet
+import pt.isel.leic.daw.gomokuRoyale.domain.WhitePlayer
+import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.UserNotInGame
+import pt.isel.leic.daw.gomokuRoyale.domain.parseJsonToBoard
 
 class LobbyMapper : RowMapper<Lobby> {
     companion object {
@@ -35,16 +43,92 @@ class LobbyMapper : RowMapper<Lobby> {
         val user2 = if (joinUserId > 0) UserMapper().map(rs, "user2_") else null
 
         logger.info("LobbyMapper: $id, $joinUserId, $gridSize, $pointsMargin, $createdAt")
+        if(user2 != null) {
+            val gameIndex = rs.getInt("game_index")
+            val gameState = rs.getString("game_state")
+            val winner = rs.getInt("game_winner")
+            val board = rs.getObject("game_board").toString().parseJsonToBoard()
+            val draw = winner == 0 && gameState == "FINISHED"
+            val openingVariant = rs.getString("game_opening_variant")
+            val blackPlayer = rs.getInt("game_black_player")
+            val whitePlayer = rs.getInt("game_white_player")
+            val turn = when (rs.getInt("game_turn")) {
+                user1.id -> {
+                    if (blackPlayer == user1.id) {
+                        BlackPlayer(user1)
+                    } else {
+                        WhitePlayer(user1)
+                    }
+                }
 
-        return Lobby(
-            name,
-            id,
-            null,
-            user1,
-            user2,
-            pointsMargin,
-            Date.from(createdAt),
-            GameSettings(gridSize, winningLenght, opening, overflow)
-        )
+                user2.id -> {
+                    if (whitePlayer == user2.id) {
+                        WhitePlayer(user2)
+                    } else {
+                        BlackPlayer(user2)
+                    }
+                }
+
+                else ->
+                    throw UserNotInGame("User not in game")
+            }
+
+            val settings = GameSettings(
+                gridSize,
+                winningLenght,
+                if (openingVariant == null) opening else Opening.valueOf(openingVariant),
+                overflow
+            )
+
+
+            return Lobby(
+                name,
+                id,
+                game = Game(
+                    name,
+                    user1,
+                    user2,
+                    settings,
+                    gameIndex,
+                    if (winner == 0 && !draw) {
+                        BoardRun(
+                            settings.winningLength,
+                            settings.overflowAllowed,
+                            BlackPlayer(if (blackPlayer == user1.id) user1 else user2),
+                            WhitePlayer(if (whitePlayer == user2.id) user2 else user1),
+                            turn,
+                            board
+                        )
+                    } else if (draw) {
+                        BoardDraw(board)
+                    } else {
+                        BoardWin(board, if (winner == user1.id) BlackPlayer(user1) else WhitePlayer(user2))
+                    }
+                ),
+                user1,
+                user2,
+                pointsMargin,
+                Date.from(createdAt),
+                settings
+            )
+        } else {
+            val settings = GameSettings(
+                gridSize,
+                winningLenght,
+                opening,
+                overflow
+            )
+
+            return Lobby(
+                name,
+                id,
+                null,
+                user1,
+                null,
+                pointsMargin,
+                Date.from(createdAt),
+                settings
+            )
+        }
     }
 }

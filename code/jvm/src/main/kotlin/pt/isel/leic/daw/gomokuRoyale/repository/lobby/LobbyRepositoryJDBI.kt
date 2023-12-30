@@ -67,6 +67,8 @@ class LobbyRepositoryJDBI(private val handle: Handle) : LobbyRepository {
         handle.createQuery(
             """
             select
+                l.name as game_name, g.opening_index as game_index, g.board as game_board, g.turn as game_turn, g.winner as game_winner, g.state as game_state,
+                g.black_player as game_black_player, g.white_player as game_white_player, g.opening_variant as game_opening_variant,
                 l.*,
                 user1.id as user1_id, user1.username as user1_username, user1.email as user1_email,
                 user1.password as user1_password, user1.rating as user1_rating, user1.nr_games_played as user1_nr_games_played,
@@ -75,6 +77,7 @@ class LobbyRepositoryJDBI(private val handle: Handle) : LobbyRepository {
             from lobbys as l
             LEFT JOIN users as user1 ON l.creator_user_id = user1.id
             LEFT JOIN users as user2 ON l.join_user_id = user2.id
+            LEFT JOIN games g on l.id = g.lobby_id
             where l.creator_user_id = :user_id OR l.join_user_id = :user_id
             """.trimIndent()
         )

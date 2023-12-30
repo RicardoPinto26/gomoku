@@ -40,9 +40,9 @@ class GameMapper : RowMapper<Game> {
         logger.info("mapping gameboard")
         val boardJson = rs.getObject("game_board").toString()
         val currentOpeningIndex = rs.getInt("game_opening_index")
-        val gameState = rs.getString("game_state")
         val blackPlayer = rs.getInt("game_black_player")
         val whitePlayer = rs.getInt("game_white_player")
+        val gameState = rs.getString("game_state")
         val winner = rs.getInt("game_winner")
         val draw = winner == 0 && gameState == "FINISHED"
         val board = boardJson.parseJsonToBoard()

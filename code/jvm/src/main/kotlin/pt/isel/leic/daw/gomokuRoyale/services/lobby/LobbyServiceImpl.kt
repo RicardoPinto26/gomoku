@@ -113,6 +113,8 @@ class LobbyServiceImpl(
             val gameRepo = it.gameRepository
 
             val lobbies = lobbyRepo.getUserLobbys(user.id)
+            println(lobbies)
+
             if (!lobbies.all { lobby -> lobby.isGameFinished() })
                 return@run failure(LobbySeekError.UserAlreadyInALobby(lobbies.first { lobby -> !lobby.isGameFinished() }.id))
 
