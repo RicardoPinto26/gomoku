@@ -20,9 +20,13 @@ export function AuthnContainer({children}: { children: React.ReactNode }) {
         <LoggedInContext.Provider value={
             {
                 user: user,
-                setUser: setUser,
+                setUser: (user) => {
+                    setUser(user)
+                    sessionStorage.setItem('user', user)
+                },
                 clearUser: () => {
                     setUser(undefined)
+                    sessionStorage.removeItem('user')
                 }
             }
         }>
@@ -32,7 +36,11 @@ export function AuthnContainer({children}: { children: React.ReactNode }) {
 }
 
 export function useCurrentUser() {
-    return useContext(LoggedInContext).user
+    const context = useContext(LoggedInContext)
+    const contextUser = context.user
+    const user = (contextUser === undefined) ? sessionStorage.getItem('user') : contextUser
+    if(user !== null) context.setUser(user)
+    return user
 }
 
 export function useSetUser() {

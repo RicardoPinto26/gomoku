@@ -17,7 +17,6 @@ import pt.isel.leic.daw.gomokuRoyale.http.controllers.lobbies.models.LobbySeekOu
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.users.UserController
 import pt.isel.leic.daw.gomokuRoyale.http.media.siren.SirenEntity
 import pt.isel.leic.daw.gomokuRoyale.http.media.siren.SubEntity
-import pt.isel.leic.daw.gomokuRoyale.http.utils.Actions
 import pt.isel.leic.daw.gomokuRoyale.http.utils.Links
 import pt.isel.leic.daw.gomokuRoyale.http.utils.Rels
 import pt.isel.leic.daw.gomokuRoyale.http.utils.Uris
@@ -219,10 +218,12 @@ class LobbyController(
                                                 `class` = listOf(Rels.GAME),
                                                 rel = listOf(Rels.ITEM, Rels.GAME),
                                                 properties = it.game,
+                                                /*
                                                 actions = listOf(
                                                     Actions.play,
                                                     Actions.forfeitGame
                                                 )
+                                                */
                                             )
                                         )
                                     }
@@ -266,10 +267,12 @@ class LobbyController(
                                             `class` = listOf(Rels.GAME),
                                             rel = listOf(Rels.ITEM, Rels.GAME),
                                             properties = res.value.game,
+                                            /*
                                             actions = listOf(
                                                 Actions.play,
                                                 Actions.forfeitGame
                                             ),
+                                             */
                                             links = listOf(
                                                 Links.self(Uris.Game.byId(res.value.id, res.value.game.id))
                                             )
