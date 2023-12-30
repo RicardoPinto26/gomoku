@@ -80,10 +80,10 @@ VALUES ('Game SWAP2', 1, 2, 15, 'SWAP2'),
        ('Game PRO', 2, 1, 19, 'PRO'),
        ('Game SWAP', 1, 2, 15, 'SWAP'),
        ('Game 19', 1, null, 15, 'FREESTYLE'),
-       ('Game 19', 1, null, 15, 'FREESTYLE'),
-       ('Game 15', 1, null, 15, 'FREESTYLE'),
-       ('Game 15', 1, null, 15, 'FREESTYLE'),
-       ('Game 10', 1, null, 10, 'FREESTYLE'),
+       ('Game 17', 1, null, 15, 'FREESTYLE'),
+       ('Game 116', 1, null, 15, 'FREESTYLE'),
+       ('Game 14', 1, null, 15, 'FREESTYLE'),
+       ('Game 9', 1, null, 10, 'FREESTYLE'),
        ('Game 10', 1, null, 10, 'FREESTYLE');
 
 

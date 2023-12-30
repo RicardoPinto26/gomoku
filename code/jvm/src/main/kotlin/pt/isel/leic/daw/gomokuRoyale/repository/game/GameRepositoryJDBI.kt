@@ -7,7 +7,14 @@ import pt.isel.leic.daw.gomokuRoyale.domain.Game
 import pt.isel.leic.daw.gomokuRoyale.domain.user.GameDTO
 
 class GameRepositoryJDBI(private val handle: Handle) : GameRepository {
-    override fun createGame(lobbyId: Int, turn: Int, blackPlayer: Int, whitePlayer: Int, openingIndex: Int, board: String): Int =
+    override fun createGame(
+        lobbyId: Int,
+        turn: Int,
+        blackPlayer: Int,
+        whitePlayer: Int,
+        openingIndex: Int,
+        board: String
+    ): Int =
         handle.createUpdate(
             """
             INSERT INTO games (lobby_id, turn, black_player, white_player, board, opening_index) 
@@ -28,9 +35,8 @@ class GameRepositoryJDBI(private val handle: Handle) : GameRepository {
         return handle.createQuery(
             """
         SELECT 
-            l.name as game_name, g.turn as game_turn, g.board as game_board, g.winner as game_winner,
-             g.opening_index as game_opening_index, g.state as game_state,
-              g.black_player as game_black_player, g.white_player as game_white_player, g.opening_variant as game_opening_variant,
+            l.name as game_name, g.opening_index as game_index, g.board as game_board, g.turn as game_turn, g.winner as game_winner, g.state as game_state,
+                g.id as game_id, g.black_player as game_black_player, g.white_player as game_white_player, g.opening_variant as game_opening_variant,
             l.*,
              user1.id as user1_id, user1.username as user1_username, user1.email as user1_email,
                 user1.password as user1_password, user1.rating as user1_rating, user1.nr_games_played as user1_nr_games_played,

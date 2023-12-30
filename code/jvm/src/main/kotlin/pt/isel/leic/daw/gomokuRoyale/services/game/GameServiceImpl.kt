@@ -82,6 +82,8 @@ class GameServiceImpl(
 
             userRepo.changeUserRating(newGame.user1.id, newGame.user1.rating.toInt())
             userRepo.changeUserRating(newGame.user2.id, newGame.user2.rating.toInt())
+            userRepo.increaseGamesPlayed(newGame.user1.id, 1)
+            userRepo.increaseGamesPlayed(newGame.user2.id, 1)
 
             success(
                 newGame.toExternalInfo(gameId, lobbyId)
