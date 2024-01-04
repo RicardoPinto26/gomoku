@@ -6,14 +6,17 @@ import Button from "@mui/material/Button";
 import {useNavigate} from "react-router-dom";
 import Page from "./common/Page";
 import {useCurrentUser} from "../utils/Authn";
+import {getAndStoreHome} from "../services/home/HomeServices";
 
 /**
  * Home page component
  */
 function Home() {
 
-    const user = useCurrentUser();
+    const user = useCurrentUser()
     const navigate = useNavigate()
+
+    getAndStoreHome()
 
     return (
         <>

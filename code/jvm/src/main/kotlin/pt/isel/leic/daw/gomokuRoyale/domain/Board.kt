@@ -228,33 +228,62 @@ class BoardRun internal constructor(
         return overflowAllowed && winningPieces >= winningLength || winningPieces == winningLength
     }
 
-    /**
-     * Checks if vertical line from a given [Position] creates a win
-     *
-     * @param board list of pieces representing the board
-     * @param piece [Piece] that counts towards a win
-     * @param position to place piece
-     *
-     * @return true if there's a win false otherwise
-     */
     private fun checkSlashAndBackslashWin(board: List<List<Piece?>>, piece: Piece, position: Position): Boolean {
+        return checkSlashWin(board, piece, position) || checkBackslashWin(board, piece, position)
+    }
+
+    private fun checkSlashWin(board: List<List<Piece?>>, piece: Piece, position: Position): Boolean {
+        val a = min(position.row, position.column)
+        val b = if (position.row > position.column) board.size - 1 - position.row else board.size - 1 - position.column
+
+        val minRow = max(0, position.row - a)
+        val minColumn = max(0, position.column - a)
+        val maxRow = min(board.size - 1, position.row + b)
+        val maxColumn = min(board.size - 1, position.column + b)
+
+        println("checking slash from ($minRow, $minColumn) to ($maxRow, $maxColumn)")
         var winningPieces = 0
-        val min = max(0, max(position.column - winningLength + 1, position.row - winningLength + 1))
-        val max = min(board.size - 1, min(position.column + winningLength - 1, position.row + winningLength - 1))
-        for (direction in -1..1 step 2) {
-            var column = if (direction == 1) min else max
-            for (row in min..max) {
-                if (board[row][column] == piece) {
-                    winningPieces++
-                } else {
-                    if (overflowAllowed && winningPieces >= winningLength || winningPieces == winningLength) return true
-                }
-                column += direction
+        var row = minRow
+        var column = maxColumn
+        while (row <= maxRow && column <= maxColumn) {
+            if (board[row][column] == piece) {
+                winningPieces++
+            } else {
+                if (overflowAllowed && winningPieces >= winningLength || winningPieces == winningLength) return true
+                winningPieces = 0
             }
-            if (overflowAllowed && winningPieces >= winningLength || winningPieces == winningLength) return true
-            winningPieces = 0
+
+            row++
+            column--
         }
-        return false
+        return overflowAllowed && winningPieces >= winningLength || winningPieces == winningLength
+    }
+
+    private fun checkBackslashWin(board: List<List<Piece?>>, piece: Piece, position: Position): Boolean {
+        val a = min(position.row, position.column)
+        val b = if (position.row > position.column) board.size - 1 - position.row else board.size - 1 - position.column
+
+        val minRow = max(0, position.row - a)
+        val minColumn = max(0, position.column - a)
+        val maxRow = min(board.size - 1, position.row + b)
+        val maxColumn = min(board.size - 1, position.column + b)
+
+        println("checking backslash from ($minRow, $minColumn) to ($maxRow, $maxColumn)")
+        var winningPieces = 0
+        var row = minRow
+        var column = minColumn
+        while (row <= maxRow && column <= maxColumn) {
+            if (board[row][column] == piece) {
+                winningPieces++
+            } else {
+                if (overflowAllowed && winningPieces >= winningLength || winningPieces == winningLength) return true
+                winningPieces = 0
+            }
+
+            row++
+            column++
+        }
+        return overflowAllowed && winningPieces >= winningLength || winningPieces == winningLength
     }
 
     /**

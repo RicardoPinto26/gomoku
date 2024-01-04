@@ -12,7 +12,6 @@ import pt.isel.leic.daw.gomokuRoyale.http.utils.Uris
 
 @RestController
 class HomeController {
-
     @GetMapping(Uris.HOME)
     fun getHome(): SirenEntity<HomeOutputModel> {
         val authorsModels = listOf(
@@ -39,18 +38,22 @@ class HomeController {
             description = "Gomoku Royale is a game where you can play Gomoku against other players in real time.",
             authors = authorsModels
         )
-
-        return SirenEntity(
-            `class` = listOf(Rels.HOME),
-            properties = homeOutputModel,
-            links = listOf(
-                Links.self(Uris.home())
-            ),
-            actions = listOf(
-                Actions.listUsers,
-                Actions.register,
-                Actions.login
+        try {
+            return SirenEntity(
+                `class` = listOf(Rels.HOME),
+                properties = homeOutputModel,
+                links = listOf(
+                    Links.self(Uris.home())
+                ),
+                actions = listOf(
+                    Actions.listUsers,
+                    Actions.register,
+                    Actions.login
+                )
             )
-        )
+        } catch (t: Throwable) {
+            println(t.cause)
+            throw t
+        }
     }
 }

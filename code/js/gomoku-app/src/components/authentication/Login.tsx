@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {Navigate, useLocation, useNavigate} from 'react-router-dom';
 import {useSetUser} from '../../utils/Authn';
-import {login} from "../../services/users/UserServices";
+import {login, storeLoginUrls} from "../../services/users/UserServices";
 import reduce from "./utils/Reduce";
 import Page from '../common/Page';
 import Button from "@mui/material/Button";
@@ -30,6 +30,7 @@ export function Login() {
         login(username, password)
             .then(res => {
                 if (res) {
+                    storeLoginUrls(res)
                     console.log(`setUser(${res.properties?.token})`);
                     setUser(username);
                     dispatch({type: 'success'});

@@ -19,6 +19,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AccountBoxOutlinedIcon from '@mui/icons-material/AccountBoxOutlined';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
+import {logout} from "../../services/users/UserServices";
 
 const pages = [
     {name: 'Play', href: '/play', auth: true, icon: <VideogameAssetIcon/>},
@@ -62,12 +63,12 @@ export function NavBar() {
             name:'Logout',
             icon: <LogoutOutlinedIcon/>,
             callback: async () => {
-                if(!user){
+                if(!user) {
                     navigate('/')
                     return
                 }
 
-                //await logout(user)
+                await logout()
                 userManager.clearUser()
                 navigate('/')
             }

@@ -123,6 +123,30 @@ class BoardTests {
     }
 
     @Test
+    fun `mega teste`() {
+        val board = BoardRun(
+            boardSize = 15,
+            winningLength = 5,
+            overflowAllowed = true,
+            player1 = player1,
+            player2 = player2,
+            turn = player2
+        )
+            .placePiece(Piece.BLACK, Position(5, 6), player2.user)
+            .placePiece(Piece.WHITE, Position(5, 7), player1.user)
+            .placePiece(Piece.BLACK, Position(6, 6), player2.user)
+            .placePiece(Piece.WHITE, Position(7, 6), player1.user)
+            .placePiece(Piece.BLACK, Position(6, 7), player2.user)
+            .placePiece(Piece.WHITE, Position(4, 8), player1.user)
+            .placePiece(Piece.BLACK, Position(7, 8), player2.user)
+            .placePiece(Piece.WHITE, Position(3, 9), player1.user)
+            .placePiece(Piece.BLACK, Position(8, 9), player2.user)
+            .placePiece(Piece.WHITE, Position(9, 10), player1.user)
+            .placePiece(Piece.BLACK, Position(4, 5), player2.user)
+        assertIs<BoardWin>(board)
+    }
+
+    @Test
     fun testBoardRunPlacePiece() {
         val newBoard = boardRun.placePiece(piece, position, user1)
         assert(newBoard is BoardRun)

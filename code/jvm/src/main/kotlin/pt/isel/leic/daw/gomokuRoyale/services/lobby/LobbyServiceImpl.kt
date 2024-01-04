@@ -35,8 +35,9 @@ class LobbyServiceImpl(
         return transactionManager.run {
             val lobbyRepo = it.lobbyRepository
             val lobbies = lobbyRepo.getUserLobbys(user.id)
-            if (!lobbies.all { lobby -> lobby.isGameFinished() })
+            if (!lobbies.all { lobby -> lobby.isGameFinished() }) {
                 return@run failure(LobbyCreationError.UserAlreadyInALobby(lobbies.first { lobby -> !lobby.isGameFinished() }.id))
+            }
             val id = lobbyRepo.createLobby(name, user.id, gridSize, opening, winningLength, pointsMargin, overflow)
             return@run success(
                 LobbyExternalInfo(
@@ -59,8 +60,9 @@ class LobbyServiceImpl(
             val gameRepo = it.gameRepository
 
             val lobbies = lobbyRepo.getUserLobbys(user.id)
-            if (!lobbies.all { lobby -> lobby.isGameFinished() })
+            if (!lobbies.all { lobby -> lobby.isGameFinished() }) {
                 return@run failure(LobbyJoinError.UserAlreadyInALobby(lobbies.first { lobby -> !lobby.isGameFinished() }.id))
+            }
 
             val lobby = lobbyRepo.getLobbyById(lobbyId) ?: return@run failure(LobbyJoinError.LobbyNotFound)
             if (lobby.compareUsers(user.id)) return@run failure(LobbyJoinError.UserAlreadyInLobby)
@@ -115,8 +117,9 @@ class LobbyServiceImpl(
             val lobbies = lobbyRepo.getUserLobbys(user.id)
             println(lobbies)
 
-            if (!lobbies.all { lobby -> lobby.isGameFinished() })
+            if (!lobbies.all { lobby -> lobby.isGameFinished() }) {
                 return@run failure(LobbySeekError.UserAlreadyInALobby(lobbies.first { lobby -> !lobby.isGameFinished() }.id))
+            }
 
             val userRating = user.rating.toInt()
             val lobbyID: Int? = lobbyRepo.seekLobbyID(

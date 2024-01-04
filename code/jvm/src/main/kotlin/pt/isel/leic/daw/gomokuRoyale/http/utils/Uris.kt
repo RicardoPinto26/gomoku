@@ -7,25 +7,23 @@ object Uris {
 
     const val PREFIX = "/api"
     const val HOME = PREFIX
+    fun home() = URI(HOME)
+    fun users() = URI(Users.PREFIX)
+    fun userHome() = URI(Users.HOME)
+    fun loginUser() = URI(Users.TOKEN)
+    fun logoutUser() = URI(Users.TOKEN)
 
-    fun home(): URI = URI(HOME)
-    fun users(): URI = URI(Users.PREFIX)
-    fun userHome(): URI = URI(Users.HOME)
-    fun loginUser(): URI = URI(Users.TOKEN)
-    fun logoutUser(): URI = URI(Users.LOGOUT)
+    fun seekLobby() = URI(Lobby.SEEK_LOBBY)
+    fun listLobbies() = URI(Lobby.GET_AVAILABLE_LOBBIES)
 
-    fun seekLobby(): URI = URI(Lobby.SEEK_LOBBY)
-    fun listLobbies(): URI = URI(Lobby.GET_AVAILABLE_LOBBIES)
-
-    fun play(): URI = URI(Game.PLAY_GAME)
-    fun forfeitGame(): URI = URI(Game.FORFEIT_GAME)
+    fun play(lobbyID: Int, gameID: Int) = UriTemplate(Game.PLAY_GAME).expand(lobbyID, gameID)
+    fun forfeitGame(lobbyID: Int, gameID: Int) = UriTemplate(Game.FORFEIT_GAME).expand(lobbyID, gameID)
 
     object Users {
         const val PREFIX = "${Uris.PREFIX}/users"
         const val HOME = "$PREFIX/home"
         const val DETAILS = "$PREFIX/{username}"
         const val TOKEN = "$PREFIX/token"
-        const val LOGOUT = "$PREFIX/logout"
 
         fun byUsername(username: String) = UriTemplate(DETAILS).expand(username)
     }

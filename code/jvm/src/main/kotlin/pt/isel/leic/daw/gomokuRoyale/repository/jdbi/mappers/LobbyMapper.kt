@@ -1,7 +1,5 @@
 package pt.isel.leic.daw.gomokuRoyale.repository.jdbi.mappers
 
-import java.sql.Date
-import java.sql.ResultSet
 import org.jdbi.v3.core.mapper.RowMapper
 import org.jdbi.v3.core.statement.StatementContext
 import org.slf4j.LoggerFactory
@@ -16,6 +14,8 @@ import pt.isel.leic.daw.gomokuRoyale.domain.Opening
 import pt.isel.leic.daw.gomokuRoyale.domain.WhitePlayer
 import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.UserNotInGame
 import pt.isel.leic.daw.gomokuRoyale.domain.parseJsonToBoard
+import java.sql.Date
+import java.sql.ResultSet
 
 class LobbyMapper : RowMapper<Lobby> {
     companion object {
@@ -44,7 +44,7 @@ class LobbyMapper : RowMapper<Lobby> {
         val user2 = if (joinUserId > 0) UserMapper().map(rs, "user2_") else null
         val gameID = rs.getInt("game_id")
         logger.info("LobbyMapper: $id, $joinUserId ($user2), $gridSize, $pointsMargin, $createdAt")
-        if(user2 != null && gameID != 0) {
+        if (user2 != null && gameID != 0) {
             val gameIndex = rs.getInt("game_index")
             val gameState = rs.getString("game_state")
             val winner = rs.getInt("game_winner")
@@ -80,7 +80,6 @@ class LobbyMapper : RowMapper<Lobby> {
                 if (openingVariant == null) opening else Opening.valueOf(openingVariant),
                 overflow
             )
-
 
             return Lobby(
                 name,

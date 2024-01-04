@@ -14,6 +14,6 @@ data class Field(
     val name: String,
     val `class`: List<String>? = null,
     val type: String? = null,
-    val value: Any? = null,
+    val value: String? = null,
     val title: String? = null
 )

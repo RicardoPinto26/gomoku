@@ -29,7 +29,7 @@ object Actions {
     val logout = Action(
         name = Rels.LOGOUT,
         title = "Logout",
-        method = Method.POST,
+        method = Method.DELETE,
         href = Uris.logoutUser()
     )
 
@@ -47,17 +47,17 @@ object Actions {
         href = Uris.listLobbies()
     )
 
-    val play = Action(
+    fun play(lobbyID: Int, gameID: Int) = Action(
         name = Rels.PLAY,
         title = "Play",
         method = Method.POST,
-        href = Uris.play()
+        href = Uris.play(lobbyID, gameID)
     )
 
-    val forfeitGame = Action(
+    fun forfeitGame(lobbyID: Int, gameID: Int) = Action(
         name = Rels.FORFEIT_GAME,
         title = "Forfeit Game",
         method = Method.POST,
-        href = Uris.forfeitGame()
+        href = Uris.forfeitGame(lobbyID, gameID)
     )
 }

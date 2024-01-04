@@ -4,6 +4,7 @@ import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletResponse
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -46,7 +47,6 @@ class UserController(
             actions = listOf(
                 Actions.logout,
                 Actions.seekLobby
-                // Actions.listLobbies
             ),
             links = listOf(
                 Links.self(Uris.userHome())
@@ -124,11 +124,12 @@ class UserController(
      * @param user the [AuthenticatedUser] creating the game
      *
      */
-    @PostMapping(Uris.Users.LOGOUT)
-    fun logout(
+    @DeleteMapping(Uris.Users.TOKEN)
+    fun deleteToken(
         user: AuthenticatedUser,
         response: HttpServletResponse
     ): SirenEntity<Unit> {
+        logger.info("Deleting token for user {}", user.user.username)
         userService.revokeToken(user.token)
 
         revokeTokenCookie(response)

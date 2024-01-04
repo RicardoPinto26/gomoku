@@ -217,7 +217,7 @@ class LobbyController(
                                             SubEntity.EmbeddedSubEntity(
                                                 `class` = listOf(Rels.GAME),
                                                 rel = listOf(Rels.ITEM, Rels.GAME),
-                                                properties = it.game,
+                                                properties = it.game
                                                 /*
                                                 actions = listOf(
                                                     Actions.play,

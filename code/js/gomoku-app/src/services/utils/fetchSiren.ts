@@ -39,6 +39,10 @@ export function post<T>(
     return fetchSiren<T>(apiUrl + input, 'POST', body)
 }
 
+export function deleteRequest<T>(input: RequestInfo | URL): Promise<SirenEntity<T>> {
+    return fetchSiren<T>(apiUrl + input, 'DELETE', undefined)
+}
+
 export async function handleRequest<T, E = Error>(promise: Promise<T>): Promise<[E, null] | [null, T]> {
     try {
         const res: T = await promise;
