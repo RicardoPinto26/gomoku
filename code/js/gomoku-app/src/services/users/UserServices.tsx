@@ -3,25 +3,26 @@ import {SirenEntity} from "../../http/media/siren/SirenEntity";
 import {User} from "../../domain/User";
 import {Problem} from "../../http/media/Problem";
 import {LoginOutputModel} from "./models/LoginOutput";
-import {RegisterOutputModel} from "./models/RegisterOutput";
 import {getAndStoreHome} from "../home/HomeServices";
 
-//TODO: Use siren hypermedia to get the url
 export async function register(
     email: String,
     username: String,
     password: String
-): Promise<SirenEntity<RegisterOutputModel>> {
+): Promise<SirenEntity<LoginOutputModel>> {
     const register = localStorage.getItem('register')
     if (!register) {
-        getAndStoreHome()
+        await getAndStoreHome()
     }
     const url = register || localStorage.getItem('register')
     if (!url) throw new Error('Could not find register url')
+
     return post(
         url,
         JSON.stringify({"email": email, "username": username, "password": password})
-    )
+    ).then(async () => {
+        return await login(username, password);
+    })
 }
 
 
@@ -31,7 +32,7 @@ export async function login(
 ): Promise<SirenEntity<LoginOutputModel>> {
     const login = localStorage.getItem('login')
     if (!login) {
-        getAndStoreHome()
+        await getAndStoreHome()
     }
     const url = login || localStorage.getItem('login')
     if (!url) throw new Error('Could not find login url')

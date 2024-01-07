@@ -55,7 +55,7 @@ export function Login() {
                     </div>
                     <div>
                         <label htmlFor="password">Password</label>
-                        <input id="password" type="text" name="password" value={password} onChange={handleChange}/>
+                        <input id="password" type="password" name="password" value={password} onChange={handleChange}/>
                     </div>
                     <div>
                         <button type="submit">Login</button>

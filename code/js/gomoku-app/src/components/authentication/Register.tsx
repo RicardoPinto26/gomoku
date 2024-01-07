@@ -2,7 +2,7 @@ import * as React from "react";
 import {useSetUser} from "../../utils/Authn";
 import {Navigate, useLocation, useNavigate} from "react-router-dom";
 import reduce from "./utils/Reduce"
-import {register} from "../../services/users/UserServices";
+import {register, storeLoginUrls} from "../../services/users/UserServices";
 import Page from "../common/Page";
 import Button from "@mui/material/Button";
 
@@ -34,6 +34,7 @@ export default function Register() {
         register(email, username, password)
             .then(res => {
                 if (res) {
+                    storeLoginUrls(res)
                     setUser(username);
                     dispatch({type: 'success'});
                 } else {

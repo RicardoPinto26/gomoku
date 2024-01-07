@@ -1,7 +1,7 @@
 import {apiUrl} from "../../utils/configs";
 import {EmbeddedSubEntity} from "../../http/media/siren/SubEntity";
 import {Lobby} from "../../domain/Lobby";
-import {get, post} from "../utils/fetchSiren";
+import {get} from "../utils/fetchSiren";
 import {CreateLobbyInputModel} from "./models/CreateLobbyInputModel";
 import {LobbyDetailsOutputModel} from "./models/LobbyDetailsOutputModel";
 import {SirenEntity} from "../../http/media/siren/SirenEntity";
@@ -68,8 +68,13 @@ export async function getLobbyState(lobby: number) {
 }
 
 export async function matchMake(settings: GameSettings): Promise<{ status: number, response: any }> {
-    //return post(`/lobby/seek`, JSON.stringify(settings))
-    const res = await fetch(`${apiUrl}/lobby/seek`, {
+
+    const url = localStorage.getItem('seekLobby')
+    if (!url) {
+        localStorage.clear()
+        throw null
+    }
+    const res = await fetch(url, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

@@ -5,7 +5,7 @@ import {HomeOutputModel} from "./models/HomeOutputModel";
 export function getAndStoreHome() {
     if (localStorage.getItem('list_users') == null || localStorage.getItem('register') == null || localStorage.getItem('login') == null) {
         // @ts-ignore
-        get('/api').then((response: SirenEntity<HomeOutputModel>) => {
+        return get('/api').then((response: SirenEntity<HomeOutputModel>) => {
             const list_users = response.actions?.find((action) => {
                 return action.name === "list-users"
             })?.href

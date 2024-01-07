@@ -7,6 +7,7 @@ import Typography from "@mui/material/Typography";
 import {useNavigate} from "react-router-dom";
 import {getLobbyState, matchMake} from "../../../services/lobby/LobbyServices";
 import Button from "@mui/material/Button";
+import {useUserManager} from "../../../utils/Authn";
 
 
 export function Matchmake() {
@@ -17,6 +18,7 @@ export function Matchmake() {
     const [waitingForOpponent, setWaitingForOpponent] = React.useState(false);
 
     const navigate = useNavigate();
+    const userManager = useUserManager();
 
     // TODO usar SerinEntity dps da discussao xD
     useEffect(() => {
@@ -47,6 +49,9 @@ export function Matchmake() {
             }
             setWaitingForOpponent(true);
 
+        }).catch(_ => {
+            userManager.clearUser()
+            navigate('/')
         });
     }, [settings]);
 

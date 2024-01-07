@@ -44,7 +44,6 @@ class LobbyController(
      * @return the response to the request with the [LobbyCreateOutputModel] in the body or an error value
      */
     // TODO: SIREN
-    // TODO: DO WE EVEN NEED TO ALLOW JOIN/CREATE LOBBY? ISN'T MATCHMAKING ENOUGH?
     @PostMapping(Uris.Lobby.CREATE_LOBBY)
     fun createLobby(
         user: AuthenticatedUser,
