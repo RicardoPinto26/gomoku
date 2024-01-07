@@ -9,11 +9,10 @@ import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.UserInvalidPassword
 import pt.isel.leic.daw.gomokuRoyale.domain.exceptions.UserInvalidUsername
 import pt.isel.leic.daw.gomokuRoyale.domain.token.Token
 import pt.isel.leic.daw.gomokuRoyale.domain.token.TokenEncoder
-import pt.isel.leic.daw.gomokuRoyale.domain.token.TokenValidationInfo
 import java.nio.charset.StandardCharsets
 import java.security.MessageDigest
 import java.security.SecureRandom
-import java.util.*
+import java.util.Base64
 
 /**
  * User domain entity.
@@ -143,7 +142,4 @@ class UserDomain(
             (now - token.createdAt) <= config.tokenTtl
         // && (now - token.lastUsedAt) <= config.tokenRollingTtl
     }
-
-    fun createTokenValidationInformation(token: String): TokenValidationInfo =
-        tokenEncoder.createValidationInformation(token)
 }

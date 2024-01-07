@@ -1,7 +1,7 @@
 package pt.isel.leic.daw.gomokuRoyale.domain
 
 import pt.isel.leic.daw.gomokuRoyale.domain.user.User
-import java.util.*
+import java.util.Date
 
 const val MAX_POINTS_MARGIN = Int.MAX_VALUE
 
@@ -28,12 +28,6 @@ data class Lobby(
     private val startedAt: Date,
     val settings: GameSettings
 ) {
-    fun addUser(user: User): Lobby {
-        require(user != user1)
-        require(user2 == null)
-
-        return copy(user2 = user, game = Game(name, user1, user, settings))
-    }
 
     /**
      * Checks whether a user is a part of the lobby
@@ -53,10 +47,6 @@ data class Lobby(
      */
     fun isLobbyFull(): Boolean {
         return user2 != null
-    }
-
-    fun isLobbyStarted(): Boolean {
-        return game != null
     }
 
     /**
