@@ -34,9 +34,12 @@ class LobbyServiceImpl(
         logger.info("$gridSize")
         return transactionManager.run {
             val lobbyRepo = it.lobbyRepository
+            val gameRepo = it.gameRepository
             val lobbies = lobbyRepo.getUserLobbys(user.id)
             if (!lobbies.all { lobby -> lobby.isGameFinished() }) {
-                return@run failure(LobbyCreationError.UserAlreadyInALobby(lobbies.first { lobby -> !lobby.isGameFinished() }.id))
+                val lobby = lobbies.first { lobby -> !lobby.isGameFinished() }
+                val gameId = gameRepo.getGameByLobbyId(lobby.id)?.id ?: -1
+                return@run failure(LobbyCreationError.UserAlreadyInALobby(lobby.id, gameId))
             }
             val id = lobbyRepo.createLobby(name, user.id, gridSize, opening, winningLength, pointsMargin, overflow)
             return@run success(
@@ -61,7 +64,9 @@ class LobbyServiceImpl(
 
             val lobbies = lobbyRepo.getUserLobbys(user.id)
             if (!lobbies.all { lobby -> lobby.isGameFinished() }) {
-                return@run failure(LobbyJoinError.UserAlreadyInALobby(lobbies.first { lobby -> !lobby.isGameFinished() }.id))
+                val lobby = lobbies.first { lobby -> !lobby.isGameFinished() }
+                val gameId = gameRepo.getGameByLobbyId(lobby.id)?.id ?: -1
+                return@run failure(LobbyJoinError.UserAlreadyInALobby(lobby.id, gameId))
             }
 
             val lobby = lobbyRepo.getLobbyById(lobbyId) ?: return@run failure(LobbyJoinError.LobbyNotFound)
@@ -118,7 +123,9 @@ class LobbyServiceImpl(
             println(lobbies)
 
             if (!lobbies.all { lobby -> lobby.isGameFinished() }) {
-                return@run failure(LobbySeekError.UserAlreadyInALobby(lobbies.first { lobby -> !lobby.isGameFinished() }.id))
+                val lobby = lobbies.first { lobby -> !lobby.isGameFinished() }
+                val game = gameRepo.getGameByLobbyId(lobby.id)?.id ?: -1
+                return@run failure(LobbySeekError.UserAlreadyInALobby(lobby.id, game))
             }
 
             val userRating = user.rating.toInt()

@@ -15,6 +15,7 @@ import pt.isel.leic.daw.gomokuRoyale.http.controllers.games.models.GamePlayInput
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.games.models.GamePlayOutputModel
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.games.models.convertInputModelToGameAction
 import pt.isel.leic.daw.gomokuRoyale.http.media.siren.SirenEntity
+import pt.isel.leic.daw.gomokuRoyale.http.utils.Actions
 import pt.isel.leic.daw.gomokuRoyale.http.utils.Rels
 import pt.isel.leic.daw.gomokuRoyale.http.utils.Uris
 import pt.isel.leic.daw.gomokuRoyale.http.utils.toResponse
@@ -133,11 +134,11 @@ class GameController(
                     .body(
                         SirenEntity(
                             `class` = listOf(Rels.GAME),
-                            properties = GameDetailsOutputModel(res.value)
-                            /*actions = listOf(
-                                Actions.play,
-                                Actions.forfeitGame
-                            )*/
+                            properties = GameDetailsOutputModel(res.value),
+                            actions = listOf(
+                                Actions.play(res.value.lobbyID, res.value.id),
+                                Actions.forfeitGame(res.value.lobbyID, res.value.id)
+                            ),
                         )
                     )
 

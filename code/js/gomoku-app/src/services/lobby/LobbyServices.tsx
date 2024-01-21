@@ -1,88 +1,43 @@
-import {apiUrl} from "../../utils/configs";
-import {EmbeddedSubEntity} from "../../http/media/siren/SubEntity";
-import {Lobby} from "../../domain/Lobby";
-import {get} from "../utils/fetchSiren";
+import {get, post} from "../utils/fetchSiren";
 import {CreateLobbyInputModel} from "./models/CreateLobbyInputModel";
 import {LobbyDetailsOutputModel} from "./models/LobbyDetailsOutputModel";
 import {SirenEntity} from "../../http/media/siren/SirenEntity";
 import {GameSettings} from "../../components/game/matchmake/GameSettings";
+import {LobbyCreateOutputModel} from "./models/LobbyCreateOutputModel";
+import {LobbyJoinOutputModel} from "./models/LobbyJoinOutputModel";
+import {LobbySeekOutputModel} from "./models/LobbySeekOutputModel";
 
 
-export async function createLobbyServices(settings: CreateLobbyInputModel): Promise<{ status: number, response: any }> {
-    console.log(JSON.stringify(settings))
-    const response = await fetch(`${apiUrl}/lobby`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(settings)
-    })
-
-    if (!response.ok)
-        throw await response.json();
-
-    const body = await response.json();
-    return {status: response.status, response: body}
-}
-
-export async function getLobby(lobbyId: number): Promise<SirenEntity<LobbyDetailsOutputModel>> {
-    return get(`/lobby/${lobbyId}`)
-}
-
-export async function getLobbies() {
-    const response = await fetch(`${apiUrl}/lobby/available`, {
-        method: "GET",
-        credentials: "include",
-    })
-
-    if (!response.ok)
-        throw await response.json();
-
-    return (await (response.json())).entities.map((entity: EmbeddedSubEntity<Lobby>) => (entity as EmbeddedSubEntity<Lobby>).properties as Lobby)
-}
-
-export async function joinLobby(lobbyId: number): Promise<{ joinned: boolean, response: any }> {
-    const response = await fetch(`${apiUrl}/lobby/${lobbyId}/join`, {
-        method: "POST",
-        credentials: "include",
-    })
-
-    if (!response.ok)
-        throw await response.json();
-
-    const body = await response.json();
-    return {joinned: response.status == 200, response: body}
-}
-
-export async function getLobbyState(lobby: number) {
-    let res = await (await fetch(`${apiUrl}/lobby/${lobby}`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        credentials: "include",
-    })).json();
-    console.log(res);
-    return res;
-}
-
-export async function matchMake(settings: GameSettings): Promise<{ status: number, response: any }> {
-
-    const url = localStorage.getItem('seekLobby')
-    if (!url) {
-        localStorage.clear()
-        throw null
+export class LobbyServices {
+    static async createLobby(settings: CreateLobbyInputModel): Promise<SirenEntity<LobbyCreateOutputModel>> {
+        return post(`/api/lobby`, JSON.stringify(settings))
     }
-    const res = await fetch(url, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(settings)
-    });
-    const body = await res.json();
-    return {response: body, status: res.status};
+
+
+    static async getLobby(lobbyId: number): Promise<SirenEntity<LobbyDetailsOutputModel>> {
+        return get(`/api/lobby/${lobbyId}`)
+    }
+
+
+    static async getLobbies() {
+        return get(`/api/lobby/available`)
+    }
+
+
+    static async joinLobby(lobbyId: number): Promise<SirenEntity<LobbyJoinOutputModel>> {
+        return post(`/api/lobby/${lobbyId}/join`)
+    }
+
+
+    static async matchMake(settings: GameSettings): Promise<SirenEntity<LobbySeekOutputModel>> {
+
+        const url = localStorage.getItem('seekLobby')
+        if (!url) {
+            localStorage.clear()
+            throw null
+        }
+
+        return post(url, JSON.stringify(settings))
+    }
 }
 

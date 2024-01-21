@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {Box, LinearProgress, Typography} from '@mui/material';
+import React from 'react';
+import {Box, Typography} from '@mui/material';
 import IconButton from "@mui/material/IconButton";
 import RefreshIcon from "@mui/icons-material/Refresh";
 
@@ -11,15 +11,6 @@ interface GameBarProps {
 }
 
 export function GameBarStatus(game: GameBarProps) {
-    /*const [timer, setTimer] = useState(30)
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setTimer(prevTimer => prevTimer > 0 ? prevTimer - 1 : 0)
-        }, 1000)
-
-        return () => clearInterval(interval)
-    }, [game.currentPlayer])*/
 
     return (
         <Box display="flex" justifyContent="space-between" alignItems="center" p={2} bgcolor="#f0f0f0">
@@ -33,10 +24,3 @@ export function GameBarStatus(game: GameBarProps) {
         </Box>
     );
 }
-
-/**
- * <Box width="100%" mx={2}>
- *                 <LinearProgress variant="determinate" value={(timer / 30) * 100} />
- *             </Box>
-            <Typography variant="subtitle1">{timer} seconds left</Typography>
- */

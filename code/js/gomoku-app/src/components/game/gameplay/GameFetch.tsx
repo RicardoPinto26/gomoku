@@ -6,9 +6,9 @@ import {GameBoard} from "./Gameplay";
 import LoadingSpinner from "../../common/LoadingSpinner";
 import {handleRequest} from "../../../services/utils/fetchSiren";
 import {handleError} from "../../../services/utils/errorUtils";
-import {getLobby} from "../../../services/lobby/LobbyServices";
 import {Lobby} from "../../../domain/Lobby";
 import {from} from "../matchmake/GameSettings";
+import {LobbyServices} from "../../../services/lobby/LobbyServices";
 
 export default function GameFetch() {
     const {lobbyId, gameId} = useParams()
@@ -33,15 +33,15 @@ export default function GameFetch() {
         const gId = parseInt(gameId!)
         const lId = parseInt(lobbyId!)
 
-        const [errorGame, res] = await handleRequest(GameServices.getGame(lId, gId))
-        if (errorGame) {
-            handleError(errorGame, setErrorGame, navigate)
+        const [errGame, res] = await handleRequest(GameServices.getGame(lId, gId))
+        if (errGame) {
+            handleError(errGame, setErrorGame, navigate)
             return
         }
 
-        const [errorLobby, res2] = await handleRequest(getLobby(lId))
-        if(errorLobby) {
-            handleError(errorLobby, setErrorLobby, navigate)
+        const [errLobby, res2] = await handleRequest(LobbyServices.getLobby(lId))
+        if (errLobby) {
+            handleError(errLobby, setErrorLobby, navigate)
             return
         }
 
@@ -53,7 +53,9 @@ export default function GameFetch() {
         setGameLoaded(true)
     }
 
-    if (gameLoaded)
+    if (errorGame || errorLobby) {
+        return <div>Error: {errorGame || errorLobby}</div>
+    } else if (gameLoaded)
         return <GameBoard game={game!} params={{lId: parseInt(lobbyId!)!, gId: parseInt(gameId!)}}
                           setGame={setGame}></GameBoard>
     else {

@@ -44,7 +44,7 @@ export default function About(){
             <Grid container spacing={2}>
                 {
                     authors.map((author) => (
-                        <Grid item xs={4}>
+                        <Grid item xs={4} key={author.number}>
                             <Paper elevation={3}>
                                 <Grid item xs={12}>
                                     <h3>{author.name} - {author.number}</h3>
@@ -59,7 +59,6 @@ export default function About(){
                                 </Grid>
 
                                 <Grid>
-                                    {/*TODO Figure out how to make the email Icon work*/}
                                     <EmailIcon
                                         href={"mailto:" + author.email}
                                         sx={{cursor: 'pointer'}}
@@ -72,8 +71,7 @@ export default function About(){
                                 </Grid>
                             </Paper>
                         </Grid>
-                        )
-                    )
+                    ))
                 }
             </Grid>
         </Page>

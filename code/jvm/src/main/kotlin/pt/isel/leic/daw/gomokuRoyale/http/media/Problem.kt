@@ -171,16 +171,18 @@ open class Problem(
             title: String,
             status: Int,
             detail: String,
-            val lobbyID: Int
+            val lobbyID: Int,
+            val gameID: Int
         ) : Problem(type, title, status, detail)
 
-        val userAlreadyInALobby = { lobbyID: Int ->
+        val userAlreadyInALobby = { lobbyID: Int, gameID: Int ->
             UserAlreadyInALobbyProblem(
-                "userAlreadyInALobby",
+                "userAlreadyInALobbyProblem",
                 "User is already in a Lobby",
                 409,
                 "You're already in a lobby. Please finish that game to join another.",
-                lobbyID
+                lobbyID,
+                gameID
             )
         }
 
@@ -233,6 +235,13 @@ open class Problem(
             "Choose the variant of the opening",
             409,
             "Choose the variant of the opening"
+        )
+
+        val opponentAlreadyJoined = Problem(
+            "opponentAlreadyJoined.com",
+            "The opponent already joined the lobby",
+            409,
+            "The opponent already joined the lobby"
         )
     }
 }

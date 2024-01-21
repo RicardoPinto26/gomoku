@@ -1,14 +1,21 @@
 import * as React from 'react';
 import {Navigate, useLocation, useNavigate} from 'react-router-dom';
 import {useSetUser} from '../../utils/Authn';
-import {login, storeLoginUrls} from "../../services/users/UserServices";
+import { login, storeLoginUrls} from "../../services/users/UserServices";
 import reduce from "./utils/Reduce";
 import Page from '../common/Page';
 import Button from "@mui/material/Button";
+import {handleRequest} from "../../services/utils/fetchSiren";
+import {handleError} from "../../services/utils/errorUtils";
 
 export function Login() {
     const navigate = useNavigate()
-    const [state, dispatch] = React.useReducer(reduce, {tag: 'editing', inputs: {username: '', email: '', password: ''}});
+    const [error, setError] = React.useState<string | null>(null);
+    const [state, dispatch] = React.useReducer(reduce, {
+        tag: 'editing',
+        inputs: {username: '', email: '', password: ''}
+    });
+    const [showPassword, setShowPassword] = React.useState(false)
     const setUser = useSetUser();
     const location = useLocation();
     if (state.tag === 'redirect') {
@@ -19,7 +26,7 @@ export function Login() {
         dispatch({type: 'edit', inputName: ev.currentTarget.name, inputValue: ev.currentTarget.value});
     }
 
-    function handleSubmit(ev: React.FormEvent<HTMLFormElement>) {
+    async function handleSubmit(ev: React.FormEvent<HTMLFormElement>) {
         ev.preventDefault();
         if (state.tag !== 'editing') {
             return;
@@ -27,20 +34,22 @@ export function Login() {
         dispatch({type: 'submit'});
         const username = state.inputs.username;
         const password = state.inputs.password;
-        login(username, password)
-            .then(res => {
-                if (res) {
-                    storeLoginUrls(res)
-                    console.log(`setUser(${res.properties?.token})`);
-                    setUser(username);
-                    dispatch({type: 'success'});
-                } else {
-                    dispatch({type: 'error', message: 'Invalid username or password'});
-                }
-            })
-            .catch(error => {
-                dispatch({type: 'error', message: error.message});
-            });
+
+        const [error, res] = await handleRequest(login(username, password))
+
+        if (error) {
+            handleError(error, setError, navigate)
+            dispatch({type: 'error', message: `${error}`});
+            return
+        }
+
+        if (res === undefined) {
+            throw new Error("Response is undefined")
+        }
+
+        storeLoginUrls(res)
+        setUser(username);
+        dispatch({type: 'success'});
     }
 
     const username = state.tag === 'submitting' ? state.username : state.inputs.username
@@ -55,26 +64,28 @@ export function Login() {
                     </div>
                     <div>
                         <label htmlFor="password">Password</label>
-                        <input id="password" type="password" name="password" value={password} onChange={handleChange}/>
-                    </div>
-                    <div>
-                        <button type="submit">Login</button>
+                        <input id="password" type={showPassword ? "text" : "password"} name="password" value={password}
+                               onChange={handleChange}/>
+                        <div>
+                            <label htmlFor="showPassword">Show password</label>
+                            <input id="showPassword" type="checkbox" checked={showPassword}
+                                   onChange={() => setShowPassword(!showPassword)}/>
+                        </div>
+                        <button type="submit" disabled={!username || !password}>Login</button>
                     </div>
                 </fieldset>
-                {state.tag === 'editing' && state.error}
             </form>
-            <Button>
-                <Button
-                    size="small"
-                    variant="contained"
-                    sx={{mt: 3, mb: 2}}
-                    color="primary"
-                    onClick={() => {
-                        navigate('/register')
-                    }}
-                >
-                    Don't have an account yet? Register!
-                </Button>
+            {error && <div style={{color: 'red'}}>{error}</div>}
+            <Button
+                size="small"
+                variant="contained"
+                sx={{mt: 3, mb: 2}}
+                color="primary"
+                onClick={() => {
+                    navigate('/register')
+                }}
+            >
+                Don't have an account yet? Register!
             </Button>
         </Page>
     );

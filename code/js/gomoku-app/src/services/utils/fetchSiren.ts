@@ -1,19 +1,19 @@
 import {SirenEntity, sirenMediaType} from "../../http/media/siren/SirenEntity";
-import {Problem, problemMediaType} from "../../http/media/Problem";
+import {Problem, problemMediaType, UserAlreadyInALobbyProblem} from "../../http/media/Problem";
 import {apiUrl} from "../../utils/configs";
 
 export async function fetchSiren<T>(
-    input : RequestInfo | URL,
-    method : string,
-    body : BodyInit | undefined
-) : Promise<SirenEntity<T>>{
+    input: RequestInfo | URL,
+    method: string,
+    body: BodyInit | undefined
+): Promise<SirenEntity<T>> {
 
     const headers: any = {
         'Accept': `${sirenMediaType}, ${problemMediaType}`,
         'Content-Type': 'application/json',
     }
 
-    const res = await fetch(input,{
+    const res = await fetch(input, {
         method: method,
         headers,
         body: body,
@@ -22,8 +22,13 @@ export async function fetchSiren<T>(
 
     const json = await res.json()
 
-    if (!res.ok)
-        throw new Problem( json )
+    if (!res.ok) {
+        if ("lobbyID" in json) {
+            throw new UserAlreadyInALobbyProblem(json)
+        } else {
+            throw new Problem(json)
+        }
+    }
 
     return new SirenEntity<T>(json)
 }

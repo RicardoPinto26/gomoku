@@ -13,7 +13,6 @@ import {Opening, OpeningMove} from "../../../domain/game/Opening";
 import {NextMoveDialog} from "./utils/NextMoveDialog";
 import {ChooseColorDialog} from "./utils/ChooseColorDialog";
 import {ForfeitButton} from "./utils/ForfeitGame";
-import {Typography} from "@mui/material";
 import {WinnerDialog} from "./utils/WinnerDialog";
 
 interface GameProps {
@@ -47,21 +46,7 @@ export function GameBoard(game: GameProps) {
 
 
     useEffect(() => {
-        if (user == turn) {
-            const newMoveType = Opening.getCurrentMoveType(Opening.from(choosedOpening ? choosedOpening : lobbyOpening!)!, currentOpeningIndex)
-            console.log(`New move type: ${newMoveType} - index: ${currentOpeningIndex}; movesList: ${Opening.from(lobbyOpening)!.movesList}}`)
-            switch (newMoveType) {
-                case OpeningMove.CHOOSE_NEXT_MOVE:
-                    console.log("Choose next move type")
-                    handleOpenMoveDialog()
-                    break
-                case OpeningMove.CHOOSE_COLOR:
-                    console.log("Choose next color type")
-                    handleOpenColorDialog()
-                    break
-            }
-            setCurrentMoveType(newMoveType)
-        }
+        handleTurn(user!, turn, choosedOpening, lobbyOpening, currentOpeningIndex)
 
         const interval = setInterval(() => {
             if (user != turn) {
@@ -160,6 +145,24 @@ export function GameBoard(game: GameProps) {
         }
     }
 
+    function handleTurn(user: string, turn: string, choosedOpening: string | null, lobbyOpening: string, currentOpeningIndex: number) {
+        if (user == turn) {
+            const newMoveType = Opening.getCurrentMoveType(Opening.from(choosedOpening ? choosedOpening : lobbyOpening!)!, currentOpeningIndex)
+            console.log(`New move type: ${newMoveType} - index: ${currentOpeningIndex}; movesList: ${Opening.from(lobbyOpening)!.movesList}}`)
+            switch (newMoveType) {
+                case OpeningMove.CHOOSE_NEXT_MOVE:
+                    console.log("Choose next move type")
+                    handleOpenMoveDialog()
+                    break
+                case OpeningMove.CHOOSE_COLOR:
+                    console.log("Choose next color type")
+                    handleOpenColorDialog()
+                    break
+            }
+            setCurrentMoveType(newMoveType)
+        }
+    }
+
     // Dialogs
 
     const handleOpenMoveDialog = () => {
@@ -214,13 +217,6 @@ export function GameBoard(game: GameProps) {
 
             <BoardView board={board} onPiecePlaced={handlePiecePlaced}/>
             <ForfeitButton gameId={game.params.gId} lobbyId={game.params.lId} isYourTurn={turn == user}/>
-            <Typography variant="h6"> FREESTYLE, SWAP2, SWAP 100% a funcionar</Typography>
-            <Typography variant="h6"> PRO E LONG PRO precisamos de avisar o user onde pode jogar (dar highlight na
-                board) </Typography>
-            <Typography variant="h6"> (BLACK - 1º jogada - centro, 2º jogada a 3/4 casas da primeira
-                jogada) </Typography>
-            <Typography variant="h6"> ... </Typography>
-            <Typography variant="h6"> TODO() Ver quando o jogo já acabou e se o outro player deu forfit </Typography>
         </div>
     )
 }

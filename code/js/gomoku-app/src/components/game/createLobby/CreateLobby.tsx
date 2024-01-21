@@ -8,63 +8,73 @@ import MenuItem from "@mui/material/MenuItem";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Button from "@mui/material/Button";
-import { useCreateLobbyConfig} from "../matchmake/GameSettings";
+import {useCreateLobbyConfig} from "../matchmake/GameSettings";
 import {useNavigate} from "react-router-dom";
-import { createLobbyServices, getLobbyState} from "../../../services/lobby/LobbyServices";
 import LoadingSpinner from "../../common/LoadingSpinner";
 import {useCurrentUser} from "../../../utils/Authn";
 import {CreateLobbyInputModel} from "../../../services/lobby/models/CreateLobbyInputModel";
-
+import {handleRequest} from "../../../services/utils/fetchSiren";
+import {handleError} from "../../../services/utils/errorUtils";
+import {LobbyServices} from "../../../services/lobby/LobbyServices";
 
 export function CreateLobby() {
-    const user=useCurrentUser()
+    const user = useCurrentUser()
+    const nav = useNavigate();
+    const [error, setError] = React.useState<string | null>(null);
     const {settings, setSettings} = useCreateLobbyConfig()
     const [lobbyName, setLobbyName] = React.useState(user + " Lobby")
     const navigate = useNavigate();
-    const [isLobbyCreated, setIsLobbyCreated] = React.useState(false);
     const [lobbyId, setLobbyId] = React.useState(-1);
     const [isWaitingForOpponent, setIsWaitingForOpponent] = React.useState(false);
 
 
     useEffect(() => {
         const interval = setInterval(() => {
-            checkIfOpponentJoined().then(r => console.log(r));
+            checkIfOpponentJoined()
         }, 2000);
         return () => clearInterval(interval);
     }, [lobbyId, isWaitingForOpponent]);
 
 
     async function createLobby() {
-        const res =
-            await createLobbyServices(new CreateLobbyInputModel(lobbyName, settings));
-        if (res.status == 201) {
-            console.log("Lobby created");
-            console.log(res.response)
-            setIsLobbyCreated(true);
-            setIsWaitingForOpponent(true)
-            setLobbyId(res.response.properties.id)
-        } else {
-            //hammer debug
-            console.log("Error creating lobby");
+
+        const [error, res] = await handleRequest(LobbyServices.createLobby(new CreateLobbyInputModel(lobbyName, settings)))
+
+        if (error) {
+            handleError(error, setError, nav)
+            return
         }
+
+        if (res == undefined) {
+            throw new Error("Response is undefined")
+        }
+
+        setIsWaitingForOpponent(true)
+        setLobbyId(res.properties?.id as number)
     }
 
     async function checkIfOpponentJoined() {
         if (!isWaitingForOpponent || lobbyId == -1) return;
 
-        try {
-            const lobby = await getLobbyState(lobbyId);
-            if (lobby.properties.user2 != null) {
-                setIsWaitingForOpponent(false);
-                const gameId = lobby.entities[0].links[0].href.replace("/api", "");
-                console.log("Opponent joined, navigating to game");
-                console.log(gameId);
-                navigate(`${gameId}`);
-            }
-        } catch (error) {
-            console.log("Error in checkIfOpponentJoined:", error);
+        const [error, res] = await handleRequest(LobbyServices.getLobby(lobbyId))
+        if (error) {
+            handleError(error, setError, nav)
+            return
+        }
+
+        if (res === undefined || res === null) {
+            throw new Error("Response is undefined")
+        }
+        console.log(`create -${(res.properties?.user2?.username)}  ${(res.entities)}`)
+
+        if (res.properties?.user2 != null) {
+            setIsWaitingForOpponent(false);
+            // @ts-ignore TODO() - siren link
+            const gameId = res.entities[0].links[0].href.replace("/api", "");
+            navigate(`${gameId}`);
         }
     }
+
 
     function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault()
@@ -72,7 +82,9 @@ export function CreateLobby() {
     }
 
     const handleChange = (name: keyof typeof settings) => (
-        event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<{ value: unknown }> | SelectChangeEvent<string>
+        event: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<{
+            value: unknown
+        }> | SelectChangeEvent<string>
     ) => {
         setSettings({
             ...settings,
@@ -81,7 +93,6 @@ export function CreateLobby() {
     }
 
     const fixedWidth = {width: "250px"};
-
     if (isWaitingForOpponent) {
         return (
             <Box sx={{mt: 1}}>

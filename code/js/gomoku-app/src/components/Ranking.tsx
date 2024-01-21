@@ -2,12 +2,14 @@ import React, {useEffect, useState} from "react";
 import Page from "./common/Page";
 import {User} from "../domain/User";
 import {EmbeddedSubEntity} from "../http/media/siren/SubEntity";
-import {Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow} from "@mui/material";
+import {Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography} from "@mui/material";
 import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
 import {amber, brown, grey} from "@mui/material/colors";
 import LoadingSpinner from "./common/LoadingSpinner";
-import { getUsers } from "../services/users/UserServices";
-import { Problem } from "../http/media/Problem";
+import {getUsers} from "../services/users/UserServices";
+import {handleRequest} from "../services/utils/fetchSiren";
+import {handleError} from "../services/utils/errorUtils";
+import {useNavigate} from "react-router-dom";
 
 const prizes = [
     <EmojiEventsIcon style={{color: amber[500], fontSize: '25'}}/>,
@@ -16,8 +18,10 @@ const prizes = [
 ];
 export default function Ranking() {
 
+    const navigate = useNavigate()
     const [ranking, setRanking] = useState<User[]>([])
     const [isLoading, setIsLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
 
 
     useEffect(() => {
@@ -25,14 +29,14 @@ export default function Ranking() {
     }, [])
 
     async function fetchRanking() {
-        const res = await getUsers()
+        const [error, res] = await handleRequest(getUsers())
 
-        if(res instanceof (Problem)){
-            //TODO : handleProblem()
+        if (error) {
+            handleError(error, setError, navigate)
             return
         }
 
-        if(res.entities === undefined){
+        if (res.entities === undefined) {
             throw new Error("Entities are undefined")
         }
 
@@ -42,13 +46,17 @@ export default function Ranking() {
 
     }
 
-    if (isLoading)
-
+    if (error) {
+        return (
+            <Typography color="error">
+                {error}
+            </Typography>
+        )
+    } else if (isLoading) {
         return <Box sx={{mt: 1}}>
             <LoadingSpinner text={"Loading rankings..."}/>
         </Box>
-    else {
-
+    } else {
         return (
             <Page title={"Ranking"}>
                 <TableContainer component={Paper} sx={{width: '600px'}}>

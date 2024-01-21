@@ -2,57 +2,27 @@ import React, {useEffect} from "react";
 
 import Page from "../../common/Page";
 import LoadingSpinner from "../../common/LoadingSpinner";
-import {useMatchmakingConfig} from "./GameSettings";
-import Typography from "@mui/material/Typography";
+import {GameSettings, useMatchmakingConfig} from "./GameSettings";
 import {useNavigate} from "react-router-dom";
-import {getLobbyState, matchMake} from "../../../services/lobby/LobbyServices";
-import Button from "@mui/material/Button";
 import {useUserManager} from "../../../utils/Authn";
+import {handleRequest} from "../../../services/utils/fetchSiren";
+import {LobbyServices} from "../../../services/lobby/LobbyServices";
+import {handleError} from "../../../services/utils/errorUtils";
 
 
 export function Matchmake() {
+    const navigate = useNavigate();
+    const [error, setError] = React.useState<string | null>(null);
     const {settings} = useMatchmakingConfig();
-    const [inLobbyAlready, setInLobbyAlready] = React.useState(false);
-    const [inGameAlready, setInGameAlready] = React.useState(false);
     const [lobbyId, setLobbyId] = React.useState(-1);
     const [waitingForOpponent, setWaitingForOpponent] = React.useState(false);
 
-    const navigate = useNavigate();
     const userManager = useUserManager();
 
-    // TODO usar SerinEntity dps da discussao xD
     useEffect(() => {
         console.log("MatchMake")
-        matchMake(settings).then(r => {
-            console.log(r);
-            if (r.status == 409) {
-                console.log(r.response.type)
-                switch (r.response.type) {
-                    case "userAlreadyInALobby":
-                        console.log("Already in lobby");
-                        setInLobbyAlready(true);
-                        break;
-                    case "userAlreadyInAGame":
-                        console.log("Already in game");
-                        setInGameAlready(true);
-                        break;
-                }
-            }
-            if (r.status == 201) {
-                console.log(`Matchmake success - ${r.response.properties.lobbyId} `);
-                setLobbyId(r.response.properties.lobbyId);
-            }
-            if (r.status == 200) {
-                console.log("Matchmake success - joined lobby");
-                navigate(r.response.entities[0].links[0].href.replace("/api", ""))
+        matchMake(settings)
 
-            }
-            setWaitingForOpponent(true);
-
-        }).catch(_ => {
-            userManager.clearUser()
-            navigate('/')
-        });
     }, [settings]);
 
     useEffect(() => {
@@ -63,50 +33,55 @@ export function Matchmake() {
     }, [lobbyId, waitingForOpponent]);
 
 
+    async function matchMake(settings: GameSettings) {
+        const [error, res] = await handleRequest(LobbyServices.matchMake(settings))
+
+        if (error) {
+            handleError(error, setError, navigate)
+            return
+        }
+        if (res == undefined) {
+            throw new Error("Response is undefined")
+        }
+
+        if (res.properties?.user2 != null && res.properties?.user2.username != userManager.user?.toString()) {
+            console.log("Matchmake success - joined lobby");
+            // @ts-ignore - TODO() - siren link
+            navigate(res.entities[0].links[0].href.replace("/api", ""))
+        } else {
+            console.log("Matchmake success - created lobby");
+            setLobbyId(res.properties?.lobbyId as number)
+        }
+
+        setWaitingForOpponent(true);
+    }
+
     async function checkIfOpponentJoined() {
         if (!waitingForOpponent || lobbyId == -1) return;
+        const [error, res] = await handleRequest(LobbyServices.getLobby(lobbyId))
 
-        try {
-            const lobby = await getLobbyState(lobbyId);
-            if (lobby.properties.user2 != null) {
-                setWaitingForOpponent(false);
-                const gameId = lobby.entities[0].links[0].href.replace("/api", "");
-                console.log("Opponent joined, navigating to game");
-                console.log(gameId);
-                navigate(`${gameId}`);
-            }
-        } catch (error) {
-            console.log("Error in checkIfOpponentJoined:", error);
+        if (error) {
+            handleError(error, setError, navigate)
+            return
         }
+        if (res == undefined) {
+            throw new Error("Response is undefined")
+        }
+
+        if (res.properties?.user2 != null) {
+            setWaitingForOpponent(false);
+            // TODO() - siren link
+            // @ts-ignore
+            const gameId = res.entities[0].links[0].href.replace("/api", "");
+            navigate(`${gameId}`);
+        }
+
     }
 
-
-    if (inLobbyAlready) {
-        return (
-            <Page title={"Gameplay Menu"}>
-                <LoadingSpinner text={"Matchmaking..."}/>
-                <Typography variant="h6" gutterBottom>
-                    {"Already in lobby... Waiting for opponent"}
-                </Typography>
-                <Button>Leave Lobby</Button>
-            </Page>
-        );
-    }
-    if (inGameAlready) {
-        return (
-            <Page title={"Gameplay Menu"}>
-                <LoadingSpinner text={"Matchmaking..."}/>
-                <Typography variant="h6" gutterBottom>
-                    {"Already in game... Leave or finish your game first!"}
-                </Typography>
-                <Button>Go to Game</Button>
-            </Page>
-        );
-    } else {
-        return (
-            <Page title={"Gameplay Menu"}>
-                <LoadingSpinner text={"Matchmaking..."}/>
-            </Page>
-        );
-    }
+    return (
+        <Page title={"Gameplay Menu"}>
+            <LoadingSpinner text={"Matchmaking..."}/>
+            {error && <div style={{color: 'red'}}>{error}</div>}
+        </Page>
+    );
 }

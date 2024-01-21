@@ -6,14 +6,14 @@ import {GameDetailsOutputModel} from "./models/GameDetailsOutputModel";
 export class GameServices {
 
     static async getGame(lobbyId: number, gameID: number): Promise<SirenEntity<GameDetailsOutputModel>> {
-        return get(`/lobby/${lobbyId}/game/${gameID}`)
+        return get(`/api/lobby/${lobbyId}/game/${gameID}`)
     }
 
     static async play(lobbyId: number, gameId: number, move: GamePlayInputModel): Promise<SirenEntity<GameDetailsOutputModel>> {
-        return post(`/lobby/${lobbyId}/game/${gameId}/play`, JSON.stringify(move))
+        return post(`/api/lobby/${lobbyId}/game/${gameId}/play`, JSON.stringify(move))
     }
 
     static async forfeit(lobbyId: number, gameId: number): Promise<SirenEntity<GameDetailsOutputModel>> {
-        return post(`/lobby/${lobbyId}/game/${gameId}/forfeit`)
+        return post(`/api/lobby/${lobbyId}/game/${gameId}/forfeit`)
     }
 }

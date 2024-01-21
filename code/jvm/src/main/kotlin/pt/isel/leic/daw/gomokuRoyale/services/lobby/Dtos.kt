@@ -12,7 +12,7 @@ sealed interface LobbyServicesError : ServicesError
 
 sealed class LobbyCreationError : LobbyServicesError {
     object UserNotFound : LobbyCreationError()
-    class UserAlreadyInALobby(val lobbyID: Int) : LobbyCreationError()
+    class UserAlreadyInALobby(val lobbyID: Int, val gameID: Int) : LobbyCreationError()
 }
 
 data class LobbyExternalInfo(
@@ -46,7 +46,7 @@ sealed class LobbyJoinError : LobbyServicesError {
     object UserNotFound : LobbyJoinError()
     object LobbyFull : LobbyJoinError()
 
-    class UserAlreadyInALobby(val lobbyID: Int) : LobbyJoinError()
+    class UserAlreadyInALobby(val lobbyID: Int, val gameID: Int) : LobbyJoinError()
 }
 
 data class LobbyJoinExternalInfo(
@@ -61,7 +61,7 @@ typealias LobbyJoinResult = Either<LobbyJoinError, LobbyJoinExternalInfo>
 // Lobby See
 
 sealed class LobbySeekError : LobbyServicesError {
-    class UserAlreadyInALobby(val lobbyID: Int) : LobbySeekError()
+    class UserAlreadyInALobby(val lobbyID: Int, val gameID: Int) : LobbySeekError()
 }
 
 typealias LobbySeekResult = Either<LobbySeekError, PublicLobbyExternalInfo>

@@ -2,13 +2,17 @@ import * as React from "react";
 import {useSetUser} from "../../utils/Authn";
 import {Navigate, useLocation, useNavigate} from "react-router-dom";
 import reduce from "./utils/Reduce"
-import {register, storeLoginUrls} from "../../services/users/UserServices";
+import { register, storeLoginUrls} from "../../services/users/UserServices";
 import Page from "../common/Page";
 import Button from "@mui/material/Button";
+import {handleRequest} from "../../services/utils/fetchSiren";
+import {handleError} from "../../services/utils/errorUtils";
 
 export default function Register() {
     const navigate = useNavigate()
-    console.log('Register');
+    const [error, setError] = React.useState<string | null>(null);
+    const [showPassword, setShowPassword] = React.useState(false)
+
     const [state, dispatch] =
         React.useReducer(reduce, {tag: 'editing', inputs: {username: '', email: '', password: ''}});
     const setUser = useSetUser();
@@ -21,7 +25,7 @@ export default function Register() {
         dispatch({type: 'edit', inputName: ev.currentTarget.name, inputValue: ev.currentTarget.value});
     }
 
-    function handleSubmit(ev: React.FormEvent<HTMLFormElement>) {
+    async function handleSubmit(ev: React.FormEvent<HTMLFormElement>) {
         ev.preventDefault();
         if (state.tag !== 'editing') {
             return;
@@ -31,19 +35,20 @@ export default function Register() {
         const email = state.inputs.email;
         const username = state.inputs.username;
         const password = state.inputs.password;
-        register(email, username, password)
-            .then(res => {
-                if (res) {
-                    storeLoginUrls(res)
-                    setUser(username);
-                    dispatch({type: 'success'});
-                } else {
-                    dispatch({type: 'error', message: 'Invalid username, email or password'});
-                }
-            })
-            .catch(error => {
-                dispatch({type: 'error', message: error.message});
-            });
+
+        const [error, res] = await handleRequest(register(email, username, password))
+
+        if (error) {
+            handleError(error, setError, navigate)
+            dispatch({type: 'error', message: `${error}`});
+            return
+        }
+
+        if (res) {
+            storeLoginUrls(res)
+            setUser(username);
+            dispatch({type: 'success'});
+        }
     }
 
     const username = state.tag === 'submitting' ? state.username : state.inputs.username
@@ -52,7 +57,7 @@ export default function Register() {
     return (
         <Page title={"Register"}>
             <form onSubmit={handleSubmit}>
-                <fieldset disabled={state.tag !== 'editing'}>
+                <fieldset disabled={state.tag !== 'editing'} className="input-field">
                     <div>
                         <label htmlFor="email">Email</label>
                         <input id="email" type="text" name="email" value={email} onChange={handleChange}/>
@@ -60,17 +65,22 @@ export default function Register() {
                     <div>
                         <label htmlFor="username">Username</label>
                         <input id="username" type="text" name="username" value={username} onChange={handleChange}/>
-                    </div>
-                    <div>
-                        <label htmlFor="password">Password</label>
-                        <input id="password" type="password" name="password" value={password} onChange={handleChange}/>
-                    </div>
-                    <div>
+                        <div>
+                            <label htmlFor="password">Password</label>
+                            <input id="password" type={showPassword ? "text" : "password"} name="password"
+                                   value={password}
+                                   onChange={handleChange}/>
+                            <div>
+                                <label htmlFor="showPassword">Show password</label>
+                                <input id="showPassword" type="checkbox" checked={showPassword}
+                                       onChange={() => setShowPassword(!showPassword)}/>
+                            </div>
+                        </div>
                         <button type="submit">Register</button>
                     </div>
                 </fieldset>
-                {state.tag === 'editing' && state.error}
             </form>
+            {error && <div style={{ color: 'red' }}>{error}</div>}
             <Button
                 size="small"
                 variant="contained"

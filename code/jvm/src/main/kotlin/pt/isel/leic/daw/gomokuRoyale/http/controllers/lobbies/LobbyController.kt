@@ -17,10 +17,7 @@ import pt.isel.leic.daw.gomokuRoyale.http.controllers.lobbies.models.LobbySeekOu
 import pt.isel.leic.daw.gomokuRoyale.http.controllers.users.UserController
 import pt.isel.leic.daw.gomokuRoyale.http.media.siren.SirenEntity
 import pt.isel.leic.daw.gomokuRoyale.http.media.siren.SubEntity
-import pt.isel.leic.daw.gomokuRoyale.http.utils.Links
-import pt.isel.leic.daw.gomokuRoyale.http.utils.Rels
-import pt.isel.leic.daw.gomokuRoyale.http.utils.Uris
-import pt.isel.leic.daw.gomokuRoyale.http.utils.toResponse
+import pt.isel.leic.daw.gomokuRoyale.http.utils.*
 import pt.isel.leic.daw.gomokuRoyale.services.lobby.LobbyService
 import pt.isel.leic.daw.gomokuRoyale.utils.Failure
 import pt.isel.leic.daw.gomokuRoyale.utils.Success
@@ -43,7 +40,6 @@ class LobbyController(
      *
      * @return the response to the request with the [LobbyCreateOutputModel] in the body or an error value
      */
-    // TODO: SIREN
     @PostMapping(Uris.Lobby.CREATE_LOBBY)
     fun createLobby(
         user: AuthenticatedUser,
@@ -169,10 +165,10 @@ class LobbyController(
                                             `class` = listOf(Rels.GAME),
                                             rel = listOf(Rels.ITEM, Rels.GAME),
                                             properties = res.value.game,
-                                            /*actions = listOf(
-                                                Actions.play,
-                                                Actions.forfeitGame
-                                            )*/
+                                            actions = listOf(
+                                                Actions.play(res.value.id, res.value.game.id),
+                                                Actions.forfeitGame(res.value.id, res.value.game.id)
+                                            ),
                                             links = listOf(
                                                 Links.self(Uris.Game.byId(res.value.id, res.value.game.id))
                                             )
@@ -191,7 +187,6 @@ class LobbyController(
         }
     }
 
-    // TODO: IF WE DON'T ALLOW CREATE/JOIN LOBBY, THIS IS USELESS
     @GetMapping(Uris.Lobby.GET_AVAILABLE_LOBBIES)
     fun getLobbies(user: AuthenticatedUser): ResponseEntity<*> {
         return when (val res = lobbyService.getAvailableLobbies(user.user)) {
@@ -216,13 +211,7 @@ class LobbyController(
                                             SubEntity.EmbeddedSubEntity(
                                                 `class` = listOf(Rels.GAME),
                                                 rel = listOf(Rels.ITEM, Rels.GAME),
-                                                properties = it.game
-                                                /*
-                                                actions = listOf(
-                                                    Actions.play,
-                                                    Actions.forfeitGame
-                                                )
-                                                */
+                                                properties = it.game,
                                             )
                                         )
                                     }
@@ -266,12 +255,12 @@ class LobbyController(
                                             `class` = listOf(Rels.GAME),
                                             rel = listOf(Rels.ITEM, Rels.GAME),
                                             properties = res.value.game,
-                                            /*
+
                                             actions = listOf(
-                                                Actions.play,
-                                                Actions.forfeitGame
+                                                Actions.play(res.value.id, res.value.game.id),
+                                                Actions.forfeitGame(res.value.id, res.value.game.id)
                                             ),
-                                             */
+
                                             links = listOf(
                                                 Links.self(Uris.Game.byId(res.value.id, res.value.game.id))
                                             )

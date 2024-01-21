@@ -1,7 +1,6 @@
 import {deleteRequest, get, post} from "../utils/fetchSiren";
 import {SirenEntity} from "../../http/media/siren/SirenEntity";
 import {User} from "../../domain/User";
-import {Problem} from "../../http/media/Problem";
 import {LoginOutputModel} from "./models/LoginOutput";
 import {getAndStoreHome} from "../home/HomeServices";
 
@@ -81,6 +80,13 @@ export async function logout() {
     )
 }
 
-export async function getUsers(): Promise<SirenEntity<User> | Problem> {
-    return await get('/users')
+export async function getUsers(): Promise<SirenEntity<User>> {
+    const users = localStorage.getItem('list-users')
+    if (!users) {
+        await getAndStoreHome()
+    }
+    const url = users || localStorage.getItem('list-users')
+    if (!url) throw new Error('Could not find list-users url')
+
+    return await get(url)
 }
