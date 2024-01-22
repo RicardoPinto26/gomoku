@@ -204,6 +204,9 @@ class LobbyController(
                                     links = listOf(
                                         Links.self(Uris.Lobby.byId(it.id))
                                     ),
+                                    actions = listOf(
+                                        Actions.joinLobby(it.id)
+                                    ),
                                     entities = if (it.game == null) {
                                         null
                                     } else {

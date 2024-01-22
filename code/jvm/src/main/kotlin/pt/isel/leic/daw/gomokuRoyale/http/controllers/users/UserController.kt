@@ -46,7 +46,9 @@ class UserController(
             `class` = listOf(Rels.USER_HOME),
             actions = listOf(
                 Actions.logout,
-                Actions.seekLobby
+                Actions.seekLobby,
+                Actions.createLobby,
+                Actions.listLobbies
             ),
             links = listOf(
                 Links.self(Uris.userHome())

@@ -40,11 +40,25 @@ object Actions {
         href = Uris.seekLobby()
     )
 
+    val createLobby = Action(
+        name = Rels.CREATE_LOBBY,
+        title = "Create Lobby",
+        method = Method.POST,
+        href = Uris.createLobby()
+    )
+
     val listLobbies = Action(
         name = Rels.LIST_LOBBIES,
         title = "List Lobbies",
         method = Method.GET,
         href = Uris.listLobbies()
+    )
+
+    fun joinLobby(lobbyID: Int) = Action(
+        name = Rels.JOIN_LOBBY,
+        title = "Join Lobby",
+        method = Method.POST,
+        href = Uris.joinLobby(lobbyID)
     )
 
     fun play(lobbyID: Int, gameID: Int) = Action(

@@ -16,6 +16,10 @@ object Uris {
     fun seekLobby() = URI(Lobby.SEEK_LOBBY)
     fun listLobbies() = URI(Lobby.GET_AVAILABLE_LOBBIES)
 
+    fun joinLobby(lobbyID: Int) = UriTemplate(Lobby.JOIN_LOBBY).expand(lobbyID)
+
+    fun createLobby() = URI(Lobby.CREATE_LOBBY)
+
     fun play(lobbyID: Int, gameID: Int) = UriTemplate(Game.PLAY_GAME).expand(lobbyID, gameID)
     fun forfeitGame(lobbyID: Int, gameID: Int) = UriTemplate(Game.FORFEIT_GAME).expand(lobbyID, gameID)
 

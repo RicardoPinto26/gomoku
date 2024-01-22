@@ -10,7 +10,12 @@ import {LobbySeekOutputModel} from "./models/LobbySeekOutputModel";
 
 export class LobbyServices {
     static async createLobby(settings: CreateLobbyInputModel): Promise<SirenEntity<LobbyCreateOutputModel>> {
-        return post(`/api/lobby`, JSON.stringify(settings))
+        const url = localStorage.getItem('createLobby')
+        if (!url) {
+            localStorage.clear()
+            throw null
+        }
+        return post(url, JSON.stringify(settings))
     }
 
 
@@ -20,12 +25,17 @@ export class LobbyServices {
 
 
     static async getLobbies() {
-        return get(`/api/lobby/available`)
+        const url = localStorage.getItem('listLobbies')
+        if (!url) {
+            localStorage.clear()
+            throw null
+        }
+        return get(url)
     }
 
 
-    static async joinLobby(lobbyId: number): Promise<SirenEntity<LobbyJoinOutputModel>> {
-        return post(`/api/lobby/${lobbyId}/join`)
+    static async joinLobby(url: string): Promise<SirenEntity<LobbyJoinOutputModel>> {
+        return post(url)
     }
 
 

@@ -63,11 +63,20 @@ export function storeLoginUrls(siren: SirenEntity<LoginOutputModel>): void {
             const seekLobby = response.actions?.find((action) => {
                 return action.name === "seek-lobby"
             })?.href
-            if (logout === undefined || seekLobby === undefined) {
+            const createLobby = response.actions?.find((action) => {
+                return action.name === "create-lobby"
+            })?.href
+            const listLobbies = response.actions?.find((action) => {
+                return action.name === "list-lobbies"
+            })?.href
+            if (logout === undefined || seekLobby === undefined || createLobby === undefined || listLobbies === undefined) {
                 throw new Error("No href found")
             }
             localStorage.setItem('logout', logout)
             localStorage.setItem('seekLobby', seekLobby)
+            localStorage.setItem('createLobby', createLobby)
+            localStorage.setItem('listLobbies', listLobbies)
+
         })
     }
 }

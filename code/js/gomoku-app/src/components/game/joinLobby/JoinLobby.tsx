@@ -15,7 +15,7 @@ import {LobbyServices} from "../../../services/lobby/LobbyServices";
 export function JoinLobby() {
     const nav = useNavigate();
     const [error, setError] = React.useState<string | null>(null);
-    const [lobbies, setLobbies] = React.useState<Lobby[]>([]);
+    const [lobbies, setLobbies] = React.useState<EmbeddedSubEntity<Lobby>[]>([]);
     const [lobbiesLoaded, setLobbiesLoaded] = React.useState(false);
 
     useEffect(() => {
@@ -34,13 +34,17 @@ export function JoinLobby() {
         if (res.entities === undefined) {
             throw new Error("Entities are undefined")
         }
-        const lobbies = res.entities.map(entity => (entity as EmbeddedSubEntity<Lobby>).properties as Lobby)
+        const lobbies = res.entities.map(entity => entity as EmbeddedSubEntity<Lobby>)
         setLobbies(lobbies)
         setLobbiesLoaded(true);
     }
 
-    async function handleJoinClick(lobbyId: number) {
-        const [err, res] = await handleRequest(LobbyServices.joinLobby(lobbyId))
+    async function handleJoinClick(lobby: EmbeddedSubEntity<Lobby>) {
+        const href = lobby.actions?.find(action => action.name == "join-lobby")?.href
+        if(href === undefined) {
+            throw new Error("Join lobby href is undefined")
+        }
+        const [err, res] = await handleRequest(LobbyServices.joinLobby(href))
         if(err) {
             handleError(err, setError, nav)
             return
@@ -63,9 +67,10 @@ export function JoinLobby() {
                 ? lobbies.length == 0
                     ? <Typography>No lobbies available</Typography>
                     :
-                    lobbies.map((lobby: Lobby) => {
-                        return <LobbyCard key={lobby.id} lobby={lobby} onJoinClick={() => {
-                            handleJoinClick(lobby.id)
+                    lobbies.map((lobby: EmbeddedSubEntity<Lobby>) => {
+                        // @ts-ignore
+                        return <LobbyCard key={lobby.properties.id} lobby={lobby.properties} onJoinClick={() => {
+                            handleJoinClick(lobby)
                         }}/>
                     }) : <LoadingSpinner text={"Loading lobbies..."}/>}
         </Page>
